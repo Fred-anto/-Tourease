@@ -10,5 +10,8 @@ Rails.application.routes.draw do
   resources "activities"
   resources "trips"
   # Defines the root path route ("/")
-  # root "posts#index"
+  # root "posts#index"*
+  resources :chats, only: [:new, :create, :show] do
+    resources :messages, only: [:new, :create, :index]
+  end
 end
