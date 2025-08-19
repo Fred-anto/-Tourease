@@ -1,0 +1,16 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h2 class="mb-4">All activities</h2>
+      <ul class="list-group mb-3">
+        <% @activities.each do |activity| %>
+          <li class="list-group-item">
+            <%= link_to activity.name, activity_path(activity), class: 'text-decoration-none' %>
+          </li>
+        <% end %>
+      </ul>
+      <%= link_to "Add a New Activity", new_activity_path, class: 'btn btn-primary' %>
+      <%= link_to "Add a New Trip", new_trip_path, class: 'btn btn-primary' %>
+    </div>
+  </div>
+</div>
