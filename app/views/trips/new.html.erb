@@ -1,0 +1,26 @@
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0">Create a New Trip</h2>
+        </div>
+        <div class="card-body">
+          <%= simple_form_for @trip do |f| %>
+            <div class="form-group">
+              <%= f.input :destination, label: 'Trip Destination', input_html: { class: 'form-control' } %>
+              <%= f.input :start_date, label: 'Depart', input_html: { class: 'form-control' } %>
+              <%= f.input :end_date, label: 'Return', input_html: { class: 'form-control' } %>
+              <%= f.input :mood, as: :select, collection: ["Family ", "Friends ", "Romance 💕"], label: 'Mood', input_html: { class: 'form-control' } %>
+            </div>
+            <div class="form-group mt-3">
+              <%= f.submit '➕ Create trip', class: 'btn btn-primary mt-4'  %>
+              <%= link_to "⬅️ Back to activities", activities_path, class: 'btn btn-secondary mt-4' %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
