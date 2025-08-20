@@ -9,6 +9,7 @@
         <div class="card-body">
           <%= simple_form_for @trip do |f| %>
             <div class="form-group">
+              <%= f.input :name, label: 'My Trip Name', input_html: { class: 'form-control' } %>
               <%= f.input :destination, label: 'Trip Destination', input_html: { class: 'form-control' } %>
               <%= f.input :start_date, label: 'Depart', input_html: { class: 'form-control' } %>
               <%= f.input :end_date, label: 'Return', input_html: { class: 'form-control' } %>
