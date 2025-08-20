@@ -1,8 +1,13 @@
 class ActivitiesController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:index, :show]
+
   before_action :set_activity, only: [:show]
 
   def index
     @activities = Activity.all
+    # @trips = user_signed_in? ? current_user.trips : Trip.none
+   # @activities = Activity.includes(:category, :user).order(created_at: :desc)
+    @trips = user_signed_in? ? current_user.trips.order(created_at: :desc) : Trip.none
   end
 
   def new
@@ -15,6 +20,7 @@ class ActivitiesController < ApplicationController
   def create
     @activity = Activity.new(activity_params)
     @activity.user = current_user
+
     if @activity.save
       redirect_to activities_path, notice: "activity created"
     else
