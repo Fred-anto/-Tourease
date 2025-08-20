@@ -2,23 +2,19 @@
   <div class="row justify-content-center">
     <div class="col-12">
       <h2 class="mb-4">
-        <em>My trip:</em> <%= @trip.destination %>
+        <em>Name of the activity :</em> <%= @activity.name %>
       </h2>
-      <h4>List of the activities</h4>
+      <h4>-----------</h4>
       <div class="row">
-        <% @trip.trip_activities.each do |trip_activity| %>
           <div class="col-md-3 mb-4"> <!-- 4 cards par ligne -->
             <div class="card h-100">
               <div class="card-body">
-                <h5 class="card-title"><%= trip_activity.activity.name %></h5>
-                <p class="card-text text-muted"><%= trip_activity.activity.description %></p>
+                <h5 class="card-title"><%= @activity.name %></h5>
               </div>
               <div class="card-footer">
-               <p class="mb-1"> <%= trip_activity.activity.address %></p>
               </div>
             </div>
           </div>
-        <% end %>
       </div>
       <%= link_to "⬅️ Back to activities", activities_path, class: 'btn btn-secondary mt-4' %>
     </div>

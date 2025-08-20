@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   resources :trips do
     resources :trip_activities
   end
+  
   # root "posts#index"*
 
   resources :chats, only: [:create, :show, :index] do
