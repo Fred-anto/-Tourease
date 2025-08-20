@@ -1,62 +1,170 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# db/seeds.rb
+require "open-uri"
 
-# seeder categories
 puts "Cleaning…"
 Activity.destroy_all
 Category.destroy_all
 User.destroy_all
+
 ActiveRecord::Base.transaction do
   puts "Creating admin user (Devise)…"
   admin = User.create!(
     email: "admin@paris.com",
-    username: "AdminParis",
+    username: "admin",
     age: 35,
     phone_number: "0601020304",
-    password: "password",
-    password_confirmation: "password"
-    # admin: true # décommente si tu as la colonne admin:boolean
+    password: "azerty",
+    password_confirmation: "azerty"
+    # admin: true
   )
+
+  puts "Creating 4 specific users (email=username@mail.fr, password=azerty)…"
+  %w[aurel virg tiph fred].each_with_index do |uname, idx|
+    User.create!(
+      email: "#{uname}@mail.fr",
+      username: uname,
+      age: 25 + idx,                       # ajuste si besoin
+      phone_number: "060000000#{idx + 1}", # ajuste si besoin
+      password: "azerty",
+      password_confirmation: "azerty"
+    )
+  end
+
   puts "Creating categories…"
   cats = {
-    culture:    Category.create!(name: ":european_castle: Culture"),
-    nature:     Category.create!(name: ":herb: Nature"),
-    sport:      Category.create!(name: ":weight_lifter: Sport"),
-    relaxation: Category.create!(name: ":person_in_lotus_position: Relaxation"),
-    food:       Category.create!(name: ":sushi: Food"),
-    leisure:    Category.create!(name: ":video_game: Leisure"),
-    nightlife:  Category.create!(name: ":beers: Nightlife")
+    culture:    Category.create!(name: "🏰 Culture"),
+    nature:     Category.create!(name: "🌿 Nature"),
+    sport:      Category.create!(name: "🏋️ Sport"),
+    relaxation: Category.create!(name: "🧘 Relaxation"),
+    food:       Category.create!(name: "🍣 Food"),
+    leisure:    Category.create!(name: "🎮 Leisure"),
+    nightlife:  Category.create!(name: "🍻 Nightlife")
   }
-  puts "Creating activities…"
+
+  puts "Creating activities (English names & descriptions)…"
   activities = [
-    { name: "Tour Eiffel",             address: "Champ de Mars, 75007 Paris",             description: "Symbole de Paris.",                          category: :culture },
-    { name: "Musée du Louvre",         address: "Rue de Rivoli, 75001 Paris",              description: "Musée d'art majeur.",                       category: :culture },
-    { name: "Cathédrale Notre-Dame",   address: "6 Parvis Notre-Dame, 75004 Paris",        description: "Chef-d’œuvre gothique.",                    category: :culture },
-    { name: "Sacré-Cœur",              address: "35 Rue du Chevalier de la Barre, 75018",  description: "Vue sur tout Paris.",                       category: :culture },
-    { name: "Jardin du Luxembourg",    address: "75006 Paris",                              description: "Promenade et détente.",                     category: :nature },
-    { name: "Bois de Boulogne",        address: "75016 Paris",                              description: "Grand espace vert.",                        category: :nature },
-    { name: "Parc des Buttes-Chaumont",address: "1 Rue Botzaris, 75019 Paris",              description: "Relief et belvédères.",                     category: :nature },
-    { name: "Parc des Princes",        address: "24 Rue du Cmdt Guilbaud, 75016",           description: "Stade du PSG.",                             category: :sport },
-    { name: "Stade Charléty",          address: "99 Bd Kellermann, 75013",                  description: "Athlé & events.",                           category: :sport },
-    { name: "Piscine Pontoise",        address: "19 Rue de Pontoise, 75005",                description: "Piscine art déco nocturne.",                category: :sport },
-    { name: "Spa Nuxe Montorgueil",    address: "32 Rue Montorgueil, 75001",                description: "Parenthèse bien-être.",                     category: :relaxation },
-    { name: "Hammam de la Grande Mosquée", address: "39 Rue Geoffroy-Saint-Hilaire, 75005", description: "Hammam traditionnel.",                      category: :relaxation },
-    { name: "Marché d’Aligre",         address: "Place d’Aligre, 75012",                    description: "Marché vivant & halles.",                   category: :food },
-    { name: "Rue des Rosiers",         address: "75004 Paris",                              description: "Falafels & spécialités juives.",             category: :food },
-    { name: "Le Food Market",          address: "Boulevard de Belleville, 75020",           description: "Street-food à ciel ouvert (dates).",        category: :food },
-    { name: "Centre Pompidou",         address: "Place G.-Pompidou, 75004",                 description: "Art moderne & contemporain.",                category: :culture },
-    { name: "Balade en bateau sur la Seine", address: "Port de la Bourdonnais, 75007",     description: "Croisière parisienne.",                      category: :leisure },
-    { name: "Quartier Latin",          address: "75005 Paris",                              description: "Librairies, cafés, animation.",              category: :leisure },
-    { name: "Moulin Rouge",            address: "82 Bd de Clichy, 75018",                   description: "Cabaret mythique.",                          category: :nightlife },
-    { name: "Rex Club",                address: "5 Bd Poissonnière, 75002",                 description: "Club électro emblématique.",                 category: :nightlife }
+    {
+      name: "Eiffel Tower",
+      address: "Champ de Mars, 75007 Paris",
+      description: "Built in 1889, this iron icon grants sweeping views over the Seine and Haussmann rooftops. Ride up to the second level for a stellar panorama, then unwind on the Champ de Mars at sunset.",
+      category: :culture
+    },
+    {
+      name: "Louvre Museum",
+      address: "Rue de Rivoli, 75001 Paris",
+      description: "Former royal palace turned the world’s largest art museum. From Egyptian antiquities to Italian masters—map your route to enjoy the essentials without rushing.",
+      category: :culture
+    },
+    {
+      name: "Notre-Dame Cathedral",
+      address: "6 Parvis Notre-Dame, 75004 Paris",
+      description: "Gothic masterpiece on the Île de la Cité, famed for its sculpted façade and rose windows. Stroll the riverbanks and square to admire the stonework and lively Seine.",
+      category: :culture
+    },
+    {
+      name: "Sacré-Cœur Basilica",
+      address: "35 Rue du Chevalier de la Barre, 75018 Paris",
+      description: "Snow-white basilica crowning Montmartre. Reach it on foot or via funicular; the 180° city view is breathtaking, with cobbled lanes, studios, and cafés all around.",
+      category: :culture
+    },
+    {
+      name: "Luxembourg Gardens",
+      address: "75006 Paris",
+      description: "Classic Parisian park with French-style parterres, green chairs under chestnut trees, and a pond with toy sailboats. Perfect spot for reading or a chic picnic.",
+      category: :nature
+    },
+    {
+      name: "Bois de Boulogne Park",
+      address: "75016 Paris",
+      description: "A vast green escape with lakes, rowboats, and long alleys. Ideal for a run or bike ride—pair it with a visit to the Fondation Louis Vuitton nearby.",
+      category: :nature
+    },
+    {
+      name: "Buttes-Chaumont Park",
+      address: "1 Rue Botzaris, 75019 Paris",
+      description: "Dramatic park with cliffs, a grotto, and the Temple of Sybil. Footbridges lead to scenic lookouts—golden hour here is especially striking.",
+      category: :nature
+    },
+    {
+      name: "Parc des Princes Stadium",
+      address: "24 Rue du Commandant Guilbaud, 75016 Paris",
+      description: "Mythic home of PSG with a crackling match-day atmosphere. Off-season tours reveal tunnels, pitchside views, and the stands.",
+      category: :sport
+    },
+    {
+      name: "Charléty Stadium",
+      address: "99 Boulevard Kellermann, 75013 Paris",
+      description: "Versatile venue hosting athletics and team sports. A southern Paris hub for major events and local competition alike.",
+      category: :sport
+    },
+    {
+      name: "Piscine Pontoise Art-Deco Pool",
+      address: "19 Rue de Pontoise, 75005 Paris",
+      description: "Glorious 1930s pool with famed late openings. Neat lane organization under an elegant glass roof—bring a cap and enjoy a central-Left-Bank swim.",
+      category: :sport
+    },
+    {
+      name: "Nuxe Spa Montorgueil",
+      address: "32 Rue Montorgueil, 75001 Paris",
+      description: "Stone-arched cabins, soft lights, and signature massages craft a deep reset—steps from a pedestrian street packed with gourmet spots.",
+      category: :relaxation
+    },
+    {
+      name: "Great Mosque Hammam",
+      address: "39 Rue Geoffroy-Saint-Hilaire, 75005 Paris",
+      description: "Steam rooms, black-soap scrub, and a bright rest area. After your ritual, sip mint tea and taste pastries in the Moorish garden café.",
+      category: :relaxation
+    },
+    {
+      name: "Aligre Market",
+      address: "Place d’Aligre, 75012 Paris",
+      description: "A lively blend of covered hall and open-air stalls from morning to noon. Cheesemongers, greengrocers, and wine shops—assemble a fresh, seasonal lunch.",
+      category: :food
+    },
+    {
+      name: "Rue des Rosiers",
+      address: "75004 Paris",
+      description: "The Marais’s culinary heart, famed for falafel stands and Jewish eateries. Between icons, discover small bakeries, delis, and local boutiques.",
+      category: :food
+    },
+    {
+      name: "The Food Market (Belleville)",
+      address: "Boulevard de Belleville, 75020 Paris",
+      description: "Open-air street-food rendezvous showcasing rotating vendors and global bites. Go early to skip lines and sample several menus.",
+      category: :food
+    },
+    {
+      name: "Centre Pompidou",
+      address: "Place Georges-Pompidou, 75004 Paris",
+      description: "High-tech architecture with outdoor escalators and superb views. A landmark collection of modern art, bold temporary shows, and a stellar bookstore.",
+      category: :culture
+    },
+    {
+      name: "Seine River Cruise",
+      address: "Port de la Bourdonnais, 75007 Paris",
+      description: "Commented cruise revealing bridges and monuments from a cinematic angle. Evening departures spotlight the city’s illuminations.",
+      category: :leisure
+    },
+    {
+      name: "Latin Quarter",
+      address: "75005 Paris",
+      description: "Universities, historic bookshops, and timeworn cafés in a maze of medieval lanes. Close to the Panthéon and Jardin des Plantes—always buzzing.",
+      category: :leisure
+    },
+    {
+      name: "Moulin Rouge",
+      address: "82 Boulevard de Clichy, 75018 Paris",
+      description: "Legendary cabaret of feathers and sequins—the home of the French cancan. Dinner-show available for a quintessentially Parisian night.",
+      category: :nightlife
+    },
+    {
+      name: "Rex Club",
+      address: "5 Boulevard Poissonnière, 75002 Paris",
+      description: "Temple of Paris’s electronic scene: focused sound system and curated line-ups. A must for techno/house lovers seeking a serious dance floor.",
+      category: :nightlife
+    }
   ]
+
   activities.each do |attrs|
     Activity.create!(
       name:        attrs[:name],
@@ -66,5 +174,56 @@ ActiveRecord::Base.transaction do
       user:        admin
     )
   end
-  puts ":white_check_mark: Seed OK — Users: #{User.count}, Categories: #{Category.count}, Activities: #{Activity.count}"
+
+  puts "✅ Seed OK — Users: #{User.count}, Categories: #{Category.count}, Activities: #{Activity.count}"
+
+# --- Attach Cloudinary photos to Activities ---
+
+PHOTO_URLS = {
+  "Eiffel Tower"                 => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Tour_Eiffel_Wikimedia_Commons_equncz.jpg",
+  "Seine River Cruise"           => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/River_Seine_cruise__Paris__22240068346_bvfghr.jpg",
+  "The Food Market (Belleville)" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Street_Market_Belleville_xyvrji.jpg",
+  "Sacré-Cœur Basilica"          => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720105/Sacre-coeur-paris_hpxtlh.jpg",
+  "Charléty Stadium"             => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Stade_Charle%CC%81ty_Paris_FC_148_fylzr0.jpg",
+  "Louvre Museum"                => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720105/Louvre-Bannenhaff-mat-Pyramid--w_ia49kw.jpg",
+  "Rue des Rosiers"              => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720105/Rue_des_Rosiers__Paris__France_01_z7fgd8.jpg",
+  "Rex Club"                     => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720104/Le_Grand_Rex_fac%CC%A7ade_sl8duz.jpg",
+  "Luxembourg Gardens"           => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720105/Jardin_du_Luxembourg___Paris__23925447371_dcymsn.jpg",
+  "Latin Quarter"                => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720104/Paris__Quartier_Latin__23962185367_x5znnd.jpg",
+  "Centre Pompidou"              => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720104/Entrance_to_the_Centre_Pompidou_dvfn4h.jpg",
+  "Aligre Market"                => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720104/Paris_Rue_d_Aligre_2021__Marche%CC%81_2021_csy4tb.jpg",
+  "Parc des Princes Stadium"     => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720104/Parc_des_Princes__e%CC%81te%CC%81_2011_xxirxe.jpg",
+  "Bois de Boulogne Park"        => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720104/Bois_de_Boulogne___Paris__28349730726_zhup3g.jpg",
+  "Buttes-Chaumont Park"         => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720103/Parc_des_Buttes_Chaumont_rkmikc.jpg",
+  "Great Mosque Hammam"          => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720103/1599px-Grande_Mosque%CC%81e_de_Paris___Paris__31443486675_jyuran.jpg",
+  "Piscine Pontoise Art-Deco Pool" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720103/1600px-Piscine_Pontoise_e2akme.jpg",
+  "Nuxe Spa Montorgueil"         => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720103/960px-Rue_Montorgueil___Paris__27818062991_hylscc.jpg",
+  "Notre-Dame Cathedral"         => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720103/Notre_Dame_Paris_front_facade_lower_aed5bs.jpg",
+  "Moulin Rouge"                 => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720103/Moulin_Rouge_facade_pgsevk.jpg"
+}
+
+puts "Attaching Cloudinary photos to Activities…"
+PHOTO_URLS.each do |activity_name, url|
+  act = Activity.find_by(name: activity_name)
+  unless act
+    warn "⚠️ Not found: #{activity_name}"
+    next
+  end
+
+  # Décommente si tu veux remplacer une photo existante
+  # act.photo.purge if act.photo.attached?
+
+  next if act.photo.attached?
+
+  file = URI.open(url)
+  act.photo.attach(
+    io: file,
+    filename: File.basename(URI.parse(url).path),
+    content_type: "image/jpeg"
+  )
+  puts "✔ Attached: #{activity_name}"
+rescue => e
+  warn "⚠️ #{activity_name}: #{e.message}"
+end
+
 end
