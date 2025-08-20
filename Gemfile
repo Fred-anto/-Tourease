@@ -51,6 +51,12 @@ gem "simple_form", github: "heartcombo/simple_form"
 gem "sassc-rails"
 gem "ruby_llm"
 gem "devise"
+gem "cloudinary"
+gem "activestorage-cloudinary-service"
+gem "image_processing"
+gem "mini_magick"
+
+
 
 group :development, :test do
   gem "dotenv-rails"

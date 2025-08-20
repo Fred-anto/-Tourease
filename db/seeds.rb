@@ -1,4 +1,6 @@
 # db/seeds.rb
+require "open-uri"
+
 puts "Cleaning…"
 Activity.destroy_all
 Category.destroy_all
@@ -174,4 +176,54 @@ ActiveRecord::Base.transaction do
   end
 
   puts "✅ Seed OK — Users: #{User.count}, Categories: #{Category.count}, Activities: #{Activity.count}"
+
+# --- Attach Cloudinary photos to Activities ---
+
+PHOTO_URLS = {
+  "Eiffel Tower"                 => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Tour_Eiffel_Wikimedia_Commons_equncz.jpg",
+  "Seine River Cruise"           => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/River_Seine_cruise__Paris__22240068346_bvfghr.jpg",
+  "The Food Market (Belleville)" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Street_Market_Belleville_xyvrji.jpg",
+  "Sacré-Cœur Basilica"          => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720105/Sacre-coeur-paris_hpxtlh.jpg",
+  "Charléty Stadium"             => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Stade_Charle%CC%81ty_Paris_FC_148_fylzr0.jpg",
+  "Louvre Museum"                => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720105/Louvre-Bannenhaff-mat-Pyramid--w_ia49kw.jpg",
+  "Rue des Rosiers"              => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720105/Rue_des_Rosiers__Paris__France_01_z7fgd8.jpg",
+  "Rex Club"                     => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720104/Le_Grand_Rex_fac%CC%A7ade_sl8duz.jpg",
+  "Luxembourg Gardens"           => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720105/Jardin_du_Luxembourg___Paris__23925447371_dcymsn.jpg",
+  "Latin Quarter"                => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720104/Paris__Quartier_Latin__23962185367_x5znnd.jpg",
+  "Centre Pompidou"              => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720104/Entrance_to_the_Centre_Pompidou_dvfn4h.jpg",
+  "Aligre Market"                => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720104/Paris_Rue_d_Aligre_2021__Marche%CC%81_2021_csy4tb.jpg",
+  "Parc des Princes Stadium"     => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720104/Parc_des_Princes__e%CC%81te%CC%81_2011_xxirxe.jpg",
+  "Bois de Boulogne Park"        => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720104/Bois_de_Boulogne___Paris__28349730726_zhup3g.jpg",
+  "Buttes-Chaumont Park"         => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720103/Parc_des_Buttes_Chaumont_rkmikc.jpg",
+  "Great Mosque Hammam"          => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720103/1599px-Grande_Mosque%CC%81e_de_Paris___Paris__31443486675_jyuran.jpg",
+  "Piscine Pontoise Art-Deco Pool" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720103/1600px-Piscine_Pontoise_e2akme.jpg",
+  "Nuxe Spa Montorgueil"         => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720103/960px-Rue_Montorgueil___Paris__27818062991_hylscc.jpg",
+  "Notre-Dame Cathedral"         => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720103/Notre_Dame_Paris_front_facade_lower_aed5bs.jpg",
+  "Moulin Rouge"                 => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720103/Moulin_Rouge_facade_pgsevk.jpg"
+}
+
+puts "Attaching Cloudinary photos to Activities…"
+PHOTO_URLS.each do |activity_name, url|
+  act = Activity.find_by(name: activity_name)
+  unless act
+    warn "⚠️ Not found: #{activity_name}"
+    next
+  end
+
+  # Décommente si tu veux remplacer une photo existante
+  # act.photo.purge if act.photo.attached?
+
+  next if act.photo.attached?
+
+  file = URI.open(url)
+  act.photo.attach(
+    io: file,
+    filename: File.basename(URI.parse(url).path),
+    content_type: "image/jpeg"
+  )
+  puts "✔ Attached: #{activity_name}"
+rescue => e
+  warn "⚠️ #{activity_name}: #{e.message}"
+end
+
 end
