@@ -3,6 +3,7 @@ class ActivitiesController < ApplicationController
 
   def index
     @activities = Activity.all
+    @trips = Trip.all
   end
 
   def new
