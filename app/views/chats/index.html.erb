@@ -1,0 +1,9 @@
+<div class="container mt-5">
+  <h2 class="text-center mb-4">My Previous Chats</h2>
+  <div class="d-flex flex-column align-items-center">
+    <% @chats.each do |chat| %>
+      <%= link_to "Chat ##{chat.id}", chat_path(chat),
+                  class: "btn btn-outline-primary mb-2 w-50" %>
+    <% end %>
+  </div>
+</div>

@@ -279,7 +279,7 @@ GEM
       actionpack (>= 5.2)
       railties (>= 5.2)
     rexml (3.4.1)
-    ruby_llm (1.6.2)
+    ruby_llm (1.6.3)
       base64
       event_stream_parser (~> 1)
       faraday (>= 1.10.0)
