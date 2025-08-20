@@ -1,12 +1,8 @@
 class ChatsController < ApplicationController
-  def new
-    @chat = Chat.new
-    redirect_to chat_path(@chat)
-  end
-
   def create
-    @chat = current_user.chats.create
-    redirect_to @chat
+    # @chat = current_user.chats.create
+    # redirect_to @chat
+    raise
   end
 
   def show
