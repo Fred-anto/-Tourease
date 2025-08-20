@@ -1,4 +1,6 @@
 class TripsController < ApplicationController
+  before_action :set_trip, only: [:show]
+
   def index
     @trips = Trip.all
   end
@@ -8,12 +10,11 @@ class TripsController < ApplicationController
   end
 
   def show
-    @trip
   end
 
   def create
     @trip = Trip.new(trip_params)
-    if trip.save
+    if @trip.save
       redirect_to @trip, notice: "trip created"
     else
       render :new, status: :unprocessable_entity
