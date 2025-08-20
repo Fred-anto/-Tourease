@@ -5,3 +5,5 @@ class ChatsControllerTest < ActionDispatch::IntegrationTest
   #   assert true
   # end
 end
+
+
