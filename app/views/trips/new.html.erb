@@ -1,4 +1,3 @@
-
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-8">
@@ -11,13 +10,26 @@
             <div class="form-group">
               <%= f.input :name, label: 'My Trip Name', input_html: { class: 'form-control' } %>
               <%= f.input :destination, label: 'Trip Destination', input_html: { class: 'form-control' } %>
-              <%= f.input :start_date, label: 'Depart', input_html: { class: 'form-control' } %>
-              <%= f.input :end_date, label: 'Return', input_html: { class: 'form-control' } %>
-              <%= f.input :mood, as: :select, collection: ["Family ", "Friends ", "Romance 💕"], label: 'Mood', input_html: { class: 'form-control' } %>
             </div>
-            <div class="form-group mt-3">
-              <%= f.submit '➕ Create trip', class: 'btn btn-primary mt-4'  %>
-              <%= link_to "⬅️ Back to activities", activities_path, class: 'btn btn-secondary mt-4' %>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-md-6">
+                  <%= f.input :start_date, as: :string, label: 'Start date', input_html: { id: 'start_date', class: 'form-control' } %>
+                </div>
+                <div class="col-md-6">
+                  <%= f.input :end_date, as: :string, label: 'End date', input_html: { id: 'end_date', class: 'form-control' } %>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <%= f.input :mood, as: :select,
+                          collection: ["Family 🏡", "Friends 🤝", "Romance 👩‍❤️‍💋‍👨"],
+                          label: 'Mood',
+                          input_html: { class: 'form-control' } %>
+            </div>
+            <div class="form-group mt-4">
+              <%= f.submit '➕ Create trip', class: 'btn btn-primary' %>
+              <%= link_to "⬅️ Back to activities", activities_path, class: 'btn btn-secondary ms-2' %>
             </div>
           <% end %>
         </div>

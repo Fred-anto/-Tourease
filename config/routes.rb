@@ -15,7 +15,8 @@ Rails.application.routes.draw do
     resources :trip_activities
   end
 
-  # root "posts#index"*
+
+  # root "posts#index"
 
   resources :chats, only: [:create, :show, :index] do
      resources :messages, only: [:create]
