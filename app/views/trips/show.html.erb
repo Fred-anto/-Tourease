@@ -30,6 +30,7 @@
                   trip_path(@trip),
                   data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this trip?" },
                   class: 'btn btn-danger mt-4' %>
+      <%= button_to "Plan this trip with guAIde", chats_path(trip_id: @trip.id),method: :post, class: "btn btn-primary" %>
     </div>
   </div>
 </div>
