@@ -1,0 +1,71 @@
+:root {
+  --brand-900: #004E64; /* deep teal */
+  --brand-600: #00A5CF; /* cyan CTA */
+  --brand-200: #9FFFCB; /* mint */
+}
+
+.footer-nav {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: 72px;
+  background: #fff;
+  border-top: 1px solid var(--brand-200);
+  z-index: 50;
+  padding-bottom: unquote("max(8px, env(safe-area-inset-bottom))");
+}
+
+/* ✅ Wrapper interne qui suit la largeur d'une col-md-8 Bootstrap */
+.footer-inner {
+  margin: 0 auto;
+  padding: 0 12px; /* même padding horizontal que Bootstrap */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Home | + | Profil */
+  align-items: center;
+  justify-items: center;
+
+  width: 100%;
+  @media (min-width: 576px) { max-width: calc(540px * 0.6667); }   /* ≈ 360px */
+  @media (min-width: 768px) { max-width: calc(720px * 0.6667); }   /* ≈ 480px */
+  @media (min-width: 992px) { max-width: calc(960px * 0.6667); }   /* ≈ 640px */
+  @media (min-width: 1200px){ max-width: calc(1140px * 0.6667); }  /* ≈ 760px */
+  @media (min-width: 1400px){ max-width: calc(1320px * 0.6667); }  /* ≈ 880px */
+}
+
+.footer-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  text-decoration: none;
+  color: var(--brand-900);
+
+  svg {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+.footer-item--create {
+  position: relative;
+  top: -12px;
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px;
+  background: var(--brand-600);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+
+  svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* espace sous le contenu pour ne pas passer sous le footer */
+.page {
+  padding-bottom: 88px;
+}
