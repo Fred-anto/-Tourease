@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
   resources :activities
   resources :trips do
+    resources :chats, only: [:create]
     resources :trip_activities
   end
 
@@ -19,6 +20,7 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   resources :chats, only: [:create, :show, :index] do
-     resources :messages, only: [:create]
+    resources :trips, only: [:create]
+    resources :messages, only: [:create]
   end
 end

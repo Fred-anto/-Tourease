@@ -1,5 +1,5 @@
 class Chat < ApplicationRecord
-  # belongs_to :trip
+  belongs_to :trip, optional: true
   # belongs_to :activity
   belongs_to :user
 
@@ -16,5 +16,4 @@ class Chat < ApplicationRecord
     response = RubyLLM.chat.with_instructions(TITLE_PROMPT).ask(first_user_message.content)
     update!(title: response.content)
   end
-
 end

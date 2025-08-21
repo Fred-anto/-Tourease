@@ -1,6 +1,9 @@
 class MessagesController < ApplicationController
   def create
     @chat = Chat.find(params[:chat_id])
+   if @chat.trip
+      @trip = @chat.trip
+    end
     @message = @chat.messages.new(role: "user", content: params[:message][:content])
 
     if @message.save
@@ -8,8 +11,8 @@ class MessagesController < ApplicationController
       @chat_message.ask(@message.content)
       @user = @chat.user
 
-      system_prompt = "You are a Tour guide. I am a #{@user.age} years old tourist visiting Paris.
-      Help me plan my trip with daily activities of must-see and trendy spots.
+      system_prompt = "You are a Tour guide. I am a #{@user.age} years old tourist visiting #{@trip.destination}.
+      Help me plan my #{@trip.mood} trip with daily activities of must-see and trendy spots.
       Answer in bullet points, with for each activity:
       - description - start_time - time allocated - One type of activity among:
       Culture, Nature, Sport, stroll, Food or Nightlife - and address"
@@ -22,6 +25,7 @@ class MessagesController < ApplicationController
       respond_to do |format|
         format.turbo_stream # va chercher `app/views/messages/create.turbo_stream.erb`
         format.html { redirect_to chat_path(@chat) }
+
       end
     else
       respond_to do |format|
