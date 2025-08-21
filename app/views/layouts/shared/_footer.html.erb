@@ -1,0 +1,46 @@
+<nav class="footer-nav" role="navigation" aria-label="Navigation principale">
+  <div class="footer-inner">
+    <!-- Accueil -->
+    <%= link_to root_path,
+                class: "footer-item #{'is-active' if current_page?(root_path)}",
+                aria: {label: "Accueil"} do %>
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round">
+        <path d="M12 28 L24 16 L36 28 v12 H12 Z"/>
+      </svg>
+      <span>Accueil</span>
+    <% end %>
+
+    <!-- Ajouter un trip -->
+    <%= link_to new_trip_path,
+                class: "footer-item footer-item--create",
+                aria: {label: "Créer un voyage"} do %>
+      <svg viewBox="0 0 48 48" fill="none" stroke="white" stroke-width="4" stroke-linecap="round">
+        <line x1="14" y1="24" x2="34" y2="24"></line>
+        <line x1="24" y1="14" x2="24" y2="34"></line>
+      </svg>
+    <% end %>
+
+    <!-- Profil (Devise) -->
+    <% if defined?(user_signed_in?) && user_signed_in? %>
+      <%= link_to edit_user_registration_path,
+                  class: "footer-item #{'is-active' if current_page?(edit_user_registration_path)}",
+                  aria: { label: "Profil" } do %>
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <circle cx="24" cy="17" r="7"></circle>
+          <path d="M10,38 C16,30 32,30 38,38"></path>
+        </svg>
+        <span>Profil</span>
+      <% end %>
+    <% else %>
+      <%= link_to new_user_session_path,
+                  class: "footer-item #{'is-active' if current_page?(new_user_session_path)}",
+                  aria: { label: "Se connecter" } do %>
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <circle cx="24" cy="17" r="7"></circle>
+          <path d="M10,38 C16,30 32,30 38,38"></path>
+        </svg>
+        <span>Profil</span>
+      <% end %>
+    <% end %>
+  </div>
+</nav>
