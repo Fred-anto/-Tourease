@@ -2,8 +2,16 @@ class ChatsController < ApplicationController
   def create
     @chat = Chat.new(title: "Untitled")
     @chat.user = current_user
-    @chat.save
-    redirect_to chat_path(@chat)
+    if params[:trip_id].present?
+      @trip = Trip.find_by(id: params[:trip_id])
+      @chat.trip = @trip if @trip
+    end
+    # TODO: linker le trip si params trip_id
+    if @chat.save
+      redirect_to chat_path(@chat)
+    else
+      render "chats/index"
+    end
   end
 
   def show
