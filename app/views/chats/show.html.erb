@@ -12,4 +12,6 @@
    <div id="new_message">
     <%= render "messages/form", chat: @chat, message: @message %>
   </div>
+
+  <%= link_to "⬅️ Back to activities", activities_path, class: 'btn btn-success mt-4' %>
 </div>
