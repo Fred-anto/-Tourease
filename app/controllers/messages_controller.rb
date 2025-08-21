@@ -1,24 +1,37 @@
 class MessagesController < ApplicationController
-  SYSTEM_PROMPT = "You are a Tour guide I am a tourist visiting Paris.
-  Help me plan my trip with daily activities of must-see and trendy spots. Answer in markdown with for each activity:
-  - descritpion - start_time - time allocated - One type of activity among:
-  Culture, Nature, Sport, Relaxation, Food or Nightlife - and address"
   def create
     @chat = Chat.find(params[:chat_id])
     @message = Message.new(role: "user", content: params[:message][:content], chat: @chat)
     if @message.save
-      @chat_message = RubyLLM.chat
-      # raise
-      response = @chat_message.with_instructions(SYSTEM_PROMPT).ask(@message.content)
+      build_conversation_history
+      @chat_message.ask(@message.content)
+      @user = @chat.user
+      system_prompt = "You are a Tour guide. I am a #{@user.age} years old tourist visiting Paris.
+      Help me plan my trip with daily activities of must-see and trendy spots.
+      Answer in bullet points, with for each activity:
+      - description - start_time - time allocated - One type of activity among:
+      Culture, Nature, Sport, stroll, Food or Nightlife - and address"
+      response = @chat_message.with_instructions(system_prompt).ask(@message.content)
       Message.create(role: "assistant", content: response.content, chat: @chat)
+
+      if @chat.title == "Untitled"
+        @chat.generate_title_from_first_message
+      end
       redirect_to chat_messages_path(@chat)
     else
-      render :index
+      render "chats/index"
     end
   end
 
-  # private
+  private
 
-  # def message_params
-
+  def build_conversation_history
+    @chat_message = RubyLLM.chat
+    @chat.messages.each do |message|
+      @chat_message.add_message(
+        role: message.role,
+        content: message.content
+      )
+    end
+  end
 end
