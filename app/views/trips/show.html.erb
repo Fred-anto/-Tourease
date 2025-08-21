@@ -10,7 +10,7 @@
       <h4>My activities</h4>
       <div class="row">
         <% @trip.trip_activities.each do |trip_activity| %>
-          <div class="col-md-3 mb-4"> <!-- 4 cards par ligne -->
+          <div class="col-md-3 mb-4">
             <div class="card h-100">
               <div class="card-body">
                 <h5 class="card-title"><%= trip_activity.activity.name %></h5>
@@ -23,14 +23,11 @@
           </div>
         <% end %>
       </div>
-      <!-- Bouton retour -->
-      <%= link_to "⬅️ Back to activities", activities_path, class: 'btn btn-success mt-4' %>
-      <!-- Bouton suppression du voyage -->
-      <%= link_to "🗑️ Delete trip",
-                  trip_path(@trip),
-                  data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this trip?" },
-                  class: 'btn btn-danger mt-4' %>
-      <%= button_to "Plan this trip with guAIde", chats_path(trip_id: @trip.id),method: :post, class: "btn btn-primary" %>
+      <div class="d-flex gap-4">
+        <%= link_to "⬅️ Back to activities", activities_path, class: 'btn btn-success mt-4' %>
+        <%= link_to "🗑️ Delete trip", trip_path(@trip), data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this trip?" },class: 'btn btn-danger mt-4' %>
+        <%= button_to "🚀 Enhance this trip with guAIde", chats_path(trip_id: @trip.id),method: :post, class: "btn btn-primary mt-4" %>
+      </div>
     </div>
   </div>
 </div>
