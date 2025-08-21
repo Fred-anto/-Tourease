@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="600" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Image placeholder</title>
+  <desc id="desc">A neutral background with a camera icon indicating a missing picture.</desc>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1200" height="600" fill="#F2F4F7"/>
+  <!-- Subtle dashed border -->
+  <rect x="12" y="12" width="1176" height="576" rx="24" fill="none" stroke="#D0D5DD" stroke-width="4" stroke-dasharray="14 12"/>
+
+  <!-- Camera icon -->
+  <g stroke="#98A2B3" stroke-width="8" fill="none">
+    <!-- body -->
+    <rect x="450" y="210" width="300" height="200" rx="24"/>
+    <!-- top bump -->
+    <rect x="520" y="180" width="160" height="60" rx="16"/>
+    <!-- lens -->
+    <circle cx="600" cy="310" r="60"/>
+  </g>
+
+  <!-- Caption -->
+  <text x="600" y="420" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="28" fill="#98A2B3" letter-spacing=".3px">
+    No image
+  </text>
+</svg>

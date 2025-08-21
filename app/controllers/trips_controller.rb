@@ -1,8 +1,9 @@
 class TripsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_trip, only: [:show]
 
   def index
-    @trips = Trip.all
+    @trips = current_user.trips
   end
 
   def new
@@ -14,8 +15,9 @@ class TripsController < ApplicationController
 
   def create
     @trip = Trip.new(trip_params)
-    @activity.user = current_user
+
     if @trip.save
+      TripUser.create(user: current_user, trip: @trip)
       redirect_to @trip, notice: "trip created"
     else
       render :new, status: :unprocessable_entity
