@@ -1,6 +1,6 @@
 class ChatsController < ApplicationController
   def create
-    @chat = Chat.new
+    @chat = Chat.new(title: "Untitled")
     @chat.user = current_user
     @chat.save
     redirect_to chat_path(@chat)
