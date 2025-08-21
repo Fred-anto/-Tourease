@@ -24,6 +24,12 @@ class TripsController < ApplicationController
     end
   end
 
+  def destroy
+    @trip = Trip.find(params[:id])
+    @trip.destroy
+    redirect_to activities_path, notice: "Trip deleted successfully!"
+  end
+
   private
 
   def set_trip

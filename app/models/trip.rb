@@ -5,5 +5,8 @@ class Trip < ApplicationRecord
   has_many :trip_categories, dependent: :destroy
   has_many :categories, through: :trip_categories
 
-  validates :name, :destination, :start_date, :end_date, :mood, presence: true
+  has_many :trip_users,      dependent: :destroy
+  has_many :users,           through: :trip_users
+
+  validates :name, :destination, :start_date, :mood, presence: true
 end
