@@ -1,25 +1,39 @@
 class MessagesController < ApplicationController
   def create
     @chat = Chat.find(params[:chat_id])
-    @message = Message.new(role: "user", content: params[:message][:content], chat: @chat)
+    @message = @chat.messages.new(role: "user", content: params[:message][:content])
+
     if @message.save
       build_conversation_history
       @chat_message.ask(@message.content)
       @user = @chat.user
+
       system_prompt = "You are a Tour guide. I am a #{@user.age} years old tourist visiting Paris.
       Help me plan my trip with daily activities of must-see and trendy spots.
       Answer in bullet points, with for each activity:
       - description - start_time - time allocated - One type of activity among:
       Culture, Nature, Sport, stroll, Food or Nightlife - and address"
-      response = @chat_message.with_instructions(system_prompt).ask(@message.content)
-      Message.create(role: "assistant", content: response.content, chat: @chat)
 
-      if @chat.title == "Untitled"
-        @chat.generate_title_from_first_message
+      response = @chat_message.with_instructions(system_prompt).ask(@message.content)
+      @chat.messages.create(role: "assistant", content: response.content)
+
+      @chat.generate_title_from_first_message if @chat.title == "Untitled"
+
+      respond_to do |format|
+        format.turbo_stream # va chercher `app/views/messages/create.turbo_stream.erb`
+        format.html { redirect_to chat_path(@chat) }
       end
-      redirect_to chat_path(@chat)
     else
-      render "chats/index"
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "new_message",
+            partial: "messages/form",
+            locals: { chat: @chat, message: @message }
+          )
+        end
+        format.html { render "chats/show", status: :unprocessable_entity }
+      end
     end
   end
 

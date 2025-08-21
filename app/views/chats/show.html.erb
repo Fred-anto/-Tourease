@@ -1,24 +1,15 @@
-<h1><%= @chat.title %></h1>
+<h1 class="px-4">GuAIde</h1>
 
 <div class="container py-5" style="max-width: 800px;">
-  <h2 class="text-center mb-4">Chat</h2>
+  <h2 class="text-center mb-4" id="chat_title" >
+    <%= @chat.title if @chat.title != "Untitled" %>
+  </h2>
 
   <div id="messages" class="border rounded p-3 mb-4 bg-light" style="height: 400px; overflow-y: auto;">
-    <% @messages.each do |message| %>
-      <div class="mb-3 d-flex <%= message.role == 'user' ? 'justify-content-start' : 'justify-content-end' %>">
-        <div class="<%= message.role == 'user' ? 'bg-primary text-white' : 'bg-secondary text-white' %> p-2 rounded shadow-sm" style="max-width: 70%;">
-          <small class="d-block fw-bold mb-1"><%= message.role.capitalize %></small>
-          <%= markdown(message.content) %>
-        </div>
-      </div>
-    <% end %>
+    <%= render "messages/messages", messages: @chat.messages %>
   </div>
 
-  <%= form_with(model: [@chat, @message], local: true, class: "d-flex") do |form| %>
-    <%= form.text_area :content,
-          class: "form-control me-2",
-          rows: 2,
-          placeholder: "Écrivez votre message..." %>
-    <%= form.submit "Envoyer", class: "btn btn-primary" %>
-  <% end %>
+   <div id="new_message">
+    <%= render "messages/form", chat: @chat, message: @message %>
+  </div>
 </div>
