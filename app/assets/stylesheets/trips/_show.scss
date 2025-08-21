@@ -1,0 +1,154 @@
+/* Même palette + proportions que la page NEW */
+.trips-show {
+  --c-900: #004E64;
+  --c-700: #00A5CF;
+  --c-500: #25A18E;
+  --c-300: #7AE582;
+  --c-100: #9FFFCB;
+  --ink:   #0a2a33;
+
+  /* header uni (comme ta new) : change ici si besoin */
+  --header: #00A5CF;
+
+  .trip-card {
+    border-radius: 24px;
+    border: 1px solid rgba(0, 78, 100, 0.08);
+    overflow: hidden;
+    background: #fff;
+    box-shadow:
+      0 20px 60px rgba(0,78,100,0.14),
+      0 2px 10px rgba(0,78,100,0.06) !important;
+  }
+
+  .trip-card__header {
+    padding: 24px 28px;
+    color: #fff;
+    background: var(--header);
+    h1.title { margin: 0; font-weight: 800; letter-spacing: .2px; }
+    .subtitle { margin: 6px 0 0; opacity: .95; font-size: .98rem; .muted { opacity: .85; margin-right: .35rem; } }
+
+    .chips {
+      margin-top: 12px;
+      display: flex; flex-wrap: wrap; gap: .5rem;
+    }
+    .chip {
+      background: rgba(255,255,255,.18);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.28);
+      padding: .35rem .6rem;
+      border-radius: 999px;
+      font-size: .9rem;
+      &.chip--mint {
+        background: rgba(159,255,203,.22);
+        border-color: rgba(159,255,203,.5);
+        color: #063;
+      }
+    }
+  }
+
+  .trip-card__body {
+    background:
+      radial-gradient(1100px 200px at 0% 0%, rgba(159,255,203,0.12), transparent 45%),
+      radial-gradient(800px 180px at 100% 0%, rgba(0,165,207,0.08), transparent 55%),
+      #fff;
+  }
+
+  /* Récap façon "champs" – mêmes rayons & padding que NEW */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+
+    .info {
+      background: #fff;
+      border: 1px solid rgba(0, 78, 100, 0.18);
+      border-radius: 14px;
+      padding: .9rem 1rem;
+
+      .label {
+        font-weight: 700;
+        color: var(--c-900);
+        margin-bottom: .25rem;
+      }
+      .value { color: var(--ink); }
+    }
+
+    .info.two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+
+      .group {
+        background: #fff;
+        border: 1px solid rgba(0, 78, 100, 0.18);
+        border-radius: 14px;
+        padding: .9rem 1rem;
+        .label { font-weight: 700; color: var(--c-900); margin-bottom: .25rem; }
+      }
+    }
+  }
+
+  .section-title {
+    color: var(--c-900);
+    font-weight: 700;
+    margin: 1rem 0;
+  }
+
+  /* Cartes activités (écho au style NEW) */
+  .activity-card {
+    border-radius: 14px;
+    border: 1px solid rgba(0,78,100,.12);
+    transition: transform .08s ease, box-shadow .2s ease;
+
+    .card-title { color: var(--c-900); font-weight: 700; }
+    .card-footer {
+      background: linear-gradient(0deg, rgba(159,255,203,.20), rgba(159,255,203,.20)) #fff;
+      border-top: 1px solid rgba(0,78,100,.12);
+    }
+
+    &:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,78,100,.12); }
+  }
+
+  .empty-state {
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    background: linear-gradient(0deg, rgba(0,165,207,0.08), rgba(0,165,207,0.08)) #fff;
+    color: var(--c-900);
+    border: 1px solid rgba(0,78,100,.12);
+  }
+
+  /* Boutons identiques à la page NEW */
+  .btn-primary {
+    --bg1: var(--c-300);
+    --bg2: var(--c-500);
+    color: #062b2f;
+    border: none;
+    border-radius: 14px;
+    padding: .75rem 1.15rem;
+    font-weight: 700;
+    background-image: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 14%, var(--bg2) 100%);
+    box-shadow: 0 8px 20px rgba(37, 161, 142, 0.25);
+    transition: transform .06s ease, filter .2s ease, box-shadow .2s ease;
+    &:hover   { filter: brightness(1.03); box-shadow: 0 10px 24px rgba(0,78,100,.22); }
+    &:active  { transform: translateY(1px); }
+    &:focus-visible { outline: 3px solid rgba(0,165,207,.45); outline-offset: 2px; }
+  }
+  .btn-ghost {
+    padding: .7rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(0,78,100,0.18);
+    color: var(--c-900);
+    background: linear-gradient(0deg, rgba(159,255,203,0.18), rgba(159,255,203,0.18)) #fff;
+    transition: background .2s ease, border-color .2s ease;
+    &:hover {
+      border-color: rgba(0,78,100,0.28);
+      background: linear-gradient(0deg, rgba(0,165,207,0.10), rgba(0,165,207,0.10)) #fff;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .trip-card__header { padding: 20px 22px; }
+    .trip-card__body   { padding: 1.25rem !important; }
+    .info-grid .info.two { grid-template-columns: 1fr; }
+  }
+}
