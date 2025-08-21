@@ -7,8 +7,7 @@ class MessagesController < ApplicationController
     @chat = Chat.find(params[:chat_id])
     @message = Message.new(role: "user", content: params[:message][:content], chat: @chat)
     if @message.save
-      @chat_message = RubyLLM.chat
-      # raise
+      build_conversation_history
       response = @chat_message.with_instructions(SYSTEM_PROMPT).ask(@message.content)
       Message.create(role: "assistant", content: response.content, chat: @chat)
       redirect_to chat_messages_path(@chat)
@@ -17,7 +16,17 @@ class MessagesController < ApplicationController
     end
   end
 
-  # private
+  private
+
+  def build_conversation_history
+    @chat_message = RubyLLM.chat
+    @chat.messages.each do |message|
+      @chat_message.add_message(
+        role: message.role,
+        content: message.content
+      )
+    end
+  end
 
   # def message_params
 end
