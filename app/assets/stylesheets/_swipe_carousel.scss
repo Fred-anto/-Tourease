@@ -1,0 +1,131 @@
+/* Composant swipe compatible Bootstrap */
+.swipe-carousel {
+  position: relative;
+
+  &__track {
+    display: flex;              // ✅ garde les cards sur une ligne
+    overflow-x: auto;           // ✅ active le scroll horizontal
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .card {
+      flex: 0 0 75%;            // largeur ≈ 3/4 de l’écran
+      max-width: 75%;
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
+      border-radius: 0.75rem;
+      overflow: hidden;
+
+      /* uniformiser la hauteur */
+      display: flex;
+      flex-direction: column;
+      height: 320px;
+
+      .card-img-top {
+        height: 160px;          // image uniforme
+        object-fit: cover;
+        width: 100%;
+      }
+
+      .card-body {
+        flex: 1;                // remplit l’espace dispo
+        padding: 0.75rem;
+        overflow: hidden;
+
+        .card-title {
+          font-size: 0.9rem;    // police réduite
+          line-height: 1.3;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;   // limite à 3 lignes max
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .card-footer {
+        /* typographie et padding */
+        background: transparent;
+        font-size: 0.8rem;
+        line-height: 1.25;
+        padding: 0.5rem 0.75rem;
+
+        /* hauteur FIXE = 2 lignes + padding */
+        height: calc(2.5em + 1rem);
+
+        /* footer en bas de la card */
+        margin-top: auto;
+
+        display: block;
+
+        p {
+          margin: 0 !important;      // annule Bootstrap (ex: mb-1)
+          display: -webkit-box;
+          -webkit-line-clamp: 2;     // 2 lignes max
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: normal;
+          font-size: inherit;
+          line-height: inherit;
+        }
+      }
+    }
+
+    @media (min-width: 768px) {
+      .card {
+        flex-basis: 280px;      // largeur fixe en desktop
+        max-width: 280px;
+        height: 360px;          // plus haut en desktop
+      }
+
+      .card-img-top {
+        height: 180px;
+      }
+
+      .card-footer {
+        font-size: 0.85rem;
+        height: calc(2.5em + 1rem); // recalcul pour 2 lignes
+      }
+    }
+  }
+
+  &__btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+
+    &--prev {
+      left: 0.5rem;
+    }
+
+    &--next {
+      right: 0.5rem;
+    }
+
+    &.is-hidden {
+      display: none;
+    }
+
+    &:active {
+      transform: translateY(-50%) scale(0.96);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+  }
+}
