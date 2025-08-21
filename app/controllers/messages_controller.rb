@@ -17,7 +17,7 @@ class MessagesController < ApplicationController
       if @chat.title == "Untitled"
         @chat.generate_title_from_first_message
       end
-      redirect_to chat_messages_path(@chat)
+      redirect_to chat_path(@chat)
     else
       render "chats/index"
     end
