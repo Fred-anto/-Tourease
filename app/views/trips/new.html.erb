@@ -30,6 +30,7 @@
             <div class="form-group mt-4">
               <%= f.submit '➕ Create trip', class: 'btn btn-primary' %>
               <%= link_to "⬅️ Back to activities", activities_path, class: 'btn btn-secondary ms-2' %>
+              <%= button_to "Plan your trip with guAIde", chats_path, method: :post, class: "btn btn-primary" %>
             </div>
           <% end %>
         </div>
