@@ -1,6 +1,7 @@
 // Graphical variables
 @import "config/fonts";
 @import "config/colors";
+@import "config/variables";
 @import "config/bootstrap_variables";
 @import "brand";
 @import "swipe_carousel";
@@ -18,3 +19,9 @@
 
 @import "trips/new";
 @import "trips/show";
+
+
+// Style Global 
+body {
+  font-family: $font-family-sans-serif;
+}
