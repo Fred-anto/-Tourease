@@ -1,17 +1,22 @@
-<h1 class="px-4">GuAIde</h1>
-
-<div class="container py-5" style="max-width: 800px;">
-  <h2 class="text-center mb-4" id="chat_title" >
-    <%= @chat.title if @chat.title != "Untitled" %>
-  </h2>
-
-  <div id="messages" class="border rounded p-3 mb-4 bg-light" style="height: 400px; overflow-y: auto;">
+<div class="container py-3 px-3">
+<h1 class="btn btn-success rounded-5 fs-2 text-white"><i class="fa-solid fa-robot"></i>   GuAIde</h1>
+</div>
+<div class="container py-2" style="max-width: 800px;">
+  <div class="trips-new card rounded-4 px-3 py-3">
+    <div class="d-flex align-items-center justify-content-center text-white mb-3 rounded-4"
+       style="background-color: #00A5CF; height: 60px;">
+    <h2 class="my-auto mb-2" id="chat_title" >
+      <%= @chat.title if @chat.title != "Untitled" %>
+    </h2>
+    </div>
+  <div id="messages" class="form group" style="height: 400px; overflow-y: auto;">
     <%= render "messages/messages", messages: @chat.messages, trip: @trip %>
   </div>
 
    <div id="new_message">
     <%= render "messages/form", chat: @chat, message: @message %>
   </div>
+</div>
 
-  <%= link_to "⬅️ Back to activities", activities_path, class: 'btn btn-success mt-4' %>
+<%= link_to "⬅️ Back to your trip", trip_path(@trip), class: 'btn btn-success rounded-3 mt-4 w-100' %>
 </div>

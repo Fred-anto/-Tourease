@@ -1,17 +1,16 @@
 <% messages.each do |message| %>
   <div class="mb-3 d-flex <%= message.role == 'user' ? 'justify-content-end' : 'justify-content-start' %>">
-    <div class="<%= message.role == 'user' ? 'bg-primary text-white' : 'bg-secondary text-white' %> p-2 rounded shadow-sm" style="max-width: 70%;">
+    <div class="<%= message.role == 'user' ? 'bg-primary text-white' : 'bg-secondary text-white' %> px-4 py-2 rounded-5 shadow-sm" style="max-width: 70%;">
       <small class="d-block fw-bold mb-1"><%= message.role.capitalize %></small>
       <%= markdown(message.content) %>
       <% if message.role != 'user' %>
         <div class="mt-2 text-end">
           <%= form_with url: save_message_trip_path(trip), method: :post, local: true do |f| %>
             <%= hidden_field_tag :content, message.content %>
-            <%= f.submit "Save to trip", class: "btn btn-sm btn-light" %>
+            <%= f.submit "Save", class: "btn btn-sm btn-light rounded-pill mb-3" %>
           <% end %>
         </div>
       <% end %>
-
     </div>
   </div>
 <% end %>
