@@ -1,6 +1,6 @@
 class ChatsController < ApplicationController
   def create
-    @chat = Chat.new(title: "Untitled")
+    @chat = Chat.new(title: "New Chat")
     @chat.user = current_user
     if params[:trip_id].present?
       @trip = Trip.find_by(id: params[:trip_id])

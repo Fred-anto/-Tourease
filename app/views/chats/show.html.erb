@@ -6,7 +6,7 @@
     <div class="d-flex align-items-center justify-content-center text-white mb-3 rounded-4"
        style="background-color: #00A5CF; height: 60px;">
     <h2 class="my-auto mb-2" id="chat_title" >
-      <%= @chat.title if @chat.title != "Untitled" %>
+      <%= @chat.title.present? && @chat.title != "New Chat" ? @chat.title : "New Chat" %>
     </h2>
     </div>
   <div id="messages" class="form group" style="height: 400px; overflow-y: auto;">

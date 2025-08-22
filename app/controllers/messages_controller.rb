@@ -24,7 +24,7 @@ class MessagesController < ApplicationController
       response = @chat_message.with_instructions(system_prompt).ask(@message.content)
       @chat.messages.create(role: "assistant", content: response.content)
 
-      @chat.generate_title_from_first_message if @chat.title == "Untitled"
+      @chat.generate_title_from_first_message if @chat.title == "New Chat"
 
       respond_to do |format|
         format.turbo_stream # va chercher `app/views/messages/create.turbo_stream.erb`
