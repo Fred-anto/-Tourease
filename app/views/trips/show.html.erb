@@ -9,8 +9,11 @@
             <strong><%= @trip.destination %></strong>
           </p>
           <div class="chips">
-            <% if @trip.start_date.present? && @trip.end_date.present?%>
-              <span class="chip">📅 <%= l(@trip.start_date) %> - <%= l(@trip.end_date) %></span>
+            <% if @trip.start_date.present? %>
+              <span class="chip">📅 <%= l(@trip.start_date) %></span>
+            <% end %>
+            <% if @trip.end_date.present? %>
+              <span class="chip">➡︎ <%= l(@trip.end_date) %></span>
             <% end %>
             <% if @trip.mood.present? %>
               <span class="chip chip--mint"><%= @trip.mood %></span>
@@ -35,7 +38,7 @@
             <% end %>
             <% if @trip.trip_activities.empty? %>
               <div class="col-12">
-                <div class="empty-state">No activity yet.</div>
+                <div class="empty-state">Aucune activité pour le moment.</div>
               </div>
             <% end %>
           </div>
