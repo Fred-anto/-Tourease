@@ -1,7 +1,7 @@
-  <%= form_with(model: [chat, message], local: false, class: "d-flex") do |form| %>
+  <%= form_with(model: [chat, message], local: false, class: "d-flex mt-3") do |form| %>
     <%= form.text_area :content,
           class: "form-control me-2",
           rows: 2,
-          placeholder: "Whrite your message..." %>
-    <%= form.submit "Send", class: "btn btn-primary" %>
+          placeholder: "Write your message..." %>
+    <%= form.submit "Send", class: "btn btn-primary align-self-stretch"%>
   <% end %>
