@@ -7,6 +7,9 @@
 }
 
 .navbar {
+  position: sticky;
+  top: 0;             // indispensable pour coller au haut de la fenêtre
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
