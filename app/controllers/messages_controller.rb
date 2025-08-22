@@ -2,7 +2,7 @@ class MessagesController < ApplicationController
   def create
     @chat = Chat.find(params[:chat_id])
 
-   if @chat.trip
+    if @chat.trip
       @trip = @chat.trip
     end
     @message = @chat.messages.new(role: "user", content: params[:message][:content])
