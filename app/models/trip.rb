@@ -8,5 +8,5 @@ class Trip < ApplicationRecord
   has_many :trip_users,      dependent: :destroy
   has_many :users,           through: :trip_users
   has_one :chat, dependent: :destroy
-  validates :name, :destination, :start_date, :mood, presence: true
+  validates :name, :destination, :start_date, :end_date, :mood, presence: true
 end

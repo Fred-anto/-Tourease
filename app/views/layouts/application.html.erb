@@ -34,7 +34,13 @@
           altInput: true,
           altFormat: "d F Y",
           dateFormat: "Y-m-d",
-          plugins: [new rangePlugin({ input: "#end_date" })]
+          locale: "fr"
+        })
+        flatpickr("#end_date", {
+          altInput: true,
+          altFormat: "d F Y",
+          dateFormat: "Y-m-d",
+          locale: "fr"
         })
       })
     </script>
