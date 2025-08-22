@@ -32,7 +32,17 @@ class TripsController < ApplicationController
 
   def save_message
     @chat_message = RubyLLM.chat
-    system_prompt = "You will receive a message from the chatbot. with a content describing trip activities. Keep the same message structure and content with markdown but clean it to delete interactions."
+    system_prompt = "You will receive a message describing a multi-day trip itinerary with activities listed day by day.
+    Task:
+    - Keep the same day-by-day structure with Markdown formatting.
+    - For each activity, keep only these details:
+      - description
+      - start_time
+      - time allocated (duration)
+      - one type of activity among: Culture, Nature, Sport, Stroll, Food, or Nightlife
+      - address
+    - Remove any extra comments, tips, or conversational phrases (e.g., 'Enjoy your trip!').
+    - Keep the content factual and clean, without adding new information."
     response = @chat_message.with_instructions(system_prompt).ask(params[:content])
     @trip.update(description: response.content)
     redirect_to @trip, notice: "Saved to trip!"
