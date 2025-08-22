@@ -10,10 +10,7 @@
           </p>
           <div class="chips">
             <% if @trip.start_date.present? %>
-              <span class="chip">📅 <%= l(@trip.start_date) %></span>
-            <% end %>
-            <% if @trip.end_date.present? %>
-              <span class="chip">➡︎ <%= l(@trip.end_date) %></span>
+              <span class="chip">📅 <%= l(@trip.start_date) %> - <%= l(@trip.end_date) %></span>
             <% end %>
             <% if @trip.mood.present? %>
               <span class="chip chip--mint"><%= @trip.mood %></span>
