@@ -33,9 +33,13 @@
                 </div>
               </div>
             <% end %>
-            <% if @trip.trip_activities.empty? %>
+            <% if @trip.trip_activities.empty? && @trip.description.blank? %>
               <div class="col-12">
                 <div class="empty-state">No activity yet.</div>
+              </div>
+              <% else %>
+              <div class="col-12">
+                <div class="empty-state"><%= markdown(@trip.description ) %></div>
               </div>
             <% end %>
           </div>

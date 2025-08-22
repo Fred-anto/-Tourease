@@ -6,7 +6,7 @@
   </h2>
 
   <div id="messages" class="border rounded p-3 mb-4 bg-light" style="height: 400px; overflow-y: auto;">
-    <%= render "messages/messages", messages: @chat.messages %>
+    <%= render "messages/messages", messages: @chat.messages, trip: @trip %>
   </div>
 
    <div id="new_message">
