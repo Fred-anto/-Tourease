@@ -35,7 +35,7 @@
             <% end %>
             <% if @trip.trip_activities.empty? && @trip.description.blank? %>
               <div class="col-12">
-                <div class="empty-state">No activity yet.</div>
+                <div class="empty-state">Nothing planned yet.</div>
               </div>
               <% else %>
               <div class="col-12">
@@ -44,11 +44,10 @@
             <% end %>
           </div>
           <div class="d-flex flex-wrap gap-3 mt-4">
-            <%= link_to "⬅️ Back to activities", activities_path, class: "btn btn-ghost" %>
             <%= button_to "🚀 Enhance this trip with guAIde", chats_path(trip_id: @trip.id), method: :post, class: "btn btn-primary" %>
             <%= link_to "🗑️ Delete trip", trip_path(@trip),
                   data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this trip?" },
-                  class: "btn btn-danger" %>
+                  class: "btn btn-primary" %>
           </div>
         </div>
       </div>
