@@ -1,9 +1,9 @@
-<div class="container mt-5">
+<div class="container mt-5 trips-new">
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-          <h2 class="mb-0">Create a New Trip</h2>
+          <h2 class="mb-0">Create a New Trip 🌍</h2>
         </div>
         <div class="card-body">
           <%= simple_form_for @trip do |f| %>
@@ -23,13 +23,13 @@
             </div>
             <div class="form-group">
               <%= f.input :mood, as: :select,
-                          collection: ["Family 🏡", "Friends 🤝", "Romance 👩‍❤️‍💋‍👨"],
+                          collection: ["🏡 Family", "🤝 Friends", "👩‍❤️‍💋‍👨 Romance"],
                           label: 'Mood',
                           input_html: { class: 'form-control' } %>
             </div>
-            <div class="form-group mt-4">
+            <div class="form-group d-flex mt-4 gap-4">
               <%= f.submit '➕ Create trip', class: 'btn btn-primary' %>
-              <%= link_to "⬅️ Back to activities", activities_path, class: 'btn btn-secondary ms-2' %>
+              <%# <%= button_to "Plan your trip with guAIde", chats_path, method: :post, class: "btn btn-primary" %>
             </div>
           <% end %>
         </div>

@@ -1,0 +1,7 @@
+  <%= form_with(model: [chat, message], local: false, class: "d-flex") do |form| %>
+    <%= form.text_area :content,
+          class: "form-control me-2",
+          rows: 2,
+          placeholder: "Whrite your message..." %>
+    <%= form.submit "Send", class: "btn btn-primary" %>
+  <% end %>

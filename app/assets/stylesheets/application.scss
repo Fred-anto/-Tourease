@@ -2,12 +2,19 @@
 @import "config/fonts";
 @import "config/colors";
 @import "config/bootstrap_variables";
+@import "brand";
+@import "swipe_carousel";
+@import "navbar";
+
 
 // External libraries
 @import "bootstrap";
 @import "font-awesome";
-@import "swipe_carousel";
+
 
 // Your CSS partials
 @import "components/index";
 @import "pages/index";
+
+@import "trips/new";
+@import "trips/show";

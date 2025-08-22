@@ -14,6 +14,9 @@ Rails.application.routes.draw do
   resources :trips do
     resources :chats, only: [:create]
     resources :trip_activities
+    member do
+      post :save_message
+    end
   end
 
 

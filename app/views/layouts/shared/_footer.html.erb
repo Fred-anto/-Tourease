@@ -1,0 +1,32 @@
+<nav class="footer-nav" role="navigation" aria-label="Navigation principale">
+  <div class="footer-inner">
+    <!-- Home -->
+    <%= link_to root_path, class: "footer-item #{'is-active' if current_page?(root_path)}" do %>
+      <iconify-icon icon="mdi:home" class="footer-icon"></iconify-icon>
+      <span>Home</span>
+    <% end %>
+
+    <!-- My Trips -->
+    <%= link_to trips_path, class: "footer-item #{'is-active' if current_page?(trips_path)}" do %>
+      <iconify-icon icon="mdi:bag-suitcase" class="footer-icon"></iconify-icon>
+      <span>My Trips</span>
+    <% end %>
+
+    <!-- Activities -->
+    <%= link_to activities_path, class: "footer-item #{'is-active' if current_page?(activities_path)}" do %>
+      <iconify-icon icon="mdi:calendar-check" class="footer-icon"></iconify-icon>
+      <span>Activities</span>
+    <% end %>
+
+    <!-- Account -->
+    <%= link_to edit_user_registration_path, class: "footer-item #{'is-active' if current_page?(edit_user_registration_path)}" do %>
+      <iconify-icon icon="mdi:account-circle" class="footer-icon"></iconify-icon>
+      <span>Account</span>
+    <% end %>
+
+    <!-- FAB (au-dessus, centré) -->
+    <%= link_to new_trip_path, class: "fab-add-trip", aria: { label: "Créer un voyage" } do %>
+      <iconify-icon icon="mdi:plus" class="fab-plus"></iconify-icon>
+    <% end %>
+  </div>
+</nav>

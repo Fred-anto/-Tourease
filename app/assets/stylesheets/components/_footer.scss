@@ -1,0 +1,59 @@
+/* ===== Footer fixe ===== */
+:root { --footer-h: 80px; }
+
+html, body { height: 100%; overflow-x: hidden; }
+
+/* réserve l’espace sous le contenu pour le footer fixe */
+body { padding-bottom: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px)); }
+
+/* zone principale (utile sur mobile pour éviter les sauts d’écran) */
+#page-content { min-height: 100svh; }
+
+/* footer fixé au viewport */
+.footer-nav {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: var(--footer-h);
+  background: #ffffff;
+  border-top: 1px solid #dfe7ea;
+  z-index: 9999;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* contenu interne */
+.footer-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 10px 16px 18px;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  text-align: center;
+  position: relative; /* pour la FAB */
+}
+
+/* liens + icônes */
+.footer-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; text-decoration: none; color: #004E64;
+  font-size: 12px; font-weight: 500; line-height: 1.2;
+}
+.footer-item iconify-icon.footer-icon { font-size: 36px; color: #004E64; }
+
+/* FAB centré */
+.fab-add-trip {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  bottom: 28px; width: 68px; height: 68px; border-radius: 50%;
+  background: #004E64; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 10px 24px rgba(0,0,0,.18), 0 4px 8px rgba(0,0,0,.12);
+  z-index: 10000;
+}
+.fab-add-trip iconify-icon.fab-plus { font-size: 32px; color: #fff; }
+
+@media (max-width: 420px) {
+  .footer-item { font-size: 11px; }
+  .footer-item iconify-icon.footer-icon { font-size: 32px; }
+  .fab-add-trip { width: 60px; height: 60px; bottom: 24px; }
+  .fab-add-trip iconify-icon.fab-plus { font-size: 28px; }
+}

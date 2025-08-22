@@ -1,0 +1,41 @@
+:root {
+  --deep:    #004E64;
+  --primary: #00A5CF; /* bleu principal */
+  --mint:    #9FFFCB;
+  --teal:    #25A18E;
+  --lime:    #7AE582;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;             // indispensable pour coller au haut de la fenêtre
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .6rem 1rem;
+  background: var(--primary);
+  border-bottom: 1px solid var(--primary);
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.app-name {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--deep);
+}
+
+.search-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: .3rem;
+}
+.search-btn:hover {
+  opacity: 0.7;
+}
