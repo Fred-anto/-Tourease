@@ -122,27 +122,27 @@
     --bg1: var(--c-300);
     --bg2: var(--c-500);
     color: #062b2f;
-    border: none;
+    border: 1px solid rgba(0,78,100,0.18);
     border-radius: 14px;
     padding: .75rem 1.15rem;
-    font-weight: 700;
-    background-image: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 14%, var(--bg2) 100%);
+    background: linear-gradient(0deg, rgba(0,165,207,.45), rgba(0,165,207,.45)) #fff;
     box-shadow: 0 8px 20px rgba(37, 161, 142, 0.25);
     transition: transform .06s ease, filter .2s ease, box-shadow .2s ease;
-    &:hover   { filter: brightness(1.03); box-shadow: 0 10px 24px rgba(0,78,100,.22); }
+    &:hover   { filter: brightness(1.03); box-shadow: 0 10px 24px rgba(99, 194, 218, 0.45); }
     &:active  { transform: translateY(1px); }
     &:focus-visible { outline: 3px solid rgba(0,165,207,.45); outline-offset: 2px; }
   }
   .btn-ghost {
     padding: .7rem 1rem;
+    font-weight: 700;
     border-radius: 12px;
     border: 1px solid rgba(0,78,100,0.18);
-    color: var(--c-900);
-    background: linear-gradient(0deg, rgba(159,255,203,0.18), rgba(159,255,203,0.18)) #fff;
+    color: #062b2f;
+    background: linear-gradient(0deg, rgba(0,165,207,.45), rgba(0,165,207,.45)) #fff;
     transition: background .2s ease, border-color .2s ease;
     &:hover {
       border-color: rgba(0,78,100,0.28);
-      background: linear-gradient(0deg, rgba(0,165,207,0.10), rgba(0,165,207,0.10)) #fff;
+      background: linear-gradient(0deg, rgba(99, 194, 218, 0.45), rgba(99, 194, 218, 0.45)) #fff;
     }
   }
 
