@@ -26,12 +26,20 @@ body { padding-bottom: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px));
   margin: 0 auto;
   height: 100%;
   padding: 10px 16px 18px;
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  /* centre réservé pour le FAB (+) */
+  grid-template-columns: 1fr 1fr minmax(84px, 100px) 1fr 1fr;
+  column-gap: 12px;
   align-items: flex-end;
   text-align: center;
-  position: relative; /* pour la FAB */
+  position: relative;
 }
+
+/* place explicitement chaque lien sur les colonnes 1,2,4,5 (la 3 est vide pour le FAB) */
+.footer-inner > .footer-item:nth-child(1) { grid-column: 1; }
+.footer-inner > .footer-item:nth-child(2) { grid-column: 2; }
+.footer-inner > .footer-item:nth-child(3) { grid-column: 4; }
+.footer-inner > .footer-item:nth-child(4) { grid-column: 5; }
 
 /* liens + icônes */
 .footer-item {
@@ -54,6 +62,13 @@ body { padding-bottom: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px));
 @media (max-width: 420px) {
   .footer-item { font-size: 11px; }
   .footer-item iconify-icon.footer-icon { font-size: 32px; }
+
+  /* FAB plus compact et espace central ajusté */
   .fab-add-trip { width: 60px; height: 60px; bottom: 24px; }
   .fab-add-trip iconify-icon.fab-plus { font-size: 28px; }
+
+  .footer-inner {
+    grid-template-columns: 1fr 1fr minmax(72px, 84px) 1fr 1fr;
+    column-gap: 10px;
+  }
 }
