@@ -72,8 +72,8 @@
     border-radius: 14px;
     padding: .75rem 1.15rem;
     font-weight: 700;
-    background-image: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 14%, var(--bg2) 100%);
-    box-shadow: 0 8px 20px rgba(37, 161, 142, 0.25);
+    background: linear-gradient(0deg, rgba(0,165,207,.45), rgba(0,165,207,.45)) #fff;
+    box-shadow: 0 8px 20px rgba(172, 172, 172, 0.45);
     transition: transform .06s ease, filter .2s ease, box-shadow .2s ease;
 
     &:hover   { filter: brightness(1.03); box-shadow: 0 10px 24px rgba(0,78,100,.22); }
@@ -85,7 +85,7 @@
     border-radius: 12px;
     border: 1px solid rgba(0,78,100,0.18);
     color: var(--c-900);
-    background: linear-gradient(0deg, rgba(159,255,203,0.18), rgba(159,255,203,0.18)) #fff;
+    background: linear-gradient(0deg, rgba(0,165,207,.45), rgba(0,165,207,.45)) #fff;
     transition: background .2s ease, border-color .2s ease;
 
     &:hover {
