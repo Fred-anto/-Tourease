@@ -11,6 +11,9 @@ class TripsController < ApplicationController
   end
 
   def show
+    @chats = current_user.chats
+                         .where(trip: @trip)
+                         .order(:created_at)
   end
 
   def create

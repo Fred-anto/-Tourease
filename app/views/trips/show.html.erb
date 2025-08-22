@@ -5,7 +5,7 @@
         <div class="trip-card__header">
           <h1 class="title"><%= @trip.name %></h1>
           <p class="subtitle">
-            <span class="muted">Destination</span>
+            <span class="muted">Destination :</span>
             <strong><%= @trip.destination %></strong>
           </p>
           <div class="chips">
@@ -47,12 +47,25 @@
             <% end %>
           </div>
           <div class="d-flex flex-wrap gap-3 mt-4">
-            <%= button_to "🚀 Enhance this trip with guAIde", chats_path(trip_id: @trip.id), method: :post, class: "btn btn-primary" %>
-            <%= link_to "🗑️ Delete trip", trip_path(@trip),
+            <%= button_to "🚀 Enhance with guAIde", chats_path(trip_id: @trip.id), method: :post, class: "btn btn-primary" %>
+            <%= link_to "🗑️ Delete", trip_path(@trip),
                   data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this trip?" },
                   class: "btn btn-primary" %>
           </div>
         </div>
+      </div>
+    </div>
+      <div class="mt-4 text-center">
+        <h2 class="mb-3">Previous conversations:</h2>
+        <div class="d-flex flex-wrap justify-content-center">
+        <ul>
+          <% @chats.each do |chat| %>
+          <li>
+            <%= link_to "Chat ##{chat.id}", chat_path(chat),
+                    class: "btn btn-primary btn-chat my-3" %>
+            </li>
+          <% end %>
+        </ul>
       </div>
     </div>
   </div>
