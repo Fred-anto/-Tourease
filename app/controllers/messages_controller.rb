@@ -2,9 +2,10 @@ class MessagesController < ApplicationController
   def create
     @chat = Chat.find(params[:chat_id])
 
-   if @chat.trip
+    if @chat.trip
       @trip = @chat.trip
     end
+
     @message = @chat.messages.new(role: "user", content: params[:message][:content])
 
     if @message.save
@@ -26,7 +27,6 @@ class MessagesController < ApplicationController
       respond_to do |format|
         format.turbo_stream # va chercher `app/views/messages/create.turbo_stream.erb`
         format.html { redirect_to chat_path(@chat) }
-
       end
     else
       respond_to do |format|
