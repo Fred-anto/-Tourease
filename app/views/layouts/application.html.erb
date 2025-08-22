@@ -9,13 +9,14 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
   </head>
 
   <body>
     <%= render "shared/flashes" %>
 
     <!-- contenu principal -->
-    <main class="page">
+    <main id="page-content" class="page">
       <%= yield %>
     </main>
 
