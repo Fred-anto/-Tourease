@@ -27,9 +27,8 @@
                           label: 'Mood',
                           input_html: { class: 'form-control' } %>
             </div>
-            <div class="form-group mt-4">
+            <div class="form-group d-flex mt-4 gap-4">
               <%= f.submit '➕ Create trip', class: 'btn btn-primary' %>
-              <%= link_to "⬅️ Back to activities", activities_path, class: 'btn btn-secondary ms-2' %>
               <%= button_to "Plan your trip with guAIde", chats_path, method: :post, class: "btn btn-primary" %>
             </div>
           <% end %>
