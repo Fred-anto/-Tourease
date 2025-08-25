@@ -1,6 +1,7 @@
 <% messages.each do |message| %>
   <div class="mb-3 d-flex <%= message.role == 'user' ? 'justify-content-end' : 'justify-content-start' %>">
-    <div class="<%= message.role == 'user' ? 'bg-primary text-white' : 'bg-secondary text-white' %> px-4 py-2 rounded-5 shadow-sm" style="max-width: 70%;">
+    <div class="px-4 py-2 rounded-5 shadow-sm text-white"
+         style="max-width: 70%; background-color: <%= message.role == 'user' ? '#00A5CF73' : '#6c757d' %>;">
       <small class="d-block fw-bold mb-1"><%= message.role.capitalize %></small>
       <%= markdown(message.content) %>
       <% if message.role != 'user' %>
