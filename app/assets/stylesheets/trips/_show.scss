@@ -132,19 +132,14 @@
     &:active  { transform: translateY(1px); }
     &:focus-visible { outline: 3px solid rgba(0,165,207,.45); outline-offset: 2px; }
   }
-  .btn-ghost {
-    padding: .7rem 1rem;
-    font-weight: 700;
+  .btn-outline-danger {
     border-radius: 12px;
-    border: 1px solid rgba(0,78,100,0.18);
-    color: #062b2f;
-    background: linear-gradient(0deg, rgba(0,165,207,.45), rgba(0,165,207,.45)) #fff;
-    transition: background .2s ease, border-color .2s ease;
-    &:hover {
-      border-color: rgba(0,78,100,0.28);
-      background: linear-gradient(0deg, rgba(99, 194, 218, 0.45), rgba(99, 194, 218, 0.45)) #fff;
-    }
+    border: 1px solid rgba(220, 53, 69, .45);
+    color: #b02a37;
+    background: #fff;
+    &:hover { background: rgba(220, 53, 69, .08); }
   }
+
 
   @media (max-width: 576px) {
     .trip-card__header { padding: 20px 22px; }
