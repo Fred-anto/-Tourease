@@ -1,3 +1,4 @@
+/* ===== Palette ===== */
 :root {
   --deep:    #004E64;
   --primary: #00A5CF; /* bleu principal */
@@ -6,36 +7,101 @@
   --lime:    #7AE582;
 }
 
-.navbar {
+/* ===== Navbar (isolée de Bootstrap) ===== */
+.te-navbar {
   position: sticky;
-  top: 0;             // indispensable pour coller au haut de la fenêtre
+  top: 0;
   z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   padding: .6rem 1rem;
   background: var(--primary);
-  border-bottom: 1px solid var(--primary);
+  border-bottom: 1px solid var(--deep);
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 56px;              /* hauteur confortable et stable */
+  white-space: nowrap;           /* empêche les retours à la ligne */
 }
 
-.navbar-left {
+/* Gauche */
+.te-navbar-left {
   display: flex;
   align-items: center;
   gap: .5rem;
 }
 
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: .25rem;   /* contrôle l’espace */
+}
+
+.logo {
+  height: 36px;
+  width: auto;
+}
+
+.logo-wordmark {
+  height: 42px;
+  width: auto;
+  margin-left: .5rem;
+  display: block;
+}
+
 .app-name {
   font-size: 1.25rem;
   font-weight: bold;
-  color: var(--deep);
+  color: #fff;
 }
 
+/* Droite */
+.te-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;                      /* espace entre loupe / champ / avatar */
+}
+
+/* Bouton loupe */
 .search-btn {
   background: none;
   border: none;
   cursor: pointer;
   padding: .3rem;
 }
-.search-btn:hover {
-  opacity: 0.7;
+.search-btn svg { stroke: #fff; }
+.search-btn:hover { opacity: .7; }
+
+/* Champ recherche : n’occupe AUCUN espace quand fermé */
+.search-box {
+  display: none;                  /* clé pour éviter le “décalage” */
+}
+.search-box.active {
+  display: block;                 /* apparaît à côté de la loupe */
+}
+.search-input {
+  padding: .3rem .6rem;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+}
+
+/* Avatar profil */
+.avatar-link {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+}
+
+/* ===== Responsive léger ===== */
+@media (max-width: 420px) {
+  .app-name { display: none; }    /* garder une barre compacte sur mobile */
 }
