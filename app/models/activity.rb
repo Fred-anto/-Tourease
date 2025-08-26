@@ -8,5 +8,6 @@ class Activity < ApplicationRecord
   after_validation :geocode, if: :will_save_change_to_address?
 
   validates :name, :description, :address, presence: true
+
   validates :name, uniqueness: true
 end
