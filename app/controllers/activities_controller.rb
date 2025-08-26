@@ -7,7 +7,6 @@ class ActivitiesController < ApplicationController
     @activities = Activity.all
     # @activities = Activity.includes(:category, :user).order(created_at: :desc)
     # @trips = user_signed_in? ? current_user.trips.order(created_at: :desc) : Trip.none
-    @favorites = current_user.all_favorites.select { |f| f.favoritable_type == "Activity" }.map(&:favoritable)
   end
 
   def new

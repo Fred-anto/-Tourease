@@ -27,12 +27,6 @@
             <% end %>
           </div>
         </div>
-      <% else %>
-        <div class="text-center my-5">
-          <i class="fa-regular fa-face-sad-tear fa-3x text-muted mb-3"></i>
-          <p class="mb-2">Nothing here yet...</p>
-          <%= link_to "✨ Find some activities here", activities_path, class: "btn btn-outline-primary rounded-4" %>
-        </div>
       <% end %>
 
       <% if @created_activities.any? %>
@@ -61,7 +55,11 @@
       <% end %>
 
       <% if @favorite_activities.empty? && @created_activities.empty? %>
-        <div class="alert alert-info mt-3">You don’t have any activities yet.</div>
+        <div class="text-center my-5">
+          <i class="fa-regular fa-face-sad-tear fa-3x text-muted mb-3"></i>
+          <p class="mb-2">Nothing here yet...</p>
+          <%= link_to "✨ Find some activities here", activities_path, class: "btn btn-outline-primary rounded-4" %>
+        </div>
       <% end %>
 
     </div>
