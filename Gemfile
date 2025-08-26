@@ -56,8 +56,7 @@ gem "activestorage-cloudinary-service"
 gem "image_processing"
 gem "mini_magick"
 gem "redcarpet"
-
-
+gem 'acts_as_favoritor'
 
 group :development, :test do
   gem "dotenv-rails"
