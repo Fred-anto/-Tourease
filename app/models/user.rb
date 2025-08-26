@@ -10,6 +10,8 @@ class User < ApplicationRecord
   has_many :trip_users, dependent: :destroy
   has_many :trips, through: :trip_users
 
+  has_one_attached :avatar
+
   # validates :email, :username, :age, :phone_number, presence: true
   # validates :email, :username, :phone_number, uniqueness: true
 end

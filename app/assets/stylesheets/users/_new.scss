@@ -93,10 +93,10 @@
 
   .btn-outline-danger {
     border-radius: 12px;
-    border: 1px solid #004E64;
-    color: #004E64;
-    background: #fff;
-    &:hover { background: rgba(220, 53, 69, .08); }
+    border: 1px solid #00A5CF;
+    color: #00A5CF;
+    background: transparent;
+    &:hover { background: rgb(255, 255, 255) }
   }
 
   .danger-zone {
