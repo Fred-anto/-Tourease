@@ -4,6 +4,10 @@ class Activity < ApplicationRecord
   belongs_to :category
   belongs_to :user
 
-  validates :name, :description, :address, :photo, presence: true
+  geocoded_by :address
+  after_validation :geocode, if: :will_save_change_to_address?
+
+  validates :name, :description, :address, presence: true
+
   validates :name, uniqueness: true
 end
