@@ -15,6 +15,7 @@
 
 // Your CSS partials
 @import "components/index";
+@import "components/trash";
 @import "pages/index";
 
 @import "trips/new";
@@ -23,8 +24,8 @@
 @import "users/edit";
 @import "users/new";
 
+@import "components/avatar_edit";
 
-// Style Global
 body {
   font-family: $font-family-sans-serif;
 }

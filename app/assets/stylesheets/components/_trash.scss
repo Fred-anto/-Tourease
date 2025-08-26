@@ -1,0 +1,34 @@
+.btn-reset { background: none; border: 0; padding: 0; line-height: 1; }
+
+.trash-icon {
+  @extend .btn-reset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: .5rem;
+  text-decoration: none;
+  color: #004E64;
+  transition: color .2s ease, transform .12s ease, background-color .2s ease;
+}
+.trash-icon i, .trash-icon .icon {
+  pointer-events: none;
+  font-size: 1.25rem;
+}
+
+.trash-icon:hover {
+  color: #da2e3f;
+  transform: scale(1.06);
+  background-color: rgba(0,0,0,.04);
+}
+
+
+.card-header.bg-primary .trash-icon {
+  color: #004E64;
+  background-color: transparent;
+}
+.card-header.bg-primary .trash-icon:hover {
+  color: #da2e3f;
+  background-color: rgba(255,255,255,.08);
+}
+
+.trash-icon.btn-link i { color: inherit !important; }
