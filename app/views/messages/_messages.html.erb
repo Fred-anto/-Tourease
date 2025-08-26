@@ -1,8 +1,37 @@
 <% messages.each do |message| %>
   <div class="mb-3 d-flex <%= message.role == 'user' ? 'justify-content-end' : 'justify-content-start' %>">
-    <div class="<%= message.role == 'user' ? 'bg-primary text-white' : 'bg-secondary text-white' %> px-4 py-2 rounded-5 shadow-sm" style="max-width: 70%;">
+    <div class="<%= message.role == 'user' ? 'bg-primary text-white' : '' %> px-4 py-3 rounded-5 shadow-sm"
+        style="<%= message.role == 'assistant' ? 'background-color:#e0e0e0; color:#333;' : '' %>;
+                max-width: 70%;
+                font-family: 'Segoe UI', Roboto, sans-serif;
+                font-size: 0.95rem;
+                line-height: 1.4;">
       <small class="d-block fw-bold mb-1"><%= message.role.capitalize %></small>
-      <%= markdown(message.content) %>
+      <% if message.role == 'assistant' %>
+      <% activities = JSON.parse(message.content)%>
+        <% activities.each do |day, day_activities| %>
+          <div class="mb-3">
+            <h6 class="fw-bold mb-2" style="color:#333;"><%= day %></h6>
+            <% day_activities.each do |activity| %>
+              <% if activity["Schedule"] == false %>
+               <div class="mb-2" style="color:#555;">
+                <%= markdown(activity["description"]) %>
+               </div>
+              <% else %>
+                <div class="border rounded p-3 mb-2" style="background-color:#e7e7e7; border-color:#bbb; color:#333;">
+                  <div class="fw-bold mb-1" style="font-size:1rem;"><%= activity["name"] %> (<%= activity["category"] %>)</div>
+                  <div class="text-muted mb-1" style="font-size:0.85rem;"><%= activity["start_date_time"] %> - <%= activity["end_date_time"] %></div>
+                  <div style="margin-bottom:0.3rem;"><%= activity["description"] %></div>
+                  <div class="text-muted" style="font-size:0.85rem;"><%= activity["address"] %></div>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      <% else %>
+        <%= markdown(message.content) %>
+      <% end %>
+
       <% if message.role != 'user' %>
         <div class="mt-2 text-end">
           <%= form_with url: save_message_trip_path(trip), method: :post, local: true do |f| %>
