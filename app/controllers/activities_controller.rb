@@ -3,11 +3,24 @@ class ActivitiesController < ApplicationController
 
   before_action :set_activity, only: [:show, :favorite, :unfavorite]
 
-  def index
-    @activities = Activity.all
+
+def index
+  @activities = Activity.all
+  @markers = @activities.geocoded.map do |activity|
+        {
+          lat: activity.latitude,
+          lng: activity.longitude,
+          info_window_html: render_to_string(partial: "info_window", locals: { activity: activity }),
+          marker_html:      render_to_string(partial: "marker",      locals: { activity: activity })
+        }
+      end
+    @trips = user_signed_in? ? current_user.trips.order(created_at: :desc) : Trip.none
+    @favorites = current_user.all_favorites.select { |f| f.favoritable_type == "Activity" }.map(&:favoritable)
     # @activities = Activity.includes(:category, :user).order(created_at: :desc)
     # @trips = user_signed_in? ? current_user.trips.order(created_at: :desc) : Trip.none
   end
+    # @trips = user_signed_in? ? current_user.trips : Trip.none
+   # @activities = Activity.includes(:category, :user).order(created_at: :desc)
 
   def new
     @activity = Activity.new
