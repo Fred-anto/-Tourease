@@ -10,7 +10,16 @@ Rails.application.routes.draw do
 
   root to: "activities#index"
 
-  resources :activities
+  resources :activities do
+    collection do
+      get :my_activities
+    end
+    member do
+      post :favorite
+      delete :unfavorite
+    end
+  end
+
   resources :trips do
     resources :chats, only: [:create]
     resources :trip_activities

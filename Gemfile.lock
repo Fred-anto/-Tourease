@@ -87,6 +87,8 @@ GEM
       mutex_m
       securerandom (>= 0.3)
       tzinfo (~> 2.0)
+    acts_as_favoritor (6.0.2)
+      activerecord (>= 5.0)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     autoprefixer-rails (10.4.21.0)
@@ -372,6 +374,7 @@ PLATFORMS
 
 DEPENDENCIES
   activestorage-cloudinary-service
+  acts_as_favoritor
   autoprefixer-rails
   bootsnap
   bootstrap (~> 5.3)
