@@ -1,33 +1,32 @@
-/* ===== Footer fixe ===== */
+/* ===============================
+   Footer mobile + FAB + menu bulles
+   =============================== */
+
+/* hauteur du footer */
 :root { --footer-h: 80px; }
 
+/* éviter le chevauchement du footer fixe */
 html, body { height: 100%; overflow-x: hidden; }
-
-/* réserve l’espace sous le contenu pour le footer fixe */
 body { padding-bottom: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px)); }
 
-/* zone principale (utile sur mobile pour éviter les sauts d’écran) */
-#page-content { min-height: 100svh; }
-
-/* footer fixé au viewport */
+/* ---------- Footer fixe ---------- */
 .footer-nav {
   position: fixed;
   left: 0; right: 0; bottom: 0;
   height: var(--footer-h);
-  background: #ffffff;
+  background: #fff;
   border-top: 1px solid #dfe7ea;
   z-index: 9999;
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
-/* contenu interne */
 .footer-inner {
   max-width: 900px;
   margin: 0 auto;
   height: 100%;
   padding: 10px 16px 18px;
   display: grid;
-  /* centre réservé pour le FAB (+) */
+  /* 5 colonnes : 2 items | espace FAB | 2 items */
   grid-template-columns: 1fr 1fr minmax(84px, 100px) 1fr 1fr;
   column-gap: 12px;
   align-items: flex-end;
@@ -35,37 +34,88 @@ body { padding-bottom: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px));
   position: relative;
 }
 
-/* place explicitement chaque lien sur les colonnes 1,2,4,5 (la 3 est vide pour le FAB) */
+/* placer explicitement les 4 liens autour du centre */
 .footer-inner > .footer-item:nth-child(1) { grid-column: 1; }
 .footer-inner > .footer-item:nth-child(2) { grid-column: 2; }
 .footer-inner > .footer-item:nth-child(3) { grid-column: 4; }
 .footer-inner > .footer-item:nth-child(4) { grid-column: 5; }
 
-/* liens + icônes */
+/* liens */
 .footer-item {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 4px; text-decoration: none; color: #004E64;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px;
+  text-decoration: none;
+  color: #004E64;
   font-size: 12px; font-weight: 500; line-height: 1.2;
 }
-.footer-item iconify-icon.footer-icon { font-size: 36px; color: #004E64; }
 
-/* FAB centré */
-.fab-add-trip {
+/* icônes Iconify */
+.footer-item iconify-icon.footer-icon {
+  font-size: 36px;
+  color: #004E64;
+}
+
+/* ---------- FAB (+) ---------- */
+.fab-btn {
   position: absolute; left: 50%; transform: translateX(-50%);
-  bottom: 28px; width: 68px; height: 68px; border-radius: 50%;
-  background: #004E64; display: flex; align-items: center; justify-content: center;
+  bottom: 28px;
+  width: 68px; height: 68px;
+  border: 0; border-radius: 50%;
+  background: #004E64; color: #fff;
+  display: grid; place-items: center;
   box-shadow: 0 10px 24px rgba(0,0,0,.18), 0 4px 8px rgba(0,0,0,.12);
   z-index: 10000;
 }
-.fab-add-trip iconify-icon.fab-plus { font-size: 32px; color: #fff; }
+.fab-btn .fab-plus { font-size: 32px; }
 
+/* ---------- Backdrop ---------- */
+.fab-backdrop {
+  position: fixed; inset: 0;
+  border: 0; margin: 0; padding: 0;
+  background: rgba(0,0,0,.45);
+  opacity: 0; pointer-events: none;
+  z-index: 10000;
+}
+
+/* ---------- Menu flottant (les 2 bulles) ---------- */
+.fab-menu {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--footer-h) + 16px + env(safe-area-inset-bottom, 0px)); /* juste au-dessus du footer */
+  transform: translateX(-50%);
+  display: grid; grid-auto-flow: column; gap: .7rem;
+  pointer-events: none; /* cliquable uniquement à l'ouverture */
+  z-index: 10001;
+
+  .fab-chip { opacity: 0; transform: translateY(8px) scale(.98); }
+}
+
+.fab-chip {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .6rem .9rem;
+  background: #fff; color: #111; text-decoration: none;
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 1.4rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  font-weight: 600; font-size: .95rem;
+}
+.fab-chip .chip-ic { font-size: 1.05rem; }
+
+/* ---------- États ouverts (pilotés par JS) ---------- */
+body.fab-open { overflow: hidden; }
+body.fab-open .fab-backdrop { opacity: 1; pointer-events: auto; transition: opacity .18s ease-out; }
+body.fab-open .fab-btn { transform: translateX(-50%) rotate(45deg); transition: transform .18s ease-out; }
+body.fab-open .fab-menu { pointer-events: auto; }
+body.fab-open .fab-menu .fab-chip { opacity: 1; transform: none; transition: transform .2s ease-out, opacity .18s ease-out; }
+
+/* ---------- Responsive ---------- */
 @media (max-width: 420px) {
   .footer-item { font-size: 11px; }
   .footer-item iconify-icon.footer-icon { font-size: 32px; }
 
-  /* FAB plus compact et espace central ajusté */
-  .fab-add-trip { width: 60px; height: 60px; bottom: 24px; }
-  .fab-add-trip iconify-icon.fab-plus { font-size: 28px; }
+  .fab-btn { width: 60px; height: 60px; bottom: 24px; }
+  .fab-btn .fab-plus { font-size: 28px; }
 
   .footer-inner {
     grid-template-columns: 1fr 1fr minmax(72px, 84px) 1fr 1fr;
