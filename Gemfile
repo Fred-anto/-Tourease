@@ -57,8 +57,7 @@ gem "image_processing"
 gem "mini_magick"
 gem "redcarpet"
 gem "geocoder"
-
-
+gem 'acts_as_favoritor'
 
 
 group :development, :test do

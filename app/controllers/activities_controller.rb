@@ -1,7 +1,8 @@
 class ActivitiesController < ApplicationController
   skip_before_action :authenticate_user!, only: [:index, :show]
 
-  before_action :set_activity, only: [:show]
+  before_action :set_activity, only: [:show, :favorite, :unfavorite]
+
 
 def index
   @activities = Activity.all
@@ -14,6 +15,9 @@ def index
         }
       end
     @trips = user_signed_in? ? current_user.trips.order(created_at: :desc) : Trip.none
+    @favorites = current_user.all_favorites.select { |f| f.favoritable_type == "Activity" }.map(&:favoritable)
+    # @activities = Activity.includes(:category, :user).order(created_at: :desc)
+    # @trips = user_signed_in? ? current_user.trips.order(created_at: :desc) : Trip.none
   end
     # @trips = user_signed_in? ? current_user.trips : Trip.none
    # @activities = Activity.includes(:category, :user).order(created_at: :desc)
@@ -34,6 +38,23 @@ def index
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def favorite
+    current_user.favorite(@activity)
+    redirect_to activities_path, notice: "Ajouté aux favoris !"
+  end
+
+  def unfavorite
+    current_user.unfavorite(@activity)
+    redirect_to my_activities_activities_path, notice: "Retiré des favoris."
+  end
+
+  def my_activities
+    @favorite_activities = current_user.all_favorites.select { |f| f.favoritable_type == "Activity" }.map(&:favoritable)
+    @created_activities = current_user.activities
+    @favorite_activities ||= []
+    @created_activities ||= []
   end
 
   private

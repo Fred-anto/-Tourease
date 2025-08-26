@@ -7,17 +7,15 @@
             <h1 class="title mb-0"><%= @trip.name %></h1>
             <%= link_to trip_path(@trip),
                   data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this trip?" },
-                  class: "btn btn-link p-0 ms-3 text-success",
+                  class: "trash-icon",
                   title: "Delete trip" do %>
-              <i class="fas fa-trash-alt fa-lg"></i>
+              <i class="fas fa-trash-alt"></i>
             <% end %>
           </div>
-
           <p class="subtitle mt-2">
             <span class="muted">Destination:</span>
             <strong><%= @trip.destination %></strong>
           </p>
-
           <div class="chips">
             <% if @trip.start_date.present? %>
               <span class="chip">📅 <%= l(@trip.start_date) %> - <%= l(@trip.end_date) %></span>
@@ -27,7 +25,6 @@
             <% end %>
           </div>
         </div>
-
         <div class="trip-card__body p-4 p-md-5">
           <h3 class="section-title">My activities</h3>
           <div class="row g-4">

@@ -57,3 +57,33 @@ document.addEventListener("DOMContentLoaded", initFab);
 // 👇 ajoute ces deux lignes
 document.addEventListener("turbo:load", initNavbarSearch);
 document.addEventListener("DOMContentLoaded", initNavbarSearch);
+
+
+function initAvatarPreview() {
+  const input = document.getElementById("user_avatar");
+  if (!input) return;
+  if (input.dataset.initialized === "true") return;
+  input.dataset.initialized = "true";
+
+  const frame = input.closest(".card-body")?.querySelector(".avatar-frame");
+  if (!frame) return;
+  const placeholder = frame.querySelector("#avatarPlaceholder");
+  let img = frame.querySelector("#avatarPreview");
+
+  input.addEventListener("change", (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    if (!img) {
+      img = new Image();
+      img.id = "avatarPreview";
+      img.className = "avatar-img";
+      frame.appendChild(img);
+    }
+    img.src = url;
+    if (placeholder) placeholder.remove();
+    frame.classList.remove("is-empty");
+  });
+}
+
+document.addEventListener("turbo:load", initAvatarPreview);
