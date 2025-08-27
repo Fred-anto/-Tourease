@@ -8,9 +8,6 @@ class ChatsController < ApplicationController
     end
     # TODO: linker le trip si params trip_id
 
-    @activities = Activity.all
-    @chat.activities_id = @activities
-
     if @chat.save
       redirect_to chat_path(@chat)
     else
@@ -26,6 +23,7 @@ class ChatsController < ApplicationController
   end
 
   def index
-    @chats = current_user.chats.all
+    raise
+    @chats = current_user&.chats
   end
 end
