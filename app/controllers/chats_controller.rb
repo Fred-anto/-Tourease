@@ -7,6 +7,10 @@ class ChatsController < ApplicationController
       @chat.trip = @trip if @trip
     end
     # TODO: linker le trip si params trip_id
+
+    @activities = Activity.all
+    @chat.activities_id = @activities
+
     if @chat.save
       redirect_to chat_path(@chat)
     else

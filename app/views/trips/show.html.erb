@@ -51,7 +51,20 @@
               </div>
             <% else %>
               <div class="col-12">
-                <div class="empty-state"><%= markdown(@trip.description) %></div>
+                <%# <div class="empty-state"><%= markdown(@trip.description) %><%# </div> %>
+                  <%= week_calendar(attribute: :start_date_time, end_attribute: :end_date_time) do |date| %>
+                    <div>
+                      <%= date %>
+
+                      <% @trip.trip_activities.each do |activity| %>
+                        <% if activity.start_date_time.to_date <= date && activity.end_date_time.to_date >= date %>
+                          <div class="event">
+                            <%= activity.comment || "Activité" %>
+                          </div>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  <% end %>
               </div>
             <% end %>
           </div>
