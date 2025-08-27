@@ -42,12 +42,12 @@ class ActivitiesController < ApplicationController
 
   def favorite
     current_user.favorite(@activity)
-    redirect_to activities_path, notice: "Ajouté aux favoris !"
+    redirect_to activities_path, notice: "Added to fav!"
   end
 
   def unfavorite
     current_user.unfavorite(@activity)
-    redirect_to my_activities_activities_path, notice: "Retiré des favoris."
+    redirect_to my_activities_activities_path, notice: "Deleted from fav"
   end
 
   def my_activities

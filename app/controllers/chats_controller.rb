@@ -23,7 +23,6 @@ class ChatsController < ApplicationController
   end
 
   def index
-    raise
     @chats = current_user&.chats
   end
 end

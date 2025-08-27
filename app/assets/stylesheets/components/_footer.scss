@@ -48,12 +48,18 @@ body { padding-bottom: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px));
   text-decoration: none;
   color: #004E64;
   font-size: 12px; font-weight: 500; line-height: 1.2;
+  &.is-active {
+    color: var(--primary);
+  }
 }
 
 /* icônes Iconify */
 .footer-item iconify-icon.footer-icon {
   font-size: 36px;
   color: #004E64;
+   &.is-active {
+    color: var(--primary);
+  }
 }
 
 /* ---------- FAB (+) ---------- */
