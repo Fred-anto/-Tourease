@@ -6,13 +6,14 @@ class ActivitiesController < ApplicationController
   def index
     @activities = Activity.all
     @markers = @activities.geocoded.map do |activity|
-          {
-            lat: activity.latitude,
-            lng: activity.longitude,
-            info_window_html: render_to_string(partial: "info_window", locals: { activity: activity }),
-            marker_html:      render_to_string(partial: "marker",      locals: { activity: activity })
-          }
-        end
+      {
+        lat: activity.latitude,
+        lng: activity.longitude,
+        info_window_html: render_to_string(partial: "info_window", locals: { activity: activity }),
+        marker_html: render_to_string(partial: "marker", locals: { activity: activity })
+      }
+    end
+
     @trips = user_signed_in? ? current_user.trips.order(created_at: :desc) : Trip.none
     # @favorites = current_user.all_favorites.select { |f| f.favoritable_type == "Activity" }.map(&:favoritable)
     # @activities = Activity.includes(:category, :user).order(created_at: :desc)
@@ -40,12 +41,12 @@ class ActivitiesController < ApplicationController
 
   def favorite
     current_user.favorite(@activity)
-    redirect_to activities_path, notice: "Ajouté aux favoris !"
+    redirect_to activities_path, notice: "Added to fav!"
   end
 
   def unfavorite
     current_user.unfavorite(@activity)
-    redirect_to my_activities_activities_path, notice: "Retiré des favoris."
+    redirect_to my_activities_activities_path, notice: "Deleted from fav"
   end
 
   def my_activities
@@ -60,6 +61,12 @@ class ActivitiesController < ApplicationController
     @created_activities = current_user.activities
     @favorite_activities ||= []
     @created_activities ||= []
+    
+   def destroy
+    @activity = current_user.activities.find(params[:id])
+    @activity.destroy
+    redirect_back fallback_location: my_activities_activities_path, notice: "Activity deleted."
+
   end
 
   private

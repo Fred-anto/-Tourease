@@ -2,25 +2,25 @@
   <div class="footer-inner">
     <!-- Home -->
     <%= link_to root_path, class: "footer-item #{'is-active' if current_page?(root_path)}" do %>
-      <iconify-icon icon="mdi:home" class="footer-icon"></iconify-icon>
+      <iconify-icon icon="mdi:home" class="footer-icon <%='is-active' if current_page?(root_path)%>"></iconify-icon>
       <span>Home</span>
     <% end %>
 
     <!-- My Trips -->
     <%= link_to trips_path, class: "footer-item #{'is-active' if current_page?(trips_path)}" do %>
-      <iconify-icon icon="mdi:bag-suitcase" class="footer-icon"></iconify-icon>
+      <iconify-icon icon="mdi:bag-suitcase" class="footer-icon <%='is-active' if current_page?(trips_path)%>"></iconify-icon>
       <span>My Trips</span>
     <% end %>
 
     <!-- Activities -->
-    <%= link_to my_activities_activities_path, class: "footer-item #{'is-active' if current_page?(activities_path)}" do %>
-      <iconify-icon icon="mdi:calendar-check" class="footer-icon"></iconify-icon>
+    <%= link_to my_activities_activities_path, class: "footer-item #{'is-active' if current_page?(my_activities_activities_path)}" do %>
+      <iconify-icon icon="mdi:calendar-check" class="footer-icon <%='is-active' if current_page?(my_activities_activities_path)%>"></iconify-icon>
       <span>Activities</span>
     <% end %>
 
     <!-- Social -->
     <%= link_to chats_path, class: "footer-item #{'is-active' if current_page?(chats_path)}" do %>
-      <iconify-icon icon="wpf:chat" class="footer-icon"></iconify-icon>
+      <iconify-icon icon="wpf:chat" class="footer-icon <%='is-active' if current_page?(chats_path)%>"></iconify-icon>
       <span>Social</span>
     <% end %>
 

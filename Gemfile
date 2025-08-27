@@ -58,6 +58,7 @@ gem "mini_magick"
 gem "redcarpet"
 gem "geocoder"
 gem 'acts_as_favoritor'
+gem "simple_calendar"
 
 
 group :development, :test do

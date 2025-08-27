@@ -21,7 +21,6 @@
   background-color: rgba(0,0,0,.04);
 }
 
-
 .card-header.bg-primary .trash-icon {
   color: #004E64;
   background-color: transparent;
@@ -32,3 +31,23 @@
 }
 
 .trash-icon.btn-link i { color: inherit !important; }
+
+.card .stretched-link::after { z-index: 1; }
+
+.trash-icon {
+  position: absolute;
+  font-size: 20px;
+  color: #0b6e88;
+  opacity: 0.9;
+  text-decoration: none;
+  z-index: 5;
+  pointer-events: auto;
+}
+.trash-icon.bottom-right {
+  right: 12px;
+  bottom: 12px;
+}
+.trash-icon:hover {
+  color: #dc3545;
+  opacity: 1;
+}

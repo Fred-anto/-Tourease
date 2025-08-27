@@ -20,6 +20,6 @@ class ChatsController < ApplicationController
   end
 
   def index
-    @chats = current_user.chats.all
+    @chats = current_user&.chats
   end
 end

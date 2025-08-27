@@ -4,31 +4,39 @@
       <div class="card-header bg-primary">
         <h2>Sign up ✨</h2>
       </div>
+
       <div class="card-body">
         <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
           <%= f.error_notification %>
           <div class="form-inputs">
+
             <%= f.input :username,
                         required: true,
                         input_html: { autocomplete: "username" } %>
+
             <%= f.input :age,
                         required: true,
                         input_html: { autocomplete: "bday" } %>
+
             <%= f.input :phone_number,
                         required: true,
                         input_html: { autocomplete: "tel" } %>
+
             <%= f.input :email,
                         required: true,
                         autofocus: true,
                         input_html: { autocomplete: "email" } %>
+
             <%= f.input :password,
                         required: true,
                         hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
                         input_html: { autocomplete: "new-password" } %>
+
             <%= f.input :password_confirmation,
                         required: true,
                         input_html: { autocomplete: "new-password" } %>
           </div>
+
           <div class="d-flex align-items-center gap-2 mt-3">
             <%= f.button :submit, "Sign up", class: "btn btn-primary" %>
           </div>

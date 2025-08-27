@@ -5,8 +5,8 @@ class MessagesController < ApplicationController
 
     if @chat.trip
       @trip = @chat.trip
+      @activities = Activity.all
     end
-
     @message = @chat.messages.new(role: "user", content: params[:message][:content])
 
     if @message.save
@@ -61,6 +61,7 @@ class MessagesController < ApplicationController
           }
         ]
       }"
+
       response = @chat_message.with_instructions(system_prompt).ask(@message.content.to_s)
       @chat.messages.create(role: "assistant", content: response.content, parsed_content: JSON.parse(response.content))
 
