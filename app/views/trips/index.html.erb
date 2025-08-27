@@ -4,6 +4,7 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
       <h2 class="mb-4">My Current Trips</h2>
+
       <div class="swipe-carousel" data-controller="swipe">
         <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Top trendy activities">
           <% @trips.last(5).each do |trip| %>
@@ -15,7 +16,7 @@
               </div>
                 <div class="card-footer bg-transparent">
                   <h6 class="mb-1">🌴 <%= trip.destination %></h6>
-        </div>
+                </div>
               </div>
           <% end %>
         </div>
