@@ -61,6 +61,7 @@ class MessagesController < ApplicationController
           }
         ]
       }"
+      
       response = @chat_message.with_instructions(system_prompt).ask(@message.content.to_s)
       @chat.messages.create(role: "assistant", content: response.content, parsed_content: JSON.parse(response.content))
 
