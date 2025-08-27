@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :activities do
     collection do
       get :my_activities
+      get :trip_activities
     end
     member do
       post :favorite
@@ -22,7 +23,8 @@ Rails.application.routes.draw do
 
   resources :trips do
     resources :chats, only: [:create]
-    resources :trip_activities
+    resources :trip_activities, only: [:index, :create, :destroy]
+    resources :trip_categories, only: [:create, :destroy]
     member do
       post :save_message
     end

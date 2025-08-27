@@ -31,7 +31,6 @@ class ActivitiesController < ApplicationController
   def create
     @activity = Activity.new(activity_params)
     @activity.user = current_user
-
     if @activity.save
       redirect_to activities_path, notice: "activity created"
     else
@@ -56,6 +55,13 @@ class ActivitiesController < ApplicationController
     @created_activities ||= []
   end
 
+  def trip_activities
+    @favorite_activities = current_user.all_favorites.select { |f| f.favoritable_type == "Activity" }.map(&:favoritable)
+    @created_activities = current_user.activities
+    @favorite_activities ||= []
+    @created_activities ||= []
+  end
+
   private
 
   def set_activity
@@ -63,6 +69,6 @@ class ActivitiesController < ApplicationController
   end
 
   def activity_params
-    params.require(:activity).permit(:name, :description, :address, :category_id, photos: [])
+    params.require(:activity).permit(:name, :description, :address, :category_id, :photo)
   end
 end
