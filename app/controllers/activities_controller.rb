@@ -34,7 +34,7 @@ class ActivitiesController < ApplicationController
     @activity = Activity.new(activity_params)
     @activity.user = current_user
     if @activity.save
-      redirect_to activities_path, notice: "activity created"
+      redirect_to my_activities_activities_path, notice: "activity created"
     else
       render :new, status: :unprocessable_entity
     end

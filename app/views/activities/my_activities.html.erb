@@ -5,7 +5,7 @@
     <div class="col-md-8">
 
       <% if @favorite_activities.any? %>
-        <h2 class="mb-4">⭐ Your Favorites</h2>
+        <h2 class="mb-4">⭐ Favorites</h2>
         <div class="swipe-carousel" data-controller="swipe">
           <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Favorites activities">
             <% @favorite_activities.each do |activity| %>
@@ -33,7 +33,7 @@
       <% end %>
 
       <% if @created_activities.any? %>
-        <h2 class="mb-4 mt-5">🛠️ Your Created Activities</h2>
+        <h2 class="mb-4 mt-5">🛠️ Created Activities</h2>
         <div class="swipe-carousel" data-controller="swipe">
           <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Your created activities">
             <% @created_activities.each do |activity| %>
@@ -50,17 +50,17 @@
                   <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
                 </div>
 
-                <div class="card-footer bg-transparent">
+                <div class="card-footer bg-transparent ">
                   <p class="mb-1"><%= activity.address %></p>
-                </div>
 
-                <%= link_to activity_path(activity),
-                      data: { turbo_method: :delete, turbo_confirm: "Delete this activity?" },
-                      class: "trash-icon bottom-right",
-                      title: "Delete activity",
-                      aria: { label: "Delete #{activity.name}" } do %>
-                  <i class="fas fa-trash-alt"></i>
-                <% end %>
+                  <%= link_to activity_path(activity),
+                        data: { turbo_method: :delete, turbo_confirm: "Delete this activity?" },
+                        class: "trash-icon bottom-right",
+                        title: "Delete activity",
+                        aria: { label: "Delete #{activity.name}" } do %>
+                    <i class="fas fa-trash-alt"></i>
+                  <% end %>
+                </div>
               </div>
             <% end %>
           </div>
