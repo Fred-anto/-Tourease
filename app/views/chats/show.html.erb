@@ -1,31 +1,33 @@
 <div class="sticky-top w-100" style="background-color: #f8f9fa; border-bottom: 1px solid #ddd;">
-  <div class="d-flex align-items-center justify-content-between py-2 px-3" style="max-width: 900px; margin: 0 auto;">
+  <div class="d-flex align-items-center justify-content-between py-2 px-3" style="max-width: 100%; margin: 0 auto; overflow-x: hidden">
 
     <!-- Back arrow à gauche -->
-    <%= link_to trip_path(@trip), class: "text-decoration-none text-dark d-flex align-items-center justify-content-center me-2 rounded-4",
-                    style: "border: 1px solid #adb5bd; width: 60px; height: 60px; line-height: 60px;" do %>
-      <i class="fa-solid fa-arrow-left fs-3"></i>
-    <% end %>
+    <div class="d-flex">
+      <%= link_to trip_path(@trip), class: "text-decoration-none text-dark d-flex align-items-center justify-content-center me-2 rounded-4",
+                      style: "border: 1px solid #adb5bd; width: 60px; height: 60px; line-height: 60px;" do %>
+        <i class="fa-solid fa-arrow-left fs-3"></i>
+      <% end %>
 
-    <!-- GuAIde à gauche -->
-    <h2 class="rounded-4 fs-2 text-white mb-0 d-flex align-items-center me-3 px-3"
-        style="background-color: #1EDD88; white-space: nowrap; gap: 0.5rem; font-size: 1.5rem; line-height: 60px;">
-      <i class="fa-solid fa-robot"></i> GuAIde
-    </h2>
+      <!-- GuAIde à gauche -->
+      <h2 class="rounded-4 fs-2 text-white mb-0 d-flex align-items-center me-3 px-3"
+          style="background-color: #1EDD88; white-space: nowrap; gap: 0.5rem; font-size: 1.5rem; line-height: 60px;">
+        <i class="fa-solid fa-robot"></i> GuAIde
+      </h2>
+    </div>
 
     <!-- Titre du chat à droite -->
-    <div class="d-flex align-items-center justify-content-center rounded-4 px-3"
-         style="background-color: #f8f9fa; height: 60px; font-size: 1.5rem; line-height: 60px; color: #0a2a33"
+    <div class="d-flex align-items-center  rounded-4 px-1"
+         style="background-color: #f8f9fa; height: 60px; font-size: 1.5rem; line-height: 60px; color: #0a2a33; width: 100%"
          id="div_chat_title">
 
-      <h2 class="mb-0 text-center" id="chat_title">
+      <h2 class="mb-0 text-end" id="chat_title">
         <%= @chat.title.present? && @chat.title != "New Chat" ? @chat.title : "New Chat" %>
       </h2>
     </div>
   </div>
 </div>
 
-<div style="max-width: 900px; margin: 0 auto;">
+<div style="max-width: 900px; margin: 0 auto;  padding: 10px 10px;">
     <div id="messages" class="form group px-1 py-1" style="max-width: 900px; margin: 0 auto; padding-bottom: 80px; height: calc(100vh - 60px - 80px); overflow-y: auto;">
       <%= render "messages/messages", messages: @chat.messages, trip: @trip %>
     </div>
@@ -34,7 +36,7 @@
 <div id="new_message"
   style="position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             max-width: 900px; width: 100%;
-            background-color: transparent; padding: 15px 0; /* padding top/bottom */
-            z-index: 100;">
+            background-color: transparent; padding: 10px 10px;
+            z-index: 100">
   <%= render "messages/form", chat: @chat, message: @message %>
 </div>
