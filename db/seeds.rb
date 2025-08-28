@@ -7,6 +7,7 @@ Category.destroy_all
 User.destroy_all
 
 ActiveRecord::Base.transaction do
+
   puts "Creating admin user (Devise)…"
   admin = User.create!(
     email: "admin@paris.com",
@@ -23,8 +24,8 @@ ActiveRecord::Base.transaction do
     User.create!(
       email: "#{uname}@mail.fr",
       username: uname,
-      age: 25 + idx,                       # ajuste si besoin
-      phone_number: "060000000#{idx + 1}", # ajuste si besoin
+      age: 25 + idx,
+      phone_number: "060000000#{idx + 1}",
       password: "azerty",
       password_confirmation: "azerty"
     )
@@ -32,13 +33,14 @@ ActiveRecord::Base.transaction do
 
   puts "Creating categories…"
   cats = {
-    culture:    Category.create!(name: "🏰 Culture"),
-    nature:     Category.create!(name: "🌿 Nature"),
-    sport:      Category.create!(name: "🏋️ Sport"),
+    culture: Category.create!(name: "🏰 Culture"),
+    nature: Category.create!(name: "🌿 Nature"),
+    sport: Category.create!(name: "🏋️ Sport"),
     relaxation: Category.create!(name: "🧘 Relaxation"),
-    food:       Category.create!(name: "🍣 Food"),
-    leisure:    Category.create!(name: "🎮 Leisure"),
-    nightlife:  Category.create!(name: "🍻 Nightlife")
+    food: Category.create!(name: "🍣 Food"),
+    leisure: Category.create!(name: "🎭 Leisure"),
+    bar: Category.create!(name: "🍻 Bar"),
+    nightclub: Category.create!(name: "🪩 Nightclub")
   }
 
   puts "Creating activities (English names & descriptions)…"
@@ -88,25 +90,25 @@ ActiveRecord::Base.transaction do
     { name: "Spa My Blend by Clarins", address: "16 Avenue Montaigne, 75008 Paris", description: "Bespoke luxury treatments in a peaceful, intimate setting.", category: :relaxation },
     { name: "Les Cent Ciels Spa", address: "45 Rue de Lyon, 75012 Paris", description: "Thermal hammam and massage treatments with calm surroundings for complete relaxation.", category: :relaxation },
     { name: "Cinq Mondes Spa", address: "17 Rue de Castiglione, 75001 Paris", description: "Exotic massage and beauty rituals inspired by global traditions.", category: :relaxation },
-    { name: "Spa L’Occitane", address: "30 Avenue des Champs-Élysées, 75008 Paris", description: "French-inspired wellness treatments in a chic, tranquil environment.", category: :relaxation },
+    { name: "Spa L'Occitane", address: "30 Avenue des Champs-Élysées, 75008 Paris", description: "French-inspired wellness treatments in a chic, tranquil environment.", category: :relaxation },
     { name: "Hôtel Molitor Spa", address: "13 Rue Nungesser et Coli, 75016 Paris", description: "Art Deco swimming pool with spa treatments, combining relaxation and iconic architecture.", category: :relaxation },
 
     # --- Food ---
-    { name: "Marché des Enfants Rouges", address: "39 Rue de Bretagne, 75003 Paris", description: "Paris’ oldest covered market offering diverse international food stalls and fresh products.", category: :food },
+    { name: "Marché des Enfants Rouges", address: "39 Rue de Bretagne, 75003 Paris", description: "Paris' oldest covered market offering diverse international food stalls and fresh products.", category: :food },
     { name: "Rue Montorgueil", address: "75001 Paris", description: "Lively pedestrian street with bakeries, cafés, fromageries, and restaurants.", category: :food },
     { name: "La Rue Cler", address: "Rue Cler, 75007 Paris", description: "Charming market street near the Eiffel Tower, ideal for sampling French specialties.", category: :food },
     { name: "Marché Bastille", address: "Boulevard Richard-Lenoir, 75011 Paris", description: "Open-air market with fresh produce, cheeses, meats, and street food.", category: :food },
     { name: "Marché Saint-Quentin", address: "85 bis Boulevard de Magenta, 75010 Paris", description: "Covered market with fresh ingredients and local delicacies.", category: :food },
     { name: "Rue Mouffetard Food Street", address: "75005 Paris", description: "Historic street with lively food vendors, bakeries, and cafés.", category: :food },
-    { name: "Marché d’Aligre", address: "Place d’Aligre, 75012 Paris", description: "Colorful market with fresh produce, flowers, and vintage finds.", category: :food },
+    { name: "Marché d'Aligre", address: "Place d'Aligre, 75012 Paris", description: "Colorful market with fresh produce, flowers, and vintage finds.", category: :food },
     { name: "Rue de la Huchette", address: "75005 Paris", description: "Famous for small bistros and traditional French food tucked into narrow streets.", category: :food },
     { name: "La Grande Épicerie", address: "38 Rue de Sèvres, 75007 Paris", description: "Upscale food hall offering gourmet products from all over France.", category: :food },
     { name: "Marché des Batignolles", address: "Place du Dr Félix Lobligeois, 75017 Paris", description: "Organic-focused market with fresh vegetables, meats, and cheeses.", category: :food },
 
     # --- Leisure ---
     { name: "Seine River Cruise", address: "Port de la Bourdonnais, 75007 Paris", description: "Commented cruise revealing bridges and monuments from a cinematic angle.", category: :leisure },
-    { name: "Montmartre Walking Tour", address: "75018 Paris", description: "Guided exploration of Montmartre’s winding streets, artists’ squares, and iconic cafés.", category: :leisure },
-    { name: "Batobus (Seine Hop-On Hop-Off Boat)", address: "75001 Paris", description: "Flexible boat service along the Seine, perfect for sightseeing at your own pace.", category: :leisure },
+    { name: "Montmartre Walking Tour", address: "75018 Paris", description: "Guided exploration of Montmartre's winding streets, artists' squares, and iconic cafés.", category: :leisure },
+    { name: "Batobus", address: "75001 Paris", description: "Flexible boat service along the Seine, perfect for sightseeing at your own pace.", category: :leisure },
     { name: "Paris Open-Air Cinema", address: "Parc de la Villette, 75019 Paris", description: "Summer event showcasing films under the stars in a relaxed outdoor setting.", category: :leisure },
     { name: "Picasso Sculpture Garden", address: "Musée Picasso, 75003 Paris", description: "Outdoor exhibition of sculptures in a serene courtyard.", category: :leisure },
     { name: "Latin Quarter Stroll", address: "75005 Paris", description: "Historic district with cafés, bookstores, and lively streets to wander at leisure.", category: :leisure },
@@ -116,26 +118,32 @@ ActiveRecord::Base.transaction do
     { name: "Promenade du Quai Branly", address: "75007 Paris", description: "Riverfront walk along the museum with sculptures and views of the Eiffel Tower.", category: :leisure },
 
     # --- Nightlife ---
-    { name: "Moulin Rouge", address: "82 Boulevard de Clichy, 75018 Paris", description: "Legendary cabaret of feathers and sequins—the home of the French cancan.", category: :nightlife },
-    { name: "Rex Club", address: "5 Boulevard Poissonnière, 75002 Paris", description: "Temple of Paris’s electronic scene with curated line-ups for techno lovers.", category: :nightlife },
-    { name: "Le Baron", address: "6 Avenue Marceau, 75008 Paris", description: "Exclusive nightclub with chic crowd and iconic DJ sets.", category: :nightlife },
-    { name: "La Bellevilloise", address: "19-21 Rue Boyer, 75020 Paris", description: "Concerts, exhibitions, and parties in a former factory space.", category: :nightlife },
-    { name: "Experimental Cocktail Club", address: "37 Rue Saint-Sauveur, 75002 Paris", description: "Trendy bar with creative cocktails and a lively atmosphere.", category: :nightlife },
-    { name: "Le Perchoir", address: "14 Rue Crespin du Gast, 75011 Paris", description: "Rooftop bar with panoramic city views and stylish cocktails.", category: :nightlife },
-    { name: "L’Arc Paris", address: "12 Rue de Presbourg, 75016 Paris", description: "Upscale nightclub near Arc de Triomphe with a glamorous vibe.", category: :nightlife },
-    { name: "Chez Moune", address: "33 Rue Saintonge, 75003 Paris", description: "Intimate cocktail bar with vintage Parisian style.", category: :nightlife },
-    { name: "Badaboum", address: "2 bis Rue des Taillandiers, 75011 Paris", description: "Club and live venue mixing electronic music with eclectic performances.", category: :nightlife },
-    { name: "La Machine du Moulin Rouge", address: "90 Boulevard de Clichy, 75018 Paris", description: "Club hosting DJ sets and concerts, combining modern beats with historic cabaret energy.", category: :nightlife }
+    { name: "Moulin Rouge", address: "82 Boulevard de Clichy, 75018 Paris", description: "Legendary cabaret of feathers and sequins—the home of the French cancan.", category: :nightclub },
+    { name: "Rex Club", address: "5 Boulevard Poissonnière, 75002 Paris", description: "Temple of Paris's electronic scene with curated line-ups for techno lovers.", category: :nightclub },
+    { name: "Le Baron", address: "6 Avenue Marceau, 75008 Paris", description: "Exclusive nightclub with chic crowd and iconic DJ sets.", category: :nightclub },
+    { name: "La Bellevilloise", address: "19-21 Rue Boyer, 75020 Paris", description: "Concerts, exhibitions, and parties in a former factory space.", category: :bar },
+    { name: "Experimental Cocktail Club", address: "37 Rue Saint-Sauveur, 75002 Paris", description: "Trendy bar with creative cocktails and a lively atmosphere.", category: :bar },
+    { name: "Le Perchoir", address: "14 Rue Crespin du Gast, 75011 Paris", description: "Rooftop bar with panoramic city views and stylish cocktails.", category: :bar },
+    { name: "L'Arc Paris", address: "12 Rue de Presbourg, 75016 Paris", description: "Upscale nightclub near Arc de Triomphe with a glamorous vibe.", category: :nightclub },
+    { name: "Chez Moune", address: "33 Rue Saintonge, 75003 Paris", description: "Intimate cocktail bar with vintage Parisian style.", category: :bar },
+    { name: "Badaboum", address: "2 bis Rue des Taillandiers, 75011 Paris", description: "Club and live venue mixing electronic music with eclectic performances.", category: :nightclub },
+    { name: "La Machine du Moulin Rouge", address: "90 Boulevard de Clichy, 75018 Paris", description: "Club hosting DJ sets and concerts, combining modern beats with historic cabaret energy.", category: :nightclub }
   ]
 
   activities.each do |attrs|
-    Activity.create!(
-      name:        attrs[:name],
+    activity = Activity.new(
+      name: attrs[:name],
       description: attrs[:description],
-      address:     attrs[:address],
-      category:    cats.fetch(attrs[:category]),
-      user:        admin
+      address: attrs[:address],
+      category: cats.fetch(attrs[:category]),
+      user: admin
     )
+    activity.photo.attach(
+    io: File.open("public/images/#{activity.name}.jpeg"),
+    filename: "#{activity.name}.jpeg", # use the extension of the attached file here
+    content_type: 'image/jpeg' # use the mime type of the attached file here
+    )
+    activity.save!
   end
 
   puts "✅ Seed OK — Users: #{User.count}, Categories: #{Category.count}, Activities: #{Activity.count}"
@@ -188,7 +196,7 @@ PHOTO_URLS = {
   "Spa My Blend by Clarins" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/My_Blend_Spa_Paris.jpg",
   "Les Cent Ciels Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Les_Cent_Ciels_Spa_Paris.jpg",
   "Cinq Mondes Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Cinq_Mondes_Spa_Paris.jpg",
-  "Spa L’Occitane" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Spa_LOccitane_Paris.jpg",
+  "Spa L'Occitane" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Spa_LOccitane_Paris.jpg",
   "Hôtel Molitor Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Hotel_Molitor_Spa_Paris.jpg",
 
   # --- Food ---
@@ -198,14 +206,14 @@ PHOTO_URLS = {
   "Marché Bastille" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Bastille_Paris.jpg",
   "Marché Saint-Quentin" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Saint_Quentin_Paris.jpg",
   "Rue Mouffetard Food Street" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Rue_Mouffetard_Paris.jpg",
-  "Marché d’Aligre" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Aligre_Paris.jpg",
+  "Marché d'Aligre" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Aligre_Paris.jpg",
   "Rue de la Huchette" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Rue_de_la_Huchette_Paris.jpg",
   "La Grande Épicerie" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Grande_Epicerie_Paris.jpg",
   "Marché des Batignolles" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Batignolles_Paris.jpg",
 
   # --- Leisure ---
   "Montmartre Walking Tour" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Montmartre_Walk_Paris.jpg",
-  "Batobus (Seine Hop-On Hop-Off Boat)" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Batobus_Paris.jpg",
+  "Batobus" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Batobus_Paris.jpg",
   "Paris Open-Air Cinema" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Open_Air_Cinema_Paris.jpg",
   "Picasso Sculpture Garden" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Picasso_Sculpture_Garden_Paris.jpg",
   "Latin Quarter Stroll" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Latin_Quarter_Paris.jpg",
@@ -219,34 +227,31 @@ PHOTO_URLS = {
   "La Bellevilloise" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/La_Bellevilloise_Paris.jpg",
   "Experimental Cocktail Club" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Experimental_Cocktail_Club_Paris.jpg",
   "Le Perchoir" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Le_Perchoir_Paris.jpg",
-  "L’Arc Paris" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/LArc_Paris.jpg",
+  "L'Arc Paris" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/LArc_Paris.jpg",
   "Chez Moune" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Chez_Moune_Paris.jpg",
   "Badaboum" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Badaboum_Paris.jpg",
   "La Machine du Moulin Rouge" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/La_Machine_Moulin_Rouge_Paris.jpg"
 }
 
-puts "Attaching Cloudinary photos to Activities…"
-PHOTO_URLS.each do |activity_name, url|
-  act = Activity.find_by(name: activity_name)
-  unless act
-    warn "⚠️ Not found: #{activity_name}"
-    next
-  end
+# puts "Attaching Cloudinary photos to Activities…"
+# PHOTO_URLS.each do |activity_name, url|
+#   act = Activity.find_by(name: activity_name)
+#   unless act
+#     warn "⚠️ Not found: #{activity_name}"
+#     next
+#   end
 
-  # Décommente si tu veux remplacer une photo existante
-  # act.photo.purge if act.photo.attached?
+#   next if act.photo.attached?
 
-  next if act.photo.attached?
-
-  file = URI.open(url)
-  act.photo.attach(
-    io: file,
-    filename: File.basename(URI.parse(url).path),
-    content_type: "image/jpeg"
-  )
-  puts "✔ Attached: #{activity_name}"
-rescue => e
-  warn "⚠️ #{activity_name}: #{e.message}"
-end
+#   file = URI.open(url)
+#   act.photo.attach(
+#     io: file,
+#     filename: File.basename(URI.parse(url).path),
+#     content_type: "image/jpeg"
+#   )
+#   puts "✔ Attached: #{activity_name}"
+# rescue => e
+#   warn "⚠️ #{activity_name}: #{e.message}"
+# end
 
 end

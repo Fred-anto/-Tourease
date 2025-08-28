@@ -62,7 +62,7 @@ class ActivitiesController < ApplicationController
     @favorite_activities ||= []
     @created_activities ||= []
   end
-  
+
   def destroy
    @activity = current_user.activities.find(params[:id])
    @activity.destroy
