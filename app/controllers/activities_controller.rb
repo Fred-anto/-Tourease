@@ -57,7 +57,7 @@ class ActivitiesController < ApplicationController
     @created_activities ||= []
   end
 
-   def destroy
+  def destroy
     @activity = current_user.activities.find(params[:id])
     @activity.destroy
     redirect_back fallback_location: my_activities_activities_path, notice: "Activity deleted."
