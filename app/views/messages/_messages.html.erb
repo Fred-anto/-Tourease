@@ -1,7 +1,7 @@
 <% messages.each do |message| %>
   <div class="mb-3 d-flex <%= message.role == 'user' ? 'justify-content-end' : 'justify-content-start' %>">
-    <div class="<%= message.role == 'user' ? 'text-white' : '' %> px-4 py-3 rounded-5 shadow-sm"
-        style="<%= message.role == 'assistant' ? 'background-color:#e0e0e0; color:#333;' : 'background-color:#00A5CF73' %>;
+    <div class="<%= message.role == 'user' ? 'text-white' : '' %> px-4 py-3 rounded-4 shadow-sm"
+        style="<%= message.role == 'assistant' ? 'background-color:#e0e0e0; color:#333;' : 'background-color:#00A5CF' %>;
                 max-width: 70%;
                 font-family: 'Segoe UI', Roboto, sans-serif;
                 font-size: 0.95rem;
@@ -15,7 +15,7 @@
               <h6 class="fw-bold mb-2" style="color:#333;"><%= day %></h6>
               <% activities.each do |activity| %>
                 <div class="mb-3">
-                  <div class="border rounded p-3 mb-2" style="background-color:#e7e7e7; border-color:#bbb; color:#333;">
+                  <div class="border rounded-4 p-3 mb-2" style="background-color:#e7e7e7; border-color:#bbb; color:#333;">
                     <div class="fw-bold mb-1" style="font-size:1rem;"><%= activity["name"] %> (<%= activity["category"] %>)</div>
                     <div class="text-muted mb-1" style="font-size:0.85rem;"><%= activity["start_date_time"] %> - <%= activity["end_date_time"] %></div>
                     <div style="margin-bottom:0.3rem;"><%= activity["description"] %></div>
