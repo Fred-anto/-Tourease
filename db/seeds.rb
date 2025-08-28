@@ -70,7 +70,6 @@ ActiveRecord::Base.transaction do
     { name: "Promenade Plantée", address: "75012 Paris", description: "Elevated green walkway built on old railway tracks, inspiring the NYC High Line. Ideal for strolling or jogging.", category: :nature },
 
     # --- Sport ---
-    { name: "Stade de France", address: "ZAC Paris Nord 2, 93216 Saint-Denis", description: "Iconic stadium hosting football, rugby, and concerts. Guided tours allow behind-the-scenes access.", category: :sport },
     { name: "Accor Arena", address: "8 Boulevard de Bercy, 75012 Paris", description: "Indoor venue for sports events and concerts. Experience thrilling matches from VIP to general seating.", category: :sport },
     { name: "Roland Garros", address: "2 Avenue Gordon Bennett, 75016 Paris", description: "Legendary tennis stadium, home to the French Open. Off-season tours highlight the courts and museum.", category: :sport },
     { name: "Paris Jean-Bouin Stadium", address: "1 Rue Nicole-Reine Lepaute, 75016 Paris", description: "Multi-purpose stadium mainly for rugby and football, offering an electric atmosphere during matches.", category: :sport },
@@ -98,7 +97,7 @@ ActiveRecord::Base.transaction do
     { name: "Rue Montorgueil", address: "75001 Paris", description: "Lively pedestrian street with bakeries, cafés, fromageries, and restaurants.", category: :food },
     { name: "La Rue Cler", address: "Rue Cler, 75007 Paris", description: "Charming market street near the Eiffel Tower, ideal for sampling French specialties.", category: :food },
     { name: "Marché Bastille", address: "Boulevard Richard-Lenoir, 75011 Paris", description: "Open-air market with fresh produce, cheeses, meats, and street food.", category: :food },
-    { name: "Marché Saint-Quentin", address: "85 bis Boulevard de Magenta, 75010 Paris", description: "Covered market with fresh ingredients and local delicacies.", category: :food },
+    { name: "Marché Saint-Quentin", address: "85 bis Boulevard de Magenta, 75010 Paris, France", description: "Covered market with fresh ingredients and local delicacies.", category: :food },
     { name: "Rue Mouffetard Food Street", address: "75005 Paris", description: "Historic street with lively food vendors, bakeries, and cafés.", category: :food },
     { name: "Marché d'Aligre", address: "Place d'Aligre, 75012 Paris", description: "Colorful market with fresh produce, flowers, and vintage finds.", category: :food },
     { name: "Rue de la Huchette", address: "75005 Paris", description: "Famous for small bistros and traditional French food tucked into narrow streets.", category: :food },
