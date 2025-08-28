@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_27_104119) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_28_131137) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "vector"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -52,6 +53,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_27_104119) do
     t.text "description"
     t.float "latitude"
     t.float "longitude"
+    t.vector "embedding", limit: 1536
     t.index ["category_id"], name: "index_activities_on_category_id"
     t.index ["user_id"], name: "index_activities_on_user_id"
   end
