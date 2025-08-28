@@ -58,12 +58,14 @@
         padding: 0.5rem 0.75rem;
 
         /* hauteur FIXE = 2 lignes + padding */
-        height: calc(2.5em + 1rem);
+        min-height: calc(2.5em + 1rem);
 
         /* footer en bas de la card */
         margin-top: auto;
 
-        display: block;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
         p {
           margin: 0 !important;      // annule Bootstrap (ex: mb-1)
