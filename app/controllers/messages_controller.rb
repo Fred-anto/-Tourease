@@ -60,7 +60,7 @@ class MessagesController < ApplicationController
 
   def system_prompt
       "You are a professional tour guide. I am a #{@user.age}-year-old tourist visiting #{@trip.destination} from #{@trip.start_date} to #{@trip.end_date}.
-      Help me plan a #{@trip.mood} trip with daily activities. Your task is to recommend the most relevant activities
+      Help me plan a #{@trip.mood} trip with daily activities. Your task is to recommend the most relevant activities.
 
       Requirements:
       1. Output **strictly in valid JSON format**, with no additional text.
