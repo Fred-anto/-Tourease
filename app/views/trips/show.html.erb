@@ -52,9 +52,10 @@
             <% else %>
               <div class="col-12">
                 <%# <div class="empty-state"><%= markdown(@trip.description) %><%# </div> %>
-                  <%= week_calendar(attribute: :start_date_time, end_attribute: :end_date_time) do |date| %>
+                 <!-- <%= week_calendar(attribute: :start_date_time, end_attribute: :end_date_time, start_date: @calendar_start_date) do |date| %>
+
                     <div>
-                      <%= date %>
+                      <%= date.strftime("%d-%m-%Y") %>
 
                       <% @trip.trip_activities.each do |activity| %>
                         <% if activity.start_date_time.to_date <= date && activity.end_date_time.to_date >= date %>
@@ -64,7 +65,7 @@
                         <% end %>
                       <% end %>
                     </div>
-                  <% end %>
+                  <% end %> -->
               </div>
             <% end %>
           </div>
@@ -72,9 +73,7 @@
           <div class="d-flex flex-wrap gap-3 mt-4">
             <%= button_to "🚀 Enhance with guAIde", chats_path(trip_id: @trip.id), method: :post, class: "btn btn-primary" %>
             <%= button_to "🔎 Find activities", trip_trip_activities_path(trip_id: @trip.id), method: :get, class: "btn btn-primary" %>
-            <%# <%= link_to "🗑️ Delete", trip_path(@trip),
-                  data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this trip?" },
-                  class: "btn btn-outline-danger" %>
+
           </div>
         </div>
       </div>

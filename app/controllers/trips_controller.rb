@@ -14,6 +14,16 @@ class TripsController < ApplicationController
     @chats = current_user.chats
                          .where(trip: @trip)
                          .order(:created_at)
+    @trip = Trip.find(params[:id])
+
+    @calendar_start_date =
+      if params[:start_date].present?
+        Date.parse(params[:start_date])
+      elsif @trip.start_date.present?
+        @trip.start_date.to_date
+      else
+        Date.current
+      end
   end
 
   def create
