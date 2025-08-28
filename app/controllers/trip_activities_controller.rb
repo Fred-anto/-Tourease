@@ -3,6 +3,7 @@ class TripActivitiesController < ApplicationController
 
   def index
     @categories = @trip.categories.includes(:activities)
+    @activities = Activity.where(category: @trip.categories)
   end
 
   def create
