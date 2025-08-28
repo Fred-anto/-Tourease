@@ -13,13 +13,13 @@
           </div>
 
           <% if user_signed_in? %>
-            <div class="ms-3">
+            <div class="ms-3 d-flex flex-column align-items-center gap-2">
               <% if current_user.favorited?(@activity) %>
                 <%= button_to unfavorite_activity_path(@activity),
                               method: :delete,
                               class: "btn btn-outline-danger d-flex align-items-center justify-content-center",
                               style: "width: 50px; height: 50px; font-size: 24px; border-radius: 50%;" do %>
-                  ❤️
+                  <i class="fa-regular fa-heart bg-red"></i>
                 <% end %>
               <% else %>
                 <%= button_to favorite_activity_path(@activity),
@@ -29,13 +29,21 @@
                   <i class="fa-regular fa-heart"></i>
                 <% end %>
               <% end %>
+              <% if params[:trip_id].present? %>
+              <%= button_to "➕ Add to Trip",
+                    trip_trip_activities_path(@trip, activity_id: @activity.id),
+                    method: :post,
+                    class: "btn btn-primary mt-2" %>
+              <% end %>
             </div>
           <% end %>
         </div>
 
         <div class="card h-100">
           <% if @activity.photo.attached? %>
+
             <%= cl_image_tag @activity.photo.key, class: "card-img-top" %>
+
           <% else %>
             <%= image_tag "placeholder.svg", class: "card-img-top" %>
           <% end %>

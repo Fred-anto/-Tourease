@@ -1,12 +1,16 @@
 #div_chat_title {
-  min-width: 300px;   /* largeur minimale */
   background-color: #00A5CF73;
   height: 60px;
+  flex: 1;                 /* prend tout l'espace restant à droite */
+  min-width: 0;            /* essentiel pour que flex-item respecte l'ellipsis */
+  overflow: hidden;
 }
 
+
 #chat_title {
+  white-space: nowrap;      /* nécessaire pour text-overflow */
   overflow: hidden;
-  width: 100%;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  margin: 0;
+  width: 100%;
 }
