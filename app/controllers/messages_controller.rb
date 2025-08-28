@@ -2,20 +2,65 @@ class MessagesController < ApplicationController
 
   def create
     @chat = Chat.find(params[:chat_id])
-
-    if @chat.trip
-      @trip = @chat.trip
-      @activities = Activity.all
-    end
+    @user = @chat.user
     @message = @chat.messages.new(role: "user", content: params[:message][:content])
+    @trip = @chat.trip if @chat.trip
 
     if @message.save
+
       build_conversation_history
-      @chat_message.ask(@message.content)
-      @user = @chat.user
-      system_prompt =
+
+      #embedding
+      embedding = RubyLLM.embed(params[:message][:content])
+      activities = Activity.nearest_neighbors(:embedding, embedding.vectors, distance: "euclidean")
+
+      instructions = system_prompt
+      instructions += activities.map { |activity| activity_prompt(activity) }.join("\n\n")
+
+      response = @chat_message.with_instructions(instructions).ask(@message.content.to_s)
+
+      @chat.messages.create(role: "assistant", content: response.content, parsed_content: JSON.parse(response.content))
+
+      @chat.generate_title_from_first_message if @chat.title == "New Chat"
+
+      respond_to do |format|
+        format.turbo_stream # va chercher `app/views/messages/create.turbo_stream.erb`
+        format.html { redirect_to chat_path(@chat) }
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "new_message",
+            partial: "messages/form",
+            locals: { chat: @chat, message: @message }
+          )
+        end
+        format.html { render "chats/show", status: :unprocessable_entity }
+      end
+    end
+  end
+
+  private
+
+  def build_conversation_history
+    @chat_message = RubyLLM.chat
+    @chat.messages.each do |message|
+      @chat_message.add_message(
+        role: message.role,
+        content: message.content
+      )
+    end
+  end
+
+  def activity_prompt(activity)
+    "ACTIVITY id: #{activity.id}, name: #{activity.name}, description: #{activity.description}, \
+    address: #{activity.address}, category: #{activity.category.name}, latitude: #{activity.latitude}, longitude: #{activity.longitude}"
+  end
+
+  def system_prompt
       "You are a professional tour guide. I am a #{@user.age}-year-old tourist visiting #{@trip.destination} from #{@trip.start_date} to #{@trip.end_date}.
-      Help me plan a #{@trip.mood} trip with daily activities including must-see and trendy spots.
+      Help me plan a #{@trip.mood} trip with daily activities. Your task is to recommend the most relevant activities
 
       Requirements:
       1. Output **strictly in valid JSON format**, with no additional text.
@@ -60,40 +105,7 @@ class MessagesController < ApplicationController
         'notes': 'Yes, the best time to visit the Eiffel Tower is in the morning to avoid crowds.'
           }
         ]
-      }"
-
-      response = @chat_message.with_instructions(system_prompt).ask(@message.content.to_s)
-      @chat.messages.create(role: "assistant", content: response.content, parsed_content: JSON.parse(response.content))
-
-      @chat.generate_title_from_first_message if @chat.title == "New Chat"
-
-      respond_to do |format|
-        format.turbo_stream # va chercher `app/views/messages/create.turbo_stream.erb`
-        format.html { redirect_to chat_path(@chat) }
-      end
-    else
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-            "new_message",
-            partial: "messages/form",
-            locals: { chat: @chat, message: @message }
-          )
-        end
-        format.html { render "chats/show", status: :unprocessable_entity }
-      end
-    end
-  end
-
-  private
-
-  def build_conversation_history
-    @chat_message = RubyLLM.chat
-    @chat.messages.each do |message|
-      @chat_message.add_message(
-        role: message.role,
-        content: message.content
-      )
-    end
+      }
+      Here are the nearest activities based on the user's question and chosen categories: "
   end
 end
