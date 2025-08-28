@@ -1,5 +1,5 @@
 <div class="container my-4 d-flex justify-content-center">
-  <div class="profile-edit w-100">
+  <div class="profile-edit col-6">
     <div class="card mx-auto">
       <div class="card-header bg-primary">
         <h2>Sign up ✨</h2>
@@ -8,8 +8,8 @@
       <div class="card-body">
         <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
           <%= f.error_notification %>
-
           <div class="form-inputs">
+
             <%= f.input :username,
                         required: true,
                         input_html: { autocomplete: "username" } %>

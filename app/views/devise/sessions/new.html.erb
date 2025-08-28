@@ -1,20 +1,24 @@
 <div class="container my-4 d-flex justify-content-center">
-  <div class="profile-edit w-100">
+  <div class="profile-edit col-6">
     <div class="card mx-auto">
       <div class="card-header bg-primary">
         <h2>Log in 🔐</h2>
       </div>
+
       <div class="card-body">
         <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
           <%= f.error_notification %>
           <div class="form-inputs">
+
             <%= f.input :email,
                         required: true,
                         autofocus: true,
                         input_html: { autocomplete: "email" } %>
+
             <%= f.input :password,
                         required: true,
                         input_html: { autocomplete: "current-password" } %>
+
             <% if devise_mapping.rememberable? %>
               <div class="form-group mb-3">
                 <div class="form-check">
@@ -24,10 +28,12 @@
               </div>
             <% end %>
           </div>
+
           <div class="d-flex align-items-center gap-2">
             <%= f.button :submit, "Log in", class: "btn btn-primary"%>
           </div>
         <% end %>
+
         <div style="margin-top: 20px;">
           <h6>New to TourEase?<%= render "devise/shared/links"%></h6>
         </div>

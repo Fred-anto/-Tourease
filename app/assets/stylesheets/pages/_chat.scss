@@ -1,0 +1,12 @@
+#div_chat_title {
+  min-width: 300px;   /* largeur minimale */
+  background-color: #00A5CF73;
+  height: 60px;
+}
+
+#chat_title {
+  overflow: hidden;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

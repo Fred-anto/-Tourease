@@ -1,6 +1,5 @@
 class Chat < ApplicationRecord
   belongs_to :trip, optional: true
-  # belongs_to :activity
   belongs_to :user
 
   has_many :messages, dependent: :destroy

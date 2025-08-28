@@ -5,12 +5,14 @@
         <div class="card-header bg-primary text-white">
           <h2 class="mb-0">Create a New Trip 🌍</h2>
         </div>
+
         <div class="card-body">
           <%= simple_form_for @trip do |f| %>
             <div class="form-group">
               <%= f.input :name, label: 'My Trip Name', input_html: { class: 'form-control' } %>
               <%= f.input :destination, label: 'Trip Destination', input_html: { class: 'form-control' } %>
             </div>
+
             <div class="form-group">
               <div class="row">
                 <div class="col-md-6">
@@ -21,12 +23,29 @@
                 </div>
               </div>
             </div>
+
             <div class="form-group">
               <%= f.input :mood, as: :select,
                           collection: ["🏡 Family", "🤝 Friends", "👩‍❤️‍💋‍👨 Romance"],
                           label: 'Mood',
                           input_html: { class: 'form-control' } %>
             </div>
+
+            <div class="form-group">
+              <label class="form-label mb-2">Pick categories</label>
+                <div class="category-grid">
+                  <% Category.all.each do |category| %>
+                    <% checkbox_id = "trip_category_ids_#{category.id}" %>
+                    <div class="category-tile">
+                      <%= f.check_box :category_ids, { multiple: true, id: checkbox_id, class: "category-checkbox" }, category.id, nil %>
+                      <label for="<%= checkbox_id %>" class="category-content">
+                        <%= category.name %>
+                      </label>
+                    </div>
+                  <% end %>
+                </div>
+                </div>
+
             <div class="form-group d-flex mt-4 gap-4">
               <%= f.submit '➕ Create trip', class: 'btn btn-primary' %>
               <%# <%= button_to "Plan your trip with guAIde", chats_path, method: :post, class: "btn btn-primary" %>

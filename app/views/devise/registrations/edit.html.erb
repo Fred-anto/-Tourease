@@ -2,6 +2,7 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card shadow-sm">
+
         <div class="card-header bg-primary d-flex justify-content-between align-items-center">
           <h2 class="mb-0">Edit profile ✏️</h2>
           <%= link_to registration_path(resource_name),
@@ -11,12 +12,14 @@
             <i class="fas fa-trash-alt"></i>
           <% end %>
         </div>
+
         <div class="card-body">
           <%= simple_form_for(resource,
                               as: resource_name,
                               url: registration_path(resource_name),
                               html: { method: :put, multipart: true }) do |f| %>
             <%= f.error_notification %>
+
             <div class="form-group avatar-field mb-4">
               <label class="form-label fw-600 mb-2" style="color: var(--c-900);">Avatar</label>
               <div class="avatar-uploader d-flex align-items-center gap-3">
@@ -36,6 +39,7 @@
                             input_html: { id: "user_avatar", accept: "image/*", class: "d-none" } %>
               </div>
             </div>
+
             <div class="form-group">
               <%= f.input :email,
                           label: 'Email',
@@ -49,12 +53,12 @@
                 </p>
               <% end %>
             </div>
+
             <div class="form-group">
               <div class="row">
                 <div class="col-md-6">
                   <%= f.input :password,
                               label: 'New password',
-                              hint: "Leave blank if you don't want to change it",
                               required: false,
                               input_html: { autocomplete: "new-password", class: 'form-control' } %>
                 </div>
@@ -66,6 +70,7 @@
                 </div>
               </div>
             </div>
+
             <div class="form-group">
               <%= f.input :current_password,
                           label: 'Current password',
@@ -73,12 +78,14 @@
                           required: true,
                           input_html: { autocomplete: "current-password", class: 'form-control' } %>
             </div>
+
             <div class="form-group d-flex mt-4 gap-3 flex-wrap">
               <%= f.submit 'Update', class: 'btn btn-primary' %>
             </div>
           <% end %>
         </div>
       </div>
+
       <div class="danger-actions d-flex mt-4 mb-4 align-items-center justify-content-end">
         <%= button_to "Log out",
                       destroy_user_session_path,

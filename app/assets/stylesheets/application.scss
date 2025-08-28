@@ -29,7 +29,10 @@
 @import "users/edit";
 @import "users/new";
 
+@import "trips/new";
+
 @import "components/avatar_edit";
+@import "simple_calendar";
 
 body {
   font-family: $font-family-sans-serif;

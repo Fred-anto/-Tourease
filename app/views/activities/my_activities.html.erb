@@ -9,29 +9,26 @@
         <div class="swipe-carousel" data-controller="swipe">
           <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Favorites activities">
             <% @favorite_activities.each do |activity| %>
-              <div class="card h-100">
+              <div class="card h-100 position-relative">
                 <% if activity.photo.attached? %>
                   <%= image_tag activity.photo.variant(resize_to_fill: [600, 300]).processed, class: "card-img-top" %>
                 <% else %>
                   <%= image_tag "placeholder.svg", class: "card-img-top" %>
                 <% end %>
+
                 <div class="card-body">
                   <h5 class="card-title mb-1"><b><%= activity.name %></b></h5>
                   <h5 class="card-title mb-1"><%= activity.description %></h5>
                   <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
                 </div>
+
                 <div class="card-footer bg-transparent">
                   <p class="mb-1"><%= activity.address %></p>
                 </div>
+                <!-- Pas de poubelle ici -->
               </div>
             <% end %>
           </div>
-        </div>
-      <% else %>
-        <div class="text-center my-5">
-          <i class="fa-regular fa-face-sad-tear fa-3x text-muted mb-3"></i>
-          <p class="mb-2">Nothing here yet...</p>
-          <%= link_to "✨ Find some activities here", activities_path, class: "btn btn-outline-primary rounded-4" %>
         </div>
       <% end %>
 
@@ -40,20 +37,30 @@
         <div class="swipe-carousel" data-controller="swipe">
           <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Your created activities">
             <% @created_activities.each do |activity| %>
-              <div class="card h-100">
+              <div class="card h-100 position-relative">
                 <% if activity.photo.attached? %>
                   <%= image_tag activity.photo.variant(resize_to_fill: [600, 300]).processed, class: "card-img-top" %>
                 <% else %>
                   <%= image_tag "placeholder.svg", class: "card-img-top" %>
                 <% end %>
+
                 <div class="card-body">
                   <h5 class="card-title mb-1"><b><%= activity.name %></b></h5>
                   <h5 class="card-title mb-1"><%= activity.description %></h5>
                   <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
                 </div>
+
                 <div class="card-footer bg-transparent">
                   <p class="mb-1"><%= activity.address %></p>
                 </div>
+
+                <%= link_to activity_path(activity),
+                      data: { turbo_method: :delete, turbo_confirm: "Delete this activity?" },
+                      class: "trash-icon bottom-right",
+                      title: "Delete activity",
+                      aria: { label: "Delete #{activity.name}" } do %>
+                  <i class="fas fa-trash-alt"></i>
+                <% end %>
               </div>
             <% end %>
           </div>
@@ -61,7 +68,11 @@
       <% end %>
 
       <% if @favorite_activities.empty? && @created_activities.empty? %>
-        <div class="alert alert-info mt-3">You don’t have any activities yet.</div>
+        <div class="text-center my-5">
+          <i class="fa-regular fa-face-sad-tear fa-3x text-muted mb-3"></i>
+          <p class="mb-2">Nothing here yet...</p>
+          <%= link_to "✨ Find some activities here", activities_path, class: "btn btn-outline-primary rounded-4" %>
+        </div>
       <% end %>
 
     </div>
