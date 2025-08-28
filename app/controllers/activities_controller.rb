@@ -27,6 +27,7 @@ class ActivitiesController < ApplicationController
   end
 
   def show
+    @trip = Trip.find(params[:trip_id]) if params[:trip_id].present?
   end
 
   def create
