@@ -15,7 +15,7 @@ def index
         }
       end
     @trips = user_signed_in? ? current_user.trips.order(created_at: :desc) : Trip.none
-    @favorites = current_user.all_favorites.select { |f| f.favoritable_type == "Activity" }.map(&:favoritable)
+    # @favorites = current_user.all_favorites.select { |f| f.favoritable_type == "Activity" }.map(&:favoritable)
     # @activities = Activity.includes(:category, :user).order(created_at: :desc)
     # @trips = user_signed_in? ? current_user.trips.order(created_at: :desc) : Trip.none
   end
