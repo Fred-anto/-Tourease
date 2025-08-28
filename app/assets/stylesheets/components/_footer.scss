@@ -6,8 +6,6 @@
 :root { --footer-h: 80px; }
 
 /* éviter le chevauchement du footer fixe */
-html, body { height: 100%; overflow-x: hidden; }
-body { padding-bottom: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px)); }
 
 /* ---------- Footer fixe ---------- */
 .footer-nav {
