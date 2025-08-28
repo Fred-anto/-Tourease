@@ -26,14 +26,15 @@
 </div>
 
 <div style="max-width: 900px; margin: 0 auto;">
-    <div id="messages" class="form group px-1 py-1" style="height: 400px; overflow-y: auto;">
+    <div id="messages" class="form group px-1 py-1" style="max-width: 900px; margin: 0 auto; padding-bottom: 80px; height: calc(100vh - 60px - 80px); overflow-y: auto;">
       <%= render "messages/messages", messages: @chat.messages, trip: @trip %>
     </div>
   </div>
 
 <div id="new_message"
-  style="position: sticky; background-color: #f8f9fa; bottom:0; padding: 0.25rem; z-index: 100">
+  style="position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            max-width: 900px; width: 100%;
+            background-color: transparent; padding: 15px 0; /* padding top/bottom */
+            z-index: 100;">
   <%= render "messages/form", chat: @chat, message: @message %>
 </div>
-
-

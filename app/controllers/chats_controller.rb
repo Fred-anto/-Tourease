@@ -1,4 +1,6 @@
 class ChatsController < ApplicationController
+  before_action :hide_footer, only: [:show]
+
   def create
     @chat = Chat.new(title: "New Chat")
     @chat.user = current_user
@@ -24,5 +26,11 @@ class ChatsController < ApplicationController
 
   def index
     @chats = current_user&.chats
+  end
+
+private
+
+  def hide_footer
+    @hide_footer = true
   end
 end
