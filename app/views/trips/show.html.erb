@@ -2,8 +2,8 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="trip-card shadow-lg">
-
         <div class="trip-card__header">
+
           <div class="d-flex justify-content-between align-items-start">
             <h1 class="title mb-0"><%= @trip.name %></h1>
             <%= link_to trip_path(@trip),
@@ -29,49 +29,52 @@
           </div>
         </div>
 
-        <div class="trip-card__body p-4 p-md-3">
+        <div class="trip-card__body p-4 p-md-5">
           <h3 class="section-title">My activities</h3>
           <div class="row g-4">
-            <% if @trip.trip_activities.any? %>
-            <div class="swipe-carousel" data-controller="swipe">
-              <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="My activities">
-                <% @trip.trip_activities.each do |trip_activity| %>
-                  <% activity = trip_activity.activity %>
-                  <div class="col-12 col-md-5">
-                    <div class="card h-100">
-
-                      <% if activity.photo.attached? %>
-                        <%= cl_image_tag activity.photo.key, class: "card-img-top" %>
-                      <% else %>
-                        <%= image_tag "placeholder.svg", class: "card-img-top" %>
-                      <% end %>
-
-                      <div class="card-body">
-                        <h5 class="card-title"><b><%= activity.name %></b></h5>
-                        <p class="card-text text-muted mb-0"><%= activity.description %></p>
-                        <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
-                      </div>
-
-                      <div class="card-footer">
-                        <p class="mb-0"><%= activity.address %></p>
-
-                      </div>
-                    </div>
+            <% @trip.trip_activities.each do |trip_activity| %>
+              <div class="col-12 col-md-6">
+                <div class="card activity-card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title"><%= trip_activity.activity.name %></h5>
+                    <p class="card-text text-muted mb-0"><%= trip_activity.activity.description %></p>
                   </div>
-                <% end %>
-              <% else %>
-                <div class="col-12">
-                  <div class="empty-state">Nothing planned yet.</div>
+                  <div class="card-footer">
+                    <p class="mb-0"><%= trip_activity.activity.address %></p>
+                  </div>
                 </div>
-              <% end %>
-            </div>
+              </div>
+            <% end %>
+            <% if @trip.trip_activities.empty? && @trip.description.blank? %>
+              <div class="col-12">
+                <div class="empty-state">Nothing planned yet.</div>
+              </div>
+            <% else %>
+              <div class="col-12">
+                <%# <div class="empty-state"><%= markdown(@trip.description) %><%# </div> %>
+                 <!-- <%= week_calendar(attribute: :start_date_time, end_attribute: :end_date_time, start_date: @calendar_start_date) do |date| %>
 
-            <div class="d-flex flex-wrap gap-3 mt-4">
-              <%= button_to "🚀 Enhance with guAIde", chats_path(trip_id: @trip.id), method: :post, class: "btn btn-primary" %>
-              <%= button_to "🔎 Find activities", trip_trip_activities_path(trip_id: @trip.id), method: :get, class: "btn btn-primary" %>
-            </div>
+                    <div>
+                      <%= date.strftime("%d-%m-%Y") %>
+
+                      <% @trip.trip_activities.each do |activity| %>
+                        <% if activity.start_date_time.to_date <= date && activity.end_date_time.to_date >= date %>
+                          <div class="event">
+                            <%= activity.comment || "Activité" %>
+                          </div>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  <% end %> -->
+              </div>
+            <% end %>
           </div>
 
+          <div class="d-flex flex-wrap gap-3 mt-4">
+            <%= button_to "🚀 Enhance with guAIde", chats_path(trip_id: @trip.id), method: :post, class: "btn btn-primary" %>
+            <%= button_to "🔎 Find activities", trip_trip_activities_path(trip_id: @trip.id), method: :get, class: "btn btn-primary" %>
+
+          </div>
         </div>
       </div>
       <% if @chats.present? && @chats.any? %>
@@ -89,6 +92,5 @@
         </div>
       <% end %>
     </div>
-   </div>
   </div>
 </div>
