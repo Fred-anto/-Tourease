@@ -26,7 +26,7 @@
       <%= yield %>
     </main>
 
-    <%= render "layouts/shared/footer" %>
+    <%= render "layouts/shared/footer"  unless @hide_footer%>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/rangePlugin.js"></script>
@@ -37,13 +37,13 @@
 
         flatpickr("#start_date", {
           altInput: true,
-          altFormat: "d F Y",
+          altFormat: "d-m-Y",
           dateFormat: "Y-m-d",
           locale: "fr"
         })
         flatpickr("#end_date", {
           altInput: true,
-          altFormat: "d F Y",
+          altFormat: "d-m-Y",
           dateFormat: "Y-m-d",
           locale: "fr"
         })

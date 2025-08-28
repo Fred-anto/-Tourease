@@ -21,7 +21,7 @@
 
           <div class="chips">
             <% if @trip.start_date.present? %>
-              <span class="chip">📅 <%= l(@trip.start_date) %> - <%= l(@trip.end_date) %></span>
+              <span class="chip">📅 <%= l(@trip.start_date, format: "%d %B %Y") %> - <%= l(@trip.end_date, format: "%d %B %Y") %></span>
             <% end %>
             <% if @trip.mood.present? %>
               <span class="chip chip--mint"><%= @trip.mood %></span>
@@ -71,25 +71,27 @@
 
           <div class="d-flex flex-wrap gap-3 mt-4">
             <%= button_to "🚀 Enhance with guAIde", chats_path(trip_id: @trip.id), method: :post, class: "btn btn-primary" %>
+            <%= button_to "🔎 Find activities", trip_trip_activities_path(trip_id: @trip.id), method: :get, class: "btn btn-primary" %>
             <%# <%= link_to "🗑️ Delete", trip_path(@trip),
                   data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this trip?" },
                   class: "btn btn-outline-danger" %>
           </div>
         </div>
       </div>
-
-      <div class="mt-4 text-center">
-        <h2 class="mb-3">Previous conversations:</h2>
-        <div class="row g-2 justify-content-center">
-          <% @chats.each do |chat| %>
-            <div class="col-12">
-              <%= link_to chat.title, chat_path(chat),
-                    class: "badge d-block text-truncate bg-light px-3 py-2 rounded-3 text-dark text-decoration-none conversation-badge",
-                    style: "max-width: 100%;" %>
-            </div>
-          <% end %>
+      <% if @chats.present? && @chats.any? %>
+        <div class="mt-4 text-center">
+          <h2 class="mb-3">Previous conversations:</h2>
+          <div class="row g-2 justify-content-center">
+            <% @chats.each do |chat| %>
+              <div class="col-12">
+                <%= link_to chat.title, chat_path(chat),
+                      class: "badge d-block text-truncate bg-light px-3 py-2 rounded-3 text-dark text-decoration-none conversation-badge",
+                      style: "max-width: 100%;" %>
+              </div>
+            <% end %>
+          </div>
         </div>
-      </div>
+      <% end %>
     </div>
   </div>
 </div>

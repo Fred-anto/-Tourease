@@ -3,6 +3,8 @@ class Activity < ApplicationRecord
   has_one_attached :photo
   belongs_to :category
   belongs_to :user
+  has_many :trip_activities, dependent: :destroy
+  has_many :trips, through: :trip_categories
 
   has_neighbors :embedding
   after_create :set_embedding

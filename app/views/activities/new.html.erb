@@ -1,22 +1,45 @@
-<div class="container mt-5">
+<div class="container mt-5 creations-new">
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-          <h2 class="mb-0">Create a New Activity</h2>
+          <h2 class="mb-0">Create a New Activity ✨</h2>
         </div>
+
         <div class="card-body">
-          <%= simple_form_for @activity do |f| %>
-            <div class="form-group">
-              <%= f.input :photo, as: :file, label: "Photo", input_html: { class: 'form-control' } %>
-              <%= f.input :name, label: 'Activity Name', input_html: { class: 'form-control' } %>
-              <%= f.input :address, label: 'Activity Address', input_html: { class: 'form-control' } %>
-              <%= f.input :description, label: 'Activity Description', input_html: { class: 'form-control' } %>
-              <%= f.association :category, label: "Select a Category", input_html: { class: "form-control" } %>
+          <%= simple_form_for @activity, html: { multipart: true } do |f| %>
+
+            <div class="form-group mb-3">
+              <%= f.input :photo, as: :file, label: "Photo", input_html: { class: "form-control" } %>
             </div>
-            <div class="form-group mt-3">
-              <%= f.submit '➕ Create activity', class: 'btn btn-primary mt-4'  %>
-              <%= link_to "⬅️ Back to activities", activities_path, class: 'btn btn-secondary mt-4' %>
+
+            <div class="form-group">
+              <%= f.input :name, label: "Activity Name", input_html: { class: "form-control" } %>
+              <%= f.input :address, label: "Activity Address", input_html: { class: "form-control" } %>
+            </div>
+
+            <div class="form-group">
+              <%= f.input :description, as: :text, label: "Activity Description", input_html: { rows: 4, class: "form-control" } %>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label mb-2">Pick category</label>
+              <div class="category-grid">
+                <% Category.all.each do |category| %>
+                  <% checkbox_id = "activity_category_ids_#{category.id}" %>
+                  <div class="category-tile">
+                    <%= f.radio_button :category_id, category.id, id: checkbox_id, class: "category-checkbox" %>
+                    <label for="<%= checkbox_id %>" class="category-content">
+                      <%= category.name %>
+                    </label>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+
+            <div class="form-group d-flex mt-4 gap-3">
+              <%= f.submit "➕ Create activity", class: "btn btn-primary" %>
             </div>
           <% end %>
         </div>
@@ -24,3 +47,22 @@
     </div>
   </div>
 </div>
+
+<%# <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const pageContainer = document.querySelector(".creations-new");
+    if (!pageContainer) return;
+
+    const checkboxes = pageContainer.querySelectorAll(".category-checkbox");
+
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", function() {
+        if (this.checked) {
+          checkboxes.forEach((cb) => {
+            if (cb !== this) cb.checked = false;
+          });
+        }
+      });
+    });
+  });
+</script> %>

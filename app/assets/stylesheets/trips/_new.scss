@@ -1,4 +1,4 @@
-.trips-new {
+.creations-new {
   --c-900: #004E64;
   --c-700: #00A5CF;
   --c-500: #25A18E;
@@ -98,8 +98,8 @@
   }
   .category-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 4 colonnes */
-    gap: 12px 16px; /* espace entre colonnes et lignes */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 16px;
   }
 
   .category-tile {

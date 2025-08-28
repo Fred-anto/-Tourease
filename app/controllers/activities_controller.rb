@@ -27,13 +27,14 @@ class ActivitiesController < ApplicationController
   end
 
   def show
+    @trip = Trip.find(params[:trip_id]) if params[:trip_id].present?
   end
 
   def create
     @activity = Activity.new(activity_params)
     @activity.user = current_user
     if @activity.save
-      redirect_to activities_path, notice: "activity created"
+      redirect_to my_activities_activities_path, notice: "activity created"
     else
       render :new, status: :unprocessable_entity
     end
