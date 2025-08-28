@@ -13,5 +13,4 @@ class TripActivitiesController < ApplicationController
   def set_trip_activity
     @trip_activity = TripActivity.find(params[:id])
   end
-
 end

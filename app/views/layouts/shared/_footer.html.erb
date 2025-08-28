@@ -1,52 +1,53 @@
-<nav class="footer-nav" role="navigation" aria-label="Navigation principale">
-  <div class="footer-inner">
-    <!-- Home -->
-    <%= link_to root_path, class: "footer-item #{'is-active' if current_page?(root_path)}" do %>
-      <iconify-icon icon="mdi:home" class="footer-icon <%='is-active' if current_page?(root_path)%>"></iconify-icon>
-      <span>Home</span>
-    <% end %>
-
-    <!-- My Trips -->
-    <%= link_to trips_path, class: "footer-item #{'is-active' if current_page?(trips_path)}" do %>
-      <iconify-icon icon="mdi:bag-suitcase" class="footer-icon <%='is-active' if current_page?(trips_path)%>"></iconify-icon>
-      <span>My Trips</span>
-    <% end %>
-
-    <!-- Activities -->
-    <%= link_to my_activities_activities_path, class: "footer-item #{'is-active' if current_page?(my_activities_activities_path)}" do %>
-      <iconify-icon icon="mdi:calendar-check" class="footer-icon <%='is-active' if current_page?(my_activities_activities_path)%>"></iconify-icon>
-      <span>Activities</span>
-    <% end %>
-
-    <!-- Social -->
-    <%= link_to chats_path, class: "footer-item #{'is-active' if current_page?(chats_path)}" do %>
-      <iconify-icon icon="wpf:chat" class="footer-icon <%='is-active' if current_page?(chats_path)%>"></iconify-icon>
-      <span>Social</span>
-    <% end %>
-
-    <!-- FAB (+) -->
-    <button type="button"
-            id="fabToggle"
-            class="fab-btn"
-            aria-expanded="false"
-            aria-controls="fabMenu"
-            aria-label="Add">
-      <iconify-icon icon="mdi:plus" class="fab-plus"></iconify-icon>
-    </button>
-
-    <!-- Menu des 2 actions (surimpression) -->
-    <div class="fab-menu" id="fabMenu" role="menu" aria-hidden="true">
-      <%= link_to new_trip_path, class: "fab-chip", role: "menuitem", data: { action: "fab-close" } do %>
-        <iconify-icon icon="mdi:globe-model" class="chip-ic"></iconify-icon>
-        <span>Add a trip</span>
+<% unless current_page?(chat_path) %>
+  <nav class="footer-nav" role="navigation" aria-label="Navigation principale">
+    <div class="footer-inner">
+      <!-- Home -->
+      <%= link_to root_path, class: "footer-item #{'is-active' if current_page?(root_path)}" do %>
+        <iconify-icon icon="mdi:home" class="footer-icon <%='is-active' if current_page?(root_path)%>"></iconify-icon>
+        <span>Home</span>
       <% end %>
-      <%= link_to new_activity_path, class: "fab-chip", role: "menuitem", data: { action: "fab-close" } do %>
-        <iconify-icon icon="mdi:compass-outline" class="chip-ic"></iconify-icon>
-        <span>Add an activity</span>
+
+      <!-- My Trips -->
+      <%= link_to trips_path, class: "footer-item #{'is-active' if current_page?(trips_path)}" do %>
+        <iconify-icon icon="mdi:bag-suitcase" class="footer-icon <%='is-active' if current_page?(trips_path)%>"></iconify-icon>
+        <span>My Trips</span>
       <% end %>
+
+      <!-- Activities -->
+      <%= link_to my_activities_activities_path, class: "footer-item #{'is-active' if current_page?(my_activities_activities_path)}" do %>
+        <iconify-icon icon="mdi:calendar-check" class="footer-icon <%='is-active' if current_page?(my_activities_activities_path)%>"></iconify-icon>
+        <span>Activities</span>
+      <% end %>
+
+      <!-- Social -->
+      <%= link_to chats_path, class: "footer-item #{'is-active' if current_page?(chats_path)}" do %>
+        <iconify-icon icon="wpf:chat" class="footer-icon <%='is-active' if current_page?(chats_path)%>"></iconify-icon>
+        <span>Social</span>
+      <% end %>
+
+      <!-- FAB (+) -->
+      <button type="button"
+              id="fabToggle"
+              class="fab-btn"
+              aria-expanded="false"
+              aria-controls="fabMenu"
+              aria-label="Add">
+        <iconify-icon icon="mdi:plus" class="fab-plus"></iconify-icon>
+      </button>
+
+      <!-- Menu des 2 actions (surimpression) -->
+      <div class="fab-menu" id="fabMenu" role="menu" aria-hidden="true">
+        <%= link_to new_trip_path, class: "fab-chip", role: "menuitem", data: { action: "fab-close" } do %>
+          <iconify-icon icon="mdi:globe-model" class="chip-ic"></iconify-icon>
+          <span>Add a trip</span>
+        <% end %>
+        <%= link_to new_activity_path, class: "fab-chip", role: "menuitem", data: { action: "fab-close" } do %>
+          <iconify-icon icon="mdi:compass-outline" class="chip-ic"></iconify-icon>
+          <span>Add an activity</span>
+        <% end %>
+      </div>
+
+      <!-- Backdrop -->
+      <button class="fab-backdrop" id="fabBackdrop" aria-hidden="true" tabindex="-1"></button>
     </div>
-
-    <!-- Backdrop -->
-    <button class="fab-backdrop" id="fabBackdrop" aria-hidden="true" tabindex="-1"></button>
-  </div>
-</nav>
+  </nav>
