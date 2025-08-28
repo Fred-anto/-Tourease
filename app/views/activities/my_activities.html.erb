@@ -17,8 +17,8 @@
                 <% end %>
 
                 <div class="card-body">
-                  <h5 class="card-title mb-1"><b><%= activity.name %></b></h5>
-                  <h5 class="card-title mb-1"><%= activity.description %></h5>
+                  <h5 class="card-title"><b><%= activity.name %></b></h5>
+                  <h5 class="description"><%= activity.description %></h5>
                   <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
                 </div>
 
@@ -45,8 +45,8 @@
                 <% end %>
 
                 <div class="card-body">
-                  <h5 class="card-title mb-1"><b><%= activity.name %></b></h5>
-                  <h5 class="card-title mb-1"><%= activity.description %></h5>
+                  <h5 class="card-title"><b><%= activity.name %></b></h5>
+                  <h5 class="description"><%= activity.description %></h5>
                   <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
                 </div>
 
