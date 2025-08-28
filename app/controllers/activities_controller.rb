@@ -32,7 +32,6 @@ class ActivitiesController < ApplicationController
   def create
     @activity = Activity.new(activity_params)
     @activity.user = current_user
-
     if @activity.save
       redirect_to activities_path, notice: "activity created"
     else
@@ -57,10 +56,17 @@ class ActivitiesController < ApplicationController
     @created_activities ||= []
   end
 
-   def destroy
-    @activity = current_user.activities.find(params[:id])
-    @activity.destroy
-    redirect_back fallback_location: my_activities_activities_path, notice: "Activity deleted."
+  def trip_activities
+    @favorite_activities = current_user.all_favorites.select { |f| f.favoritable_type == "Activity" }.map(&:favoritable)
+    @created_activities = current_user.activities
+    @favorite_activities ||= []
+    @created_activities ||= []
+  end
+
+  def destroy
+   @activity = current_user.activities.find(params[:id])
+   @activity.destroy
+   redirect_back fallback_location: my_activities_activities_path, notice: "Activity deleted."
   end
 
   private
