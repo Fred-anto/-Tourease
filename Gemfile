@@ -59,6 +59,7 @@ gem "redcarpet"
 gem "geocoder"
 gem 'acts_as_favoritor'
 gem "simple_calendar"
+gem "neighbor"
 
 
 group :development, :test do

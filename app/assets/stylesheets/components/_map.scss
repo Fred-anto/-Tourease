@@ -1,8 +1,69 @@
+/* Popup container */
 .mapboxgl-popup {
-  max-width: 200px;
+  max-width: none;
 }
 
+/* Neutralise style par défaut */
 .mapboxgl-popup-content {
-  text-align: center;
+  padding: 0 !important;
+  background: transparent;
+  box-shadow: none;
+  border: none;
   font-family: "Open Sans", sans-serif;
+  text-align: left;
+}
+
+/* Masque la flèche */
+.mapboxgl-popup-tip { display: none; }
+
+/* Bouton X */
+.mapboxgl-popup-close-button {
+  top: 3px;
+  right: 3px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  line-height: 1;
+  font-size: 12px;
+  text-align: center;
+  color: #333;
+  transition: background 0.2s ease;
+  &:hover { background: #eee; }
+}
+
+/* === Card ultra-compacte === */
+.map-popup-card {
+  width: 170px;                /* encore plus étroit */
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,.1);
+
+  .card-img-top {
+    width: 100%;
+    height: 90px;              /* image réduite */
+    object-fit: cover;
+    display: block;
+  }
+
+  .card-body {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .card-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .card-footer {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.7rem;
+    line-height: 1.2;
+    color: #555;
+    background: transparent;
+    border: none;
+  }
 }
