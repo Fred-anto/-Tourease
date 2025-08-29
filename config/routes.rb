@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     member do
       post :favorite
       delete :unfavorite
+      get :choose_trip
     end
   end
 

@@ -1,0 +1,33 @@
+<div class="container mt-5 creations-new">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0">Choose a Trip for <%= @activity.name %> 🌍</h2>
+        </div>
+
+        <div class="card-body">
+          <div class="row g-4">
+            <% @trips.each do |trip| %>
+              <div class="col-md-6">
+                <div class="card h-100">
+                  <%= image_tag "trip placeholder.jpg", class: "card-img-top" %>
+                  <div class="card-body">
+                    <h5 class="card-title"><b><%= trip.name %></b></h5>
+                    <%= link_to trip_trip_activities_path(trip, activity_id: @activity.id, redirect_to: trip_path(trip)),
+                                data: { turbo_method: :post },
+                                class: "stretched-link" do %>
+                    <% end %>
+                  </div>
+                  <div class="card-footer bg-transparent">
+                    <h6 class="mb-1">🌴 <%= trip.destination %></h6>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

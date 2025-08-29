@@ -71,6 +71,11 @@ class ActivitiesController < ApplicationController
    redirect_back fallback_location: my_activities_activities_path, notice: "Activity deleted."
   end
 
+  def choose_trip
+    @activity = Activity.find(params[:id])
+    @trips = current_user.trips.where("end_date > ?", Date.today)
+  end
+
   private
 
   def set_activity

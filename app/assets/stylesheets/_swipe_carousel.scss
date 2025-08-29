@@ -15,8 +15,8 @@
     .card {
       /* largeur mobile: montrer un peu la carte suivante */
       flex: 0 0 75%;
-      max-width: 75%;
-      scroll-snap-align: center;
+      width: 250px;
+      scroll-snap-align: start;
       scroll-snap-stop: always;
 
       display: flex;
@@ -147,5 +147,10 @@
     &.is-hidden { display: none; }
     &:active { transform: translateY(-50%) scale(.96); }
     &:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  }
+
+  .swipe-item {
+    flex: 0 0 auto;
+    width: 70%;
   }
 }
