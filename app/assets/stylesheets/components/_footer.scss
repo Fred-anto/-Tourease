@@ -2,30 +2,37 @@
    Footer mobile + FAB + menu bulles
    =============================== */
 
-/* hauteur du footer */
-:root { --footer-h: 80px; }
-
-/* éviter le chevauchement du footer fixe */
+/* variables */
+:root {
+  --footer-h: 80px;                    /* hauteur visible de la barre */
+  --safe-b: env(safe-area-inset-bottom, 0);
+  --fab-d: 68px;                       /* diamètre du FAB */
+  --fab-lift: 28px;                    /* remontée du FAB au-dessus de la barre */
+  --shadow-strong: 0 10px 24px rgba(0,0,0,.18), 0 4px 8px rgba(0,0,0,.12);
+  --shadow-soft:   0 6px 18px rgba(0,0,0,.08);
+  --c-deep:  #004E64;
+  --c-primary: #00A5CF;
+}
 
 /* ---------- Footer fixe ---------- */
 .footer-nav {
   position: fixed;
   left: 0; right: 0; bottom: 0;
-  height: var(--footer-h);
+  height: calc(var(--footer-h) + var(--safe-b)); /* calc() pour mixer unités */
   background: #fff;
   border-top: 1px solid #dfe7ea;
-  z-index: 9999;
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  z-index: 900; /* laissons l’overlay au-dessus */
+  padding-bottom: var(--safe-b);
 }
 
 .footer-inner {
   max-width: 900px;
   margin: 0 auto;
-  height: 100%;
+  height: var(--footer-h);
   padding: 10px 16px 18px;
   display: grid;
   /* 5 colonnes : 2 items | espace FAB | 2 items */
-  grid-template-columns: 1fr 1fr minmax(84px, 100px) 1fr 1fr;
+  grid-template-columns: 1fr 1fr minmax(72px, 100px) 1fr 1fr;
   column-gap: 12px;
   align-items: flex-end;
   text-align: center;
@@ -33,10 +40,10 @@
 }
 
 /* placer explicitement les 4 liens autour du centre */
-.footer-inner > .footer-item:nth-child(1) { grid-column: 1; }
-.footer-inner > .footer-item:nth-child(2) { grid-column: 2; }
-.footer-inner > .footer-item:nth-child(3) { grid-column: 4; }
-.footer-inner > .footer-item:nth-child(4) { grid-column: 5; }
+.footer-inner a.footer-item:nth-of-type(1) { grid-column: 1; }
+.footer-inner a.footer-item:nth-of-type(2) { grid-column: 2; }
+.footer-inner a.footer-item:nth-of-type(3) { grid-column: 4; }
+.footer-inner a.footer-item:nth-of-type(4) { grid-column: 5; }
 
 /* liens */
 .footer-item {
@@ -44,54 +51,67 @@
   align-items: center; justify-content: center;
   gap: 4px;
   text-decoration: none;
-  color: #004E64;
+  color: var(--c-deep);
   font-size: 12px; font-weight: 500; line-height: 1.2;
-  &.is-active {
-    color: var(--primary);
-  }
+  &.is-active { color: var(--c-primary); }
 }
 
 /* icônes Iconify */
 .footer-item iconify-icon.footer-icon {
   font-size: 36px;
-  color: #004E64;
-   &.is-active {
-    color: var(--primary);
-  }
+  color: var(--c-deep);
+  &.is-active { color: var(--c-primary); }
 }
 
 /* ---------- FAB (+) ---------- */
 .fab-btn {
-  position: absolute; left: 50%; transform: translateX(-50%);
-  bottom: 28px;
-  width: 68px; height: 68px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: var(--fab-lift);
+  width: var(--fab-d);
+  height: var(--fab-d);
   border: 0; border-radius: 50%;
-  background: #004E64; color: #fff;
+  background: var(--c-deep);
+  color: #fff;
   display: grid; place-items: center;
-  box-shadow: 0 10px 24px rgba(0,0,0,.18), 0 4px 8px rgba(0,0,0,.12);
-  z-index: 10000;
+  box-shadow: var(--shadow-strong);
+  z-index: 920;
+  transition: transform .18s ease-out, background .18s ease-out;
 }
 .fab-btn .fab-plus { font-size: 32px; }
 
-/* ---------- Backdrop ---------- */
+/* ---------- Backdrop (overlay) ---------- */
 .fab-backdrop {
   position: fixed; inset: 0;
   border: 0; margin: 0; padding: 0;
   background: rgba(0,0,0,.45);
   opacity: 0; pointer-events: none;
-  z-index: 10000;
+  z-index: 950;
+  transition: opacity .18s ease-out;
 }
 
-/* ---------- Menu flottant (les 2 bulles) ---------- */
+/* ---------- Menu flottant (bulles) ---------- */
 .fab-menu {
   position: fixed;
   left: 50%;
-  bottom: calc(var(--footer-h) + 16px + env(safe-area-inset-bottom, 0px)); /* juste au-dessus du footer */
-  transform: translateX(-50%);
-  display: grid; grid-auto-flow: column; gap: .7rem;
-  pointer-events: none; /* cliquable uniquement à l'ouverture */
-  z-index: 10001;
+  /* AU-DESSUS du footer + safe-area → calc() pour units mixées */
+  bottom: calc(var(--footer-h) + var(--safe-b) + 16px);
+  transform: translateX(-50%) translateY(8px);
+  z-index: 960;
 
+  /* ⚠️ remplace min(92vw, 520px) par clamp() pour éviter l’éval Sass */
+  width: clamp(280px, 92vw, 520px);
+
+  display: grid;
+  /* disposition fluide : passe de 2 colonnes à 1 si besoin */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  pointer-events: none;            /* cliquable uniquement quand ouvert */
+  opacity: 0;
+  transition: opacity .18s ease, transform .18s ease;
+
+  /* animation d’arrivée des chips */
   .fab-chip { opacity: 0; transform: translateY(8px) scale(.98); }
 }
 
@@ -101,28 +121,40 @@
   background: #fff; color: #111; text-decoration: none;
   border: 1px solid rgba(0,0,0,.06);
   border-radius: 1.4rem;
-  box-shadow: 0 6px 18px rgba(0,0,0,.08);
-  font-weight: 600; font-size: .95rem;
+  box-shadow: var(--shadow-soft);
+  font-weight: 700;
+  /* clamp() est OK avec SassC, pas d’éval d’unités */
+  font-size: clamp(14px, 3.5vw, 16px);
+  line-height: 1.2;
+  min-width: 140px;
 }
 .fab-chip .chip-ic { font-size: 1.05rem; }
 
-/* ---------- États ouverts (pilotés par JS) ---------- */
+/* ---------- États ouverts (pilotés par JS : body.fab-open) ---------- */
 body.fab-open { overflow: hidden; }
-body.fab-open .fab-backdrop { opacity: 1; pointer-events: auto; transition: opacity .18s ease-out; }
-body.fab-open .fab-btn { transform: translateX(-50%) rotate(45deg); transition: transform .18s ease-out; }
-body.fab-open .fab-menu { pointer-events: auto; }
-body.fab-open .fab-menu .fab-chip { opacity: 1; transform: none; transition: transform .2s ease-out, opacity .18s ease-out; }
+body.fab-open .fab-backdrop { opacity: 1; pointer-events: auto; }
+body.fab-open .fab-btn { transform: translateX(-50%) rotate(45deg); }
+body.fab-open .fab-menu {
+  pointer-events: auto;
+  opacity: 1; transform: translateX(-50%) translateY(0);
+}
+body.fab-open .fab-menu .fab-chip {
+  opacity: 1; transform: none;
+  transition: transform .2s ease-out, opacity .18s ease-out;
+}
 
 /* ---------- Responsive ---------- */
 @media (max-width: 420px) {
   .footer-item { font-size: 11px; }
   .footer-item iconify-icon.footer-icon { font-size: 32px; }
 
-  .fab-btn { width: 60px; height: 60px; bottom: 24px; }
-  .fab-btn .fab-plus { font-size: 28px; }
-
+  :root { --fab-d: 60px; --fab-lift: 24px; }
   .footer-inner {
-    grid-template-columns: 1fr 1fr minmax(72px, 84px) 1fr 1fr;
+    grid-template-columns: 1fr 1fr minmax(64px, 84px) 1fr 1fr;
     column-gap: 10px;
   }
+}
+
+@media (max-width: 320px) {
+  .fab-menu { width: clamp(240px, 92vw, 320px); grid-template-columns: 1fr; }
 }
