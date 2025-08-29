@@ -1,4 +1,19 @@
-<div class="p-2">
-  <h2><%= activity.name %></h2>
-  <p class="mb-0"><%= activity.address %></p>
+<!-- app/views/activities/_info_window.html.erb -->
+<div class="map-popup-card card border-0 rounded-3 overflow-hidden position-relative">
+  <% if activity.photo.attached? %>
+    <%= cl_image_tag activity.photo.key, class: "card-img-top", alt: activity.name %>
+  <% else %>
+    <%= image_tag "placeholder.svg", class: "card-img-top", alt: activity.name %>
+  <% end %>
+
+  <div class="card-body p-0">
+    <h6 class="card-title mb-0 fw-bold px-2 pt-2 pb-1"><%= activity.name %></h6>
+    <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
+  </div>
+
+  <% if activity.category.present? %>
+    <div class="card-footer bg-transparent border-0 px-2 pt-1 pb-2">
+      <p class="mb-0 small"> <%= activity.category.name %></p>
+    </div>
+  <% end %>
 </div>
