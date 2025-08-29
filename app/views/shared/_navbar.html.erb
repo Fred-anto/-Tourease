@@ -6,7 +6,7 @@
     <% end %>
   </div>
 
-  <div class="te-navbar-right">
+  <%# <div class="te-navbar-right">
     <!-- Icône recherche -->
     <button class="search-btn" type="button" aria-label="Rechercher" data-action="toggle-search">
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
@@ -18,7 +18,7 @@
     <!-- Champ recherche (masqué sans occuper d'espace) -->
     <div class="search-box" aria-hidden="true">
       <input type="text" placeholder="Rechercher..." class="search-input">
-    </div>
+    </div> %>
 
     <!-- Avatar profil -->
     <%= link_to user_signed_in? ? edit_user_registration_path : new_user_session_path, class: "avatar-link" do %>

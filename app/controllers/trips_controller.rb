@@ -48,7 +48,6 @@ class TripsController < ApplicationController
     trip_plan.each do |day, activities|
       create_trip_activities(activities)
     end
-    raise
     # @chat_message = RubyLLM.chat
     # system_prompt = "You will receive a message describing a multi-day trip itinerary with activities listed day by day.
     # Task:
