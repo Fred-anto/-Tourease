@@ -1,0 +1,37 @@
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(0,0,0,.08);
+  background: #fff;
+  box-shadow: 0 1px 0 rgba(0,0,0,.02);
+  line-height: 1;
+  font-size: 0.95rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.chip--mint {
+  background: #E7FBF3;
+  border-color: #C8F6E7;
+}
+
+.section-title .chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #00a6cf6d;
+  background: #FFF;
+  font-weight: 500;
+  font-size: 1.75rem;
+  line-height: 1;
+  margin-left: 13px;
+}
