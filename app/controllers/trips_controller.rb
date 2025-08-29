@@ -45,7 +45,6 @@ class TripsController < ApplicationController
   def save_message
     trip_plan = JSON.parse(params[:content])
 
-    debugger
 
     trip_plan.each do |day, activities|
       create_trip_activities(activities)
