@@ -3,7 +3,6 @@
     <div class="col-md-8">
       <div class="trip-card shadow-lg">
 
-        <!-- Header -->
         <div class="trip-card__header">
           <div class="d-flex justify-content-between align-items-start">
             <h1 class="title mb-0"><%= @trip.name %></h1>
@@ -30,7 +29,6 @@
           </div>
         </div>
 
-        <!-- Body -->
         <div class="trip-card__body p-4 p-md-3">
           <h3 class="section-title">My activities</h3>
           <div class="row">
@@ -97,7 +95,6 @@
             <% end %>
 
 
-          <!-- CTA buttons -->
           <div class="d-flex flex-wrap gap-3 mt-4">
             <%= button_to "🚀 Enhance with guAIde", chats_path(trip_id: @trip.id), method: :post, class: "btn btn-primary" %>
             <%= button_to "🔎 Find activities", trip_trip_activities_path(trip_id: @trip.id), method: :get, class: "btn btn-primary" %>
@@ -105,10 +102,9 @@
         </div>
       </div>
 
-      <!-- Conversations -->
       <% if @chats.present? && @chats.any? %>
         <div class="mt-4 text-center">
-          <h2 class="mb-3">Previous conversations:</h2>
+          <h4 class="mb-3">Previous conversations:</h4>
           <div class="row g-2 justify-content-center">
             <% @chats.each do |chat| %>
               <div class="col-12">

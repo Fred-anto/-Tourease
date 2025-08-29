@@ -2,7 +2,9 @@
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <h2 class="mb-4">My Current Trips</h2>
+      <h2 class="mb-4 section-title">
+        <span class="chip">My current trips</span>
+      </h2>
 
       <div class="swipe-carousel" data-controller="swipe">
         <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Top trendy activities">
@@ -28,7 +30,9 @@
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <h2 class="mb-4">My Last Trips</h2>
+      <h2 class="mb-4 section-title">
+        <span class="chip">My past trips</span>
+      </h2>
       <div class="swipe-carousel" data-controller="swipe">
         <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Top trendy activities">
           <% @trips.select { |trip| trip.end_date < Date.today }.first(10).each do |trip| %>
