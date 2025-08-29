@@ -134,6 +134,15 @@
     &:hover { background: rgba(220, 53, 69, .08); }
   }
 
+  .simple-circle-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;     /* cercle parfait */
+    border: 1px solid #ddd; /* bord fin et discret */
+    background-color: white; /* fond léger */
+    padding: 0;             /* pas de padding inutile */
+  }
+
 
   @media (max-width: 576px) {
     .trip-card__header { padding: 20px 22px; }

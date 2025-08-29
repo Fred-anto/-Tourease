@@ -18,39 +18,45 @@
                 <%= button_to unfavorite_activity_path(@activity),
                               method: :delete,
                               class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
-                              style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
-                              <iconify-icon icon="healthicons:heart" data-inline="false" style="color: red; width: 50px; height: 24px;"></iconify-icon>
+                              style: "width: 50px; height: 50px; font-size: 50px; border-radius: 50%;" do %>
+                  <iconify-icon icon="healthicons:heart" data-inline="false" style="color: red; width: 50px; height: 24px;"></iconify-icon>
                 <% end %>
               <% else %>
                 <%= button_to favorite_activity_path(@activity),
                               method: :post,
                               class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
-                              style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
-                              <iconify-icon icon="healthicons:heart-outline" data-inline="false" style="color: red; width: 50px; height: 24px;"></iconify-icon>
+                              style: "width: 50px; height: 50px; font-size: 50px; border-radius: 50%;" do %>
+                  <iconify-icon icon="healthicons:heart-outline" data-inline="false" style="color: red; width: 50px; height: 24px;"></iconify-icon>
                 <% end %>
               <% end %>
-              <% if params[:trip_id].present? %>
-                <% if @trip_activity.present? %>
 
+              <% if params[:trip_id].present? %>
+                <% if @trip.activities.include?(@activity) %>
                   <%= button_to trip_trip_activity_path(@trip, @trip_activity),
                         method: :delete,
-                        class: "btn btn-outline-primary d-flex align-items-center justify-content-center",
-                                style: "width: 50px; height: 50px; font-size: 24px; border-radius: 50%;" do %>
-                                <iconify-icon icon="icon-park:add-print" style="color: black; width: 24px; height: 24px;"></iconify-icon>
+                        class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
+                        style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
+                    <iconify-icon icon="icon-park:add-print" style="color: black; width: 50px; height: 24px;"></iconify-icon>
                   <% end %>
                 <% else %>
-
                   <%= button_to trip_trip_activities_path(@trip, activity_id: @activity.id),
                         method: :post,
-                        class: "btn btn-outline-primary d-flex align-items-center justify-content-center",
-                        style: "width: 50px; height: 50px; font-size: 24px; border-radius: 50%;" do %>
-                        <iconify-icon icon="icon-park-outline:add-print" style="color: black; width: 24px; height: 24px;"></iconify-icon>
+                        class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
+                        style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
+                    <iconify-icon icon="fluent-mdl2:add-event" style="color: black; width: 50px; height: 24px;"></iconify-icon>
                   <% end %>
                 <% end %>
+              <% else %>
+                <%= button_to choose_trip_activity_path(@activity),
+                      method: :get,
+                      class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
+                      style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
+                  <iconify-icon icon="fluent-mdl2:add-event" style="color: black; width: 50px; height: 24px;"></iconify-icon>
+                <% end %>
               <% end %>
-
             </div>
           <% end %>
+
         </div>
 
         <div class="card h-100">
