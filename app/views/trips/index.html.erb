@@ -7,7 +7,7 @@
 
       <div class="swipe-carousel" data-controller="swipe">
         <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Top trendy activities">
-          <% @trips.last(5).each do |trip| %>
+          <% @trips.select { |trip| trip.end_date > Date.today }.first(5).each do |trip| %>
             <div class="card h-100">
               <%= image_tag "trip placeholder.jpg", class: "card-img-top" %>
               <div class="card-body">
@@ -31,7 +31,7 @@
       <h2 class="mb-4">My Last Trips</h2>
       <div class="swipe-carousel" data-controller="swipe">
         <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Top trendy activities">
-          <% @trips.first(10).each do |trip| %>
+          <% @trips.select { |trip| trip.end_date < Date.today }.first(10).each do |trip| %>
             <div class="card h-100">
               <%= image_tag "trip placeholder.jpg", class: "card-img-top" %>
               <div class="card-body">

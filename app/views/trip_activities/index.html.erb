@@ -11,23 +11,25 @@
         <div class="swipe-carousel" data-controller="swipe">
           <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="<%= category.name %>">
             <% category.activities.each do |activity| %>
-              <div class="card h-100">
-                <% if activity.photo.attached? %>
-                  <%= cl_image_tag activity.photo.key, width: 600, height: 300, crop: :fill, class: "card-img-top" %>
-                <% else %>
-                  <%= image_tag "placeholder.svg", class: "card-img-top" %>
-                <% end %>
+              <% unless @trip.activities.include?(activity) %>
+                <div class="card h-100">
+                  <% if activity.photo.attached? %>
+                    <%= cl_image_tag activity.photo.key, crop: :fill, class: "card-img-top" %>
+                  <% else %>
+                    <%= image_tag "placeholder.svg", class: "card-img-top" %>
+                  <% end %>
 
-                <div class="card-body">
-                  <h5 class="card-title mb-1"><b><%= activity.name %></b></h5>
-                  <p class="card-title mb-1"><%= activity.description %></p>
-                  <%= link_to "", activity_path(activity, trip_id: @trip.id), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
-                </div>
+                  <div class="card-body">
+                    <h5 class="card-title mb-1"><b><%= activity.name %></b></h5>
+                    <p class="card-title mb-1"><%= activity.description %></p>
+                    <%= link_to "", activity_path(activity, trip_id: @trip.id), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
+                  </div>
 
-                <div class="card-footer bg-transparent">
-                  <p class="mb-1"><%= activity.address %></p>
+                  <div class="card-footer bg-transparent">
+                    <p class="mb-1"><%= activity.address %></p>
+                  </div>
                 </div>
-              </div>
+              <% end %>
             <% end %>
           </div>
         </div>
@@ -37,47 +39,52 @@
       <div class="swipe-carousel" data-controller="swipe">
         <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Top trendy activities">
           <% @activities.sample(20).each do |activity| %>
-            <div class="card h-100">
-              <% if activity.photo.attached? %>
-                <%= cl_image_tag activity.photo.key, width: 600, height: 300, crop: :fill, class: "card-img-top" %>
-              <% else %>
-                <%= image_tag "placeholder.svg", class: "card-img-top" %>
-              <% end %>
-              <div class="card-body">
-                <h5 class="card-title mb-1"><b><%= activity.name %></b></h5>
-                <h5 class="card-title mb-1"><%= activity.description %></h5>
-                <%= link_to "", activity_path(activity, trip_id: @trip.id), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
+            <% unless @trip.activities.include?(activity) %>
+              <div class="card h-100">
+                <% if activity.photo.attached? %>
+                  <%= cl_image_tag activity.photo.key, crop: :fill, class: "card-img-top" %>
+                <% else %>
+                  <%= image_tag "placeholder.svg", class: "card-img-top" %>
+                <% end %>
+                <div class="card-body">
+                  <h5 class="card-title mb-1"><b><%= activity.name %></b></h5>
+                  <p class="card-title mb-1"><%= activity.description %></p>
+                  <%= link_to "", activity_path(activity, trip_id: @trip.id), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
+                </div>
+                <div class="card-footer bg-transparent">
+                  <p class="mb-1"><%= activity.address %></p>
+                </div>
               </div>
-              <div class="card-footer bg-transparent">
-                <p class="mb-1"><%= activity.address %></p>
-              </div>
-            </div>
+            <% end %>
           <% end %>
         </div>
       </div>
-      <%# comment %>
+
       <h2 class="mb-4 mt-5">👀 Must-See Activities</h2>
       <div class="swipe-carousel" data-controller="swipe">
         <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Must-see activities">
           <% @activities.sample(20).each do |activity| %>
-            <div class="card h-100">
-              <% if activity.photo.attached? %>
-                <%= cl_image_tag activity.photo.key, width: 600, height: 300, crop: :fill, class: "card-img-top" %>
-              <% else %>
-                <%= image_tag "placeholder.svg", class: "card-img-top" %>
-              <% end %>
-              <div class="card-body">
-                <h5 class="card-title mb-1"><b><%= activity.name %></b></h5>
-                <h5 class="card-title mb-1"><%= activity.description %></h5>
-                <%= link_to "", activity_path(activity, trip_id: @trip.id), class: "stretched-link", aria: { label: "Voir #{activity.name}"} %>
+            <% unless @trip.activities.include?(activity) %>
+              <div class="card h-100">
+                <% if activity.photo.attached? %>
+                  <%= cl_image_tag activity.photo.key, crop: :fill, class: "card-img-top" %>
+                <% else %>
+                  <%= image_tag "placeholder.svg", class: "card-img-top" %>
+                <% end %>
+                <div class="card-body">
+                  <h5 class="card-title mb-1"><b><%= activity.name %></b></h5>
+                  <p class="card-title mb-1"><%= activity.description %></p>
+                  <%= link_to "", activity_path(activity, trip_id: @trip.id), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
+                </div>
+                <div class="card-footer bg-transparent">
+                  <p class="mb-1"><%= activity.address %></p>
+                </div>
               </div>
-              <div class="card-footer bg-transparent">
-                <p class="mb-1"><%= activity.address %></p>
-              </div>
-            </div>
+            <% end %>
           <% end %>
         </div>
       </div>
+
     </div>
   </div>
 </div>
