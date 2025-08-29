@@ -12,7 +12,7 @@ class MessagesController < ApplicationController
 
       #embedding
       embedding = RubyLLM.embed(params[:message][:content])
-      category_ids = Array(params[:categories]).map(&:to_i)
+      category_ids = @trip.categories.ids
       activities = Activity .where(category_id: category_ids).nearest_neighbors(:embedding, embedding.vectors, distance: "euclidean").first(15)
       instructions = system_prompt
       instructions += activities.map { |activity| activity_prompt(activity) }.join("\n\n")
@@ -58,7 +58,7 @@ class MessagesController < ApplicationController
 
   def system_prompt
   "You are a professional tour guide. I am a #{@user.age}-year-old tourist visiting #{@trip.destination} from #{@trip.start_date} to #{@trip.end_date}.
-  Help me plan a #{@trip.mood} trip with daily activities. Your task is to recommend the most relevant activities.
+  Help me plan a #{@trip.mood} trip with daily activities. Your task is to recommend the most relevant activities. You must only pick activities corresponding to the #{@trip.activities}
 
   Requirements:
   1. Output **strictly in valid JSON format**, with no additional text.
