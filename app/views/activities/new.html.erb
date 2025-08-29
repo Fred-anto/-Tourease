@@ -9,15 +9,46 @@
         <div class="card-body">
           <%= simple_form_for @activity, html: { multipart: true } do |f| %>
 
-            <div class="form-group mb-3">
-              <%= f.input :photo, as: :file, label: "Photo", input_html: { class: "form-control" } %>
+            <div class="form-group mb-3" data-controller="file-input">
+              <label class="form-label d-block mb-2">Image</label>
+
+              <%= f.input :photo,
+                    as: :file,
+                    label: false,
+                    wrapper: false,
+                    input_html: {
+                      class: "d-none",
+                      accept: "image/*",
+                      data: {
+                        "file-input-target": "input",
+                        action: "change->file-input#update"
+                      }
+                    } %>
+
+              <button type="button"
+                      class="btn btn-outline-secondary rounded-pill"
+                      data-action="click->file-input#pick"
+                      aria-controls="photo-filename">
+                Choose file
+              </button>
+
+              <span id="photo-filename"
+                    class="text-muted ms-2"
+                    data-file-input-target="name">
+                No photo chosen
+              </span>
+
+              <div class="invalid-feedback d-block">
+                <%= f.error :photo %>
+              </div>
             </div>
 
             <div class="form-group">
               <%= f.input :name, label: "Activity Name", input_html: { class: "form-control" } %>
+
               <%= f.input :address,
-              input_html: {class: "d-none", data: {address_autocomplete_target: "address"}},
-              wrapper_html: {data: {controller: "address-autocomplete", address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"]}}%>
+                  input_html: { class: "d-none", data: { address_autocomplete_target: "address" } },
+                  wrapper_html: { data: { controller: "address-autocomplete", address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"] } } %>
             </div>
 
             <div class="form-group">
@@ -39,16 +70,17 @@
               </div>
             </div>
 
-
             <div class="form-group d-flex mt-4 gap-3">
               <%= f.submit "➕ Create activity", class: "btn btn-primary" %>
             </div>
+
           <% end %>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 
 <%# <script>
   document.addEventListener("DOMContentLoaded", () => {
