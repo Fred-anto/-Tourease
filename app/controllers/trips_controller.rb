@@ -45,10 +45,10 @@ class TripsController < ApplicationController
   def save_message
     trip_plan = JSON.parse(params[:content])
 
+
     trip_plan.each do |day, activities|
       create_trip_activities(activities)
     end
-    raise
     # @chat_message = RubyLLM.chat
     # system_prompt = "You will receive a message describing a multi-day trip itinerary with activities listed day by day.
     # Task:
@@ -71,12 +71,16 @@ class TripsController < ApplicationController
 
   def create_trip_activities(activities)
     activities.each do |activity|
-      TripActivity.create(
-        trip: @trip,
-        activity: Activity.find(activity["id"]),
-        start_date_time: activity["start_date_time"],
-        end_date_time: activity["end_date_time"]
-      )
+      real_activity = Activity.find_by(id: activity["id"])
+
+      if real_activity != nil
+        TripActivity.create(
+          trip: @trip,
+          activity: real_activity,
+          start_date_time: activity["start_date_time"],
+          end_date_time: activity["end_date_time"]
+        )
+      end
     end
   end
 
