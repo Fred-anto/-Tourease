@@ -36,7 +36,7 @@
       <% if message.role != 'user' %>
         <div class="mt-2 text-end">
           <%= form_with url: save_message_trip_path(trip), method: :post, local: true do |f| %>
-            <%= hidden_field_tag :content, message.content %>
+            <%= hidden_field_tag :content, message.parsed_content.to_json %>
             <%= f.submit "Save", class: "btn btn-sm btn-light rounded-pill mb-3" %>
           <% end %>
         </div>

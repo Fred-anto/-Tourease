@@ -58,7 +58,7 @@ class MessagesController < ApplicationController
 
   def system_prompt
   "You are a professional tour guide. I am a #{@user.age}-year-old tourist visiting #{@trip.destination} from #{@trip.start_date} to #{@trip.end_date}.
-  Help me plan a #{@trip.mood} trip with daily activities. Your task is to recommend the most relevant activities. You must only pick activities corresponding to the #{@trip.activities}
+  Help me plan a #{@trip.mood} trip with daily activities. Your task is to recommend the most relevant activities.
 
   Requirements:
   1. Output **strictly in valid JSON format**, with no additional text.
@@ -68,6 +68,7 @@ class MessagesController < ApplicationController
   3. If 'Schedule' is true, following the 'Schedule' key, include one key per day of the trip,
   formatted as 'DayOfWeek, YYYY-MM-DD' based on my trip schedule. Each day key should be a list of activity objects.
   Each activity must include the following keys:
+    - 'id': Id of the record given to you
     - 'name': short name of the activity
     - 'description': short description of the activity
     - 'start_date_time': start date and time in 'YYYY-MM-DD HH:MM' format
@@ -87,6 +88,7 @@ class MessagesController < ApplicationController
     'Schedule': true,
     'Monday, 2025-08-27': [
       {
+        'id': 34,
         'name': 'Musée d'Orsay',
         'description': 'Housed in a Beaux-Arts railway station, featuring Impressionist and Post-Impressionist masterpieces. Ideal for a half-day immersion in French art.',
         'start_date_time': '2025-08-27 13:00',
@@ -104,7 +106,7 @@ class MessagesController < ApplicationController
       }
     ]
   }
-    
+
   You must only suggest me activities that are below.
   Here are the nearest activities based on the user's question and chosen categories: "
   end
