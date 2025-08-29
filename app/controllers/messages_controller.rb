@@ -104,6 +104,8 @@ class MessagesController < ApplicationController
       }
     ]
   }
+    
+  You must only suggest me activities that are below.
   Here are the nearest activities based on the user's question and chosen categories: "
   end
 end

@@ -51,8 +51,11 @@
               </div>
             <% else %>
               <div class="col-12">
-                <%# <div class="empty-state"><%= markdown(@trip.description) %><%# </div> %>
-                 <!-- <%= week_calendar(attribute: :start_date_time, end_attribute: :end_date_time, start_date: @calendar_start_date) do |date| %>
+                <%# <div class="empty-state"> %>
+                  <%# markdown(@trip.description) %>
+                <%# </div> %>
+
+                 <%= week_calendar(attribute: :start_date_time, end_attribute: :end_date_time, start_date: @calendar_start_date) do |date| %>
 
                     <div>
                       <%= date.strftime("%d-%m-%Y") %>
@@ -65,7 +68,7 @@
                         <% end %>
                       <% end %>
                     </div>
-                  <% end %> -->
+                  <% end %>
               </div>
             <% end %>
           </div>
