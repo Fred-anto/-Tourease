@@ -25,6 +25,7 @@ class MessagesController < ApplicationController
         format.turbo_stream # va chercher `app/views/messages/create.turbo_stream.erb`
         format.html { redirect_to chat_path(@chat) }
       end
+      
     else
       respond_to do |format|
         format.turbo_stream do
