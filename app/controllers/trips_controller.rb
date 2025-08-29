@@ -71,12 +71,16 @@ class TripsController < ApplicationController
 
   def create_trip_activities(activities)
     activities.each do |activity|
-      TripActivity.create(
-        trip: @trip,
-        activity: Activity.find(activity["id"]),
-        start_date_time: activity["start_date_time"],
-        end_date_time: activity["end_date_time"]
-      )
+      real_activity = Activity.find_by(id: activity["id"])
+
+      if real_activity != nil
+        TripActivity.create(
+          trip: @trip,
+          activity: real_activity,
+          start_date_time: activity["start_date_time"],
+          end_date_time: activity["end_date_time"]
+        )
+      end
     end
   end
 
