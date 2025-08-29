@@ -36,6 +36,25 @@
           <div class="row g-4">
 
             <% if @trip.trip_activities.any? %>
+
+               <div class="col-12">
+                 <%= number_of_days = @trip.end_date - @trip.start_date %>
+                 <%= week_calendar(start_date: @trip.start_date, end_attribute: :end_date_time) do |date| %>
+
+                    <div>
+                      <%= date.strftime("%a %d") %>
+                      <% @trip.trip_activities.each do |event| %>
+                        <% if event.start_date_time.to_date <= date && event.end_date_time.to_date >= date %>
+                          <div class="event">
+                            <span class="event-time"><%= event.start_date_time.strftime("%H:%M") %></span>
+                            <strong class="event-name"><%= event.activity.name %></strong>
+                          </div>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  <% end %>
+
+              </div>
               <div class="swipe-carousel" data-controller="swipe">
                 <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="My activities">
                   <% @trip.trip_activities.each do |trip_activity| %>
@@ -60,27 +79,13 @@
                   <% end %>
                 </div>
               </div>
+
             <% else %>
               <div class="col-12">
 
                 <%# <div class="empty-state"> %>
                   <%# markdown(@trip.description) %>
                 <%# </div> %>
-
-                 <%= week_calendar(attribute: :start_date_time, end_attribute: :end_date_time, start_date: @calendar_start_date) do |date| %>
-
-                    <div>
-                      <%= date.strftime("%d-%m-%Y") %>
-
-                      <% @trip.trip_activities.each do |activity| %>
-                        <% if activity.start_date_time.to_date <= date && activity.end_date_time.to_date >= date %>
-                          <div class="event">
-                            <%= activity.comment || "Activité" %>
-                          </div>
-                        <% end %>
-                      <% end %>
-                    </div>
-                  <% end %>
 
               </div>
             <% end %>
