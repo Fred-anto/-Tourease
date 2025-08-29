@@ -33,7 +33,7 @@
         <!-- Body -->
         <div class="trip-card__body p-4 p-md-3">
           <h3 class="section-title">My activities</h3>
-          <div class="row g-4">
+          <div class="row">
 
             <% if @trip.trip_activities.any? %>
 
@@ -44,7 +44,7 @@
                   <%= calendar(start_date: @trip.start_date.to_date, number_of_days: number_of_days) do |date| %>
 
                     <div>
-                      <%= date.strftime("%a %d") %>
+                      <em><%= date.strftime("%a %d") %></em>
 
                       <% @trip.trip_activities.each do |event| %>
                         <% if event.start_date_time.to_date <= date && event.end_date_time.to_date >= date %>
