@@ -13,7 +13,7 @@ class MessagesController < ApplicationController
       #embedding
       embedding = RubyLLM.embed(params[:message][:content])
       category_ids = @trip.categories.ids
-      activities = Activity .where(category_id: category_ids).nearest_neighbors(:embedding, embedding.vectors, distance: "euclidean").first(15)
+      activities = Activity.where(category_id: category_ids).nearest_neighbors(:embedding, embedding.vectors, distance: "euclidean").first(15)
       instructions = system_prompt
       instructions += activities.map { |activity| activity_prompt(activity) }.join("\n\n")
       response = @chat_message.with_instructions(instructions).ask(@message.content.to_s)
@@ -25,7 +25,7 @@ class MessagesController < ApplicationController
         format.turbo_stream # va chercher `app/views/messages/create.turbo_stream.erb`
         format.html { redirect_to chat_path(@chat) }
       end
-      
+
     else
       respond_to do |format|
         format.turbo_stream do
