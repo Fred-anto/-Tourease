@@ -17,16 +17,16 @@
               <% if current_user.favorited?(@activity) %>
                 <%= button_to unfavorite_activity_path(@activity),
                               method: :delete,
-                              class: "btn btn-outline-primary d-flex align-items-center justify-content-center",
-                              style: "width: 50px; height: 50px; font-size: 24px; border-radius: 50%;" do %>
-                              <iconify-icon icon="healthicons:heart" data-inline="false" style="color: red; width: 24px; height: 24px;"></iconify-icon>
+                              class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
+                              style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
+                              <iconify-icon icon="healthicons:heart" data-inline="false" style="color: red; width: 50px; height: 24px;"></iconify-icon>
                 <% end %>
               <% else %>
                 <%= button_to favorite_activity_path(@activity),
                               method: :post,
-                              class: "btn btn-outline-primary d-flex align-items-center justify-content-center",
-                              style: "width: 50px; height: 50px; font-size: 24px; border-radius: 50%;" do %>
-                              <iconify-icon icon="healthicons:heart-outline" data-inline="false" style="color: red; width: 24px; height: 24px;"></iconify-icon>
+                              class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
+                              style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
+                              <iconify-icon icon="healthicons:heart-outline" data-inline="false" style="color: red; width: 50px; height: 24px;"></iconify-icon>
                 <% end %>
               <% end %>
               <% if params[:trip_id].present? %>
