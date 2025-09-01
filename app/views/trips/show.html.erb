@@ -2,7 +2,7 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="trip-card shadow-lg">
-        <div class="trip-card__header">
+        <div class="trip-card__header p-6 p-md-3">
           <div class="d-flex justify-content-between align-items-start">
             <h1 class="title mb-0"><%= @trip.name %></h1>
             <%= link_to trip_path(@trip),
@@ -26,9 +26,16 @@
               <span class="chip chip--mint"><%= @trip.mood %></span>
             <% end %>
           </div>
+          <div>
+           <span class="chip my-1">
+              <% @trip.categories.each do |category| %>
+              <%= category.name %>
+              <% end %>
+            </span>
+          </div>
         </div>
-        <div class="trip-card__body p-4 p-md-3">
-          <h3 class="section-title mb-0">My activities</h3>
+        <div class="trip-card__body p-6 p-md-3">
+          <h3 class="section-title m-0">My activities</h3>
           <div class="row">
             <% if @trip.trip_activities.any? %>
               <div class="swipe-carousel" data-controller="swipe">
