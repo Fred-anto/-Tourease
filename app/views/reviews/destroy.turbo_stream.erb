@@ -1,0 +1,18 @@
+<%# 1) Retire l’avis supprimé %>
+<%= turbo_stream.remove dom_id(@review) %>
+
+<%# 2) Met à jour la moyenne + compteur %>
+<%= turbo_stream.replace "activity-rating" do %>
+  <%= render "shared/rating",
+             rating: @activity.rating_avg,
+             reviews_count: @activity.reviews_count %>
+<% end %>
+
+<%# 3) Si plus aucun avis, affiche un placeholder %>
+<% unless @activity.reviews.exists? %>
+  <%= turbo_stream.update "reviews-list" do %>
+    <div id="no-reviews-placeholder" class="list-group-item text-center text-muted">
+      Aucun avis pour le moment.
+    </div>
+  <% end %>
+<% end %>

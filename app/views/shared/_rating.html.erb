@@ -1,0 +1,15 @@
+<%# Props: rating:, reviews_count:, theme: "light"|"dark" (default: "dark") %>
+<% theme = local_assigns[:theme].presence || "dark" %>
+<% rating = rating.to_f %>
+<% full  = rating.floor %>
+<% half  = (rating - full) >= 0.5 %>
+<% empty = 5 - full - (half ? 1 : 0) %>
+
+<div class="rating rating--<%= theme %> d-inline-flex align-items-center gap-1">
+  <span class="stars">
+    <% full.times  { %><i class="fa-solid fa-star"></i><% } %>
+    <% if half %><i class="fa-solid fa-star-half-stroke"></i><% end %>
+    <% empty.times { %><i class="fa-regular fa-star"></i><% } %>
+  </span>
+  <span class="rating-count">(<%= reviews_count || 0 %>)</span>
+</div>

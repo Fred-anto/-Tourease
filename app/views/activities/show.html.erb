@@ -19,39 +19,46 @@
                               method: :delete,
                               class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
                               style: "width: 50px; height: 50px; font-size: 50px; border-radius: 50%;" do %>
-                  <iconify-icon icon="healthicons:heart" data-inline="false" style="color: red; width: 50px; height: 24px;"></iconify-icon>
+                  <iconify-icon icon="healthicons:heart"
+                                data-inline="false"
+                                style="color: red; width: 50px; height: 24px;"></iconify-icon>
                 <% end %>
               <% else %>
                 <%= button_to favorite_activity_path(@activity),
                               method: :post,
                               class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
                               style: "width: 50px; height: 50px; font-size: 50px; border-radius: 50%;" do %>
-                  <iconify-icon icon="healthicons:heart-outline" data-inline="false" style="color: red; width: 50px; height: 24px;"></iconify-icon>
+                  <iconify-icon icon="healthicons:heart-outline"
+                                data-inline="false"
+                                style="color: red; width: 50px; height: 24px;"></iconify-icon>
                 <% end %>
               <% end %>
 
               <% if params[:trip_id].present? %>
                 <% if @trip.activities.include?(@activity) %>
                   <%= button_to trip_trip_activity_path(@trip, @trip_activity),
-                        method: :delete,
-                        class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
-                        style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
-                    <iconify-icon icon="icon-park:add-print" style="color: black; width: 50px; height: 24px;"></iconify-icon>
+                                method: :delete,
+                                class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
+                                style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
+                    <iconify-icon icon="icon-park:add-print"
+                                  style="color: black; width: 50px; height: 24px;"></iconify-icon>
                   <% end %>
                 <% else %>
                   <%= button_to trip_trip_activities_path(@trip, activity_id: @activity.id),
-                        method: :post,
-                        class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
-                        style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
-                    <iconify-icon icon="fluent-mdl2:add-event" style="color: black; width: 50px; height: 24px;"></iconify-icon>
+                                method: :post,
+                                class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
+                                style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
+                    <iconify-icon icon="fluent-mdl2:add-event"
+                                  style="color: black; width: 50px; height: 24px;"></iconify-icon>
                   <% end %>
                 <% end %>
               <% else %>
                 <%= button_to choose_trip_activity_path(@activity),
-                      method: :get,
-                      class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
-                      style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
-                  <iconify-icon icon="fluent-mdl2:add-event" style="color: black; width: 50px; height: 24px;"></iconify-icon>
+                              method: :get,
+                              class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
+                              style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
+                  <iconify-icon icon="fluent-mdl2:add-event"
+                                style="color: black; width: 50px; height: 24px;"></iconify-icon>
                 <% end %>
               <% end %>
             </div>
@@ -65,11 +72,22 @@
           <% else %>
             <%= image_tag "placeholder.svg", class: "card-img-top" %>
           <% end %>
+
+          <!-- Pavé description -->
           <div class="card-body">
             <h5 class="card-title"><%= @activity.description %></h5>
           </div>
-        </div>
 
+          <!-- Pavé notation (moyenne + nb commentaires) cliquable -->
+          <div class="card-body review-card text-center">
+            <%= link_to activity_reviews_path(@activity),
+                        class: "text-decoration-none d-inline-flex align-items-center gap-2 rating-link" do %>
+              <%= render "shared/rating",
+                         rating: @activity.rating_avg,
+                         reviews_count: @activity.reviews_count %>
+            <% end %>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -1,0 +1,81 @@
+/* =========================================================
+   Reviews / Ratings — brand styles
+   ========================================================= */
+
+/* ---- Brand palette (fallback si non définie ailleurs) ---- */
+:root {
+  --brand-900: #004E64; /* deep */
+  --brand-700: #25A18E;
+  --brand-600: #00A5CF;
+  --brand-400: #7AE582;
+  --brand-200: #9FFFCB;
+}
+
+/* ================== Shared rating widget ================== */
+/* Structure HTML (partial shared/_rating.html.erb)
+   <div class="rating [rating--light|rating--dark]">
+     <span class="stars"> <i>...</i> </span>
+     <span class="rating-count">(n)</span>
+   </div>
+*/
+.rating { line-height: 1; }
+.rating .stars i { font-size: 1.05rem; }
+
+/* Thème foncé (par défaut) : étoiles & compteur en brand */
+.rating--dark .stars i,
+.rating--dark .rating-count {
+  color: var(--brand-900) !important;
+}
+
+/* Thème clair (bannière bleue) : étoiles & compteur en blanc */
+.rating--light .stars i,
+.rating--light .rating-count {
+  color: #fff !important;
+}
+
+/* Taille optionnelle */
+.rating.lg .stars i { font-size: 1.25rem; }
+
+/* Utilitaire : forcer un groupe d’étoiles en brand (aperçu "Your Rating") */
+.stars-brand i {
+  color: var(--brand-900) !important;
+}
+
+/* ==================== Review list items ==================== */
+.review-item {
+  padding: 14px 16px;
+  background: #fff;
+
+  /* légère séparation douce entre items */
+  & + .review-item { border-top: 1px solid rgba(0, 0, 0, .06); }
+}
+
+.review-avatar img {
+  width: 44px; height: 44px;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+}
+
+.review-author {
+  font-weight: 600;
+  color: var(--brand-900);
+  line-height: 1.1;
+}
+
+/* Bloc spécifique "review-stars" (hors widget partagé) */
+.review-stars {
+  margin-top: 2px;
+
+  .fa-solid  { color: var(--brand-900) !important; } /* pleines */
+  .fa-regular{ color: var(--brand-200) !important; } /* vides (doux) */
+}
+
+.review-comment {
+  margin-top: 8px;
+  color: #222;
+  line-height: 1.35;
+}
+
+/* Header de carte (ex: "Recent Reviews") */
+.card-header { border-bottom: 1px solid rgba(0, 0, 0, .06); }

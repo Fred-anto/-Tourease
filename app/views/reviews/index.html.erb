@@ -1,0 +1,74 @@
+<!-- Close (X) fixed in the top-right of the screen -->
+<%= link_to activity_path(@activity),
+            class: "btn btn-link p-0",
+            aria: { label: "Close and go back" },
+            title: "Close",
+            style: "position:fixed; top:12px; right:12px; z-index:1050;" do %>
+  <i class="fa-solid fa-xmark" style="font-size:1.8rem; color:#004E64;"></i>
+<% end %>
+
+<!-- ===== Section 1: Activity Summary ===== -->
+<div class="container mt-5 trips-show">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="trip-card shadow-lg">
+
+        <!-- Header identique à la show -->
+        <div class="trip-card__header d-flex justify-content-between align-items-center">
+          <div>
+            <h1 class="title"><%= @activity.name %></h1>
+
+
+            <!-- ⭐ Average rating juste sous le chip (étoiles + compteur blancs) -->
+            <div class="mt-2 d-flex align-items-center" id="activity-rating">
+              <%= render "shared/rating",
+                         rating: @activity.rating_avg,
+                         reviews_count: @activity.reviews_count,
+                         theme: "light" %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pavé blanc (formulaire) -->
+        <div class="card h-100">
+          <div class="card-body bg-white" id="review-form">
+            <!-- IMPORTANT : conteneur stable remplacé par Turbo uniquement à l’intérieur -->
+            <div id="review-form-inner">
+              <%= render "reviews/form", activity: @activity, review: @review %>
+            </div>
+          </div>
+        </div><!-- /card -->
+
+      </div><!-- /trip-card -->
+    </div><!-- /col -->
+  </div><!-- /row -->
+</div><!-- /container -->
+
+<!-- ===== Section Recent Reviews ===== -->
+<div class="container mt-5 trips-show">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="trip-card shadow-lg">
+
+        <!-- Header bleu -->
+        <div class="trip-card__header d-flex align-items-center">
+          <h4 class="title mb-0">Recent Reviews</h4>
+        </div>
+
+        <!-- Pavé blanc pour la liste -->
+        <div class="card h-100">
+          <div class="list-group list-group-flush bg-white" id="reviews-list">
+            <% if @reviews.any? %>
+              <%= render @reviews %> <!-- uses reviews/_review.html.erb -->
+            <% else %>
+              <div id="no-reviews-placeholder" class="list-group-item text-center text-muted">
+                No reviews yet.
+              </div>
+            <% end %>
+          </div>
+        </div><!-- /card -->
+
+      </div><!-- /trip-card -->
+    </div><!-- /col -->
+  </div><!-- /row -->
+</div><!-- /container -->
