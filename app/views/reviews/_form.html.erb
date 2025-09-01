@@ -1,0 +1,46 @@
+<%= form_with url: activity_reviews_path(activity), method: :post, data: { turbo_stream: true } do |f| %>
+  <div>
+    <h4 class="mb-3">Leave a Review</h4>
+  </div>
+
+  <div class="mb-3">
+    <div class="d-flex align-items-center gap-3">
+      <label class="form-label m-0" for="review_rating">Your Rating</label>
+
+      <select id="review_rating"
+              name="review[rating]"
+              class="form-select w-auto"
+              style="border-color: var(--brand-200);">
+        <option value="">—</option>
+        <% 1.upto(5) do |n| %>
+          <option value="<%= n %>" <%= "selected" if review.rating == n %>><%= n %>/5</option>
+        <% end %>
+      </select>
+
+      <!-- Aperçu (étoiles couleur brand) -->
+      <span class="stars stars-brand" aria-hidden="true">
+        <% n = (review.rating || 0).to_i %>
+        <% n.times { %><i class="fa-solid fa-star"></i><% } %>
+        <% (5 - n).times { %><i class="fa-regular fa-star"></i><% } %>
+      </span>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label mb-1" for="review_comment">Your Comment</label>
+    <textarea id="review_comment"
+              name="review[comment]"
+              rows="3"
+              maxlength="2000"
+              class="form-control"
+              style="border-color: var(--brand-200);"
+              placeholder="Share your experience…"><%= review.comment %></textarea>
+  </div>
+
+  <div class="text-end">
+    <button class="btn px-4"
+            style="background: var(--brand-600); border-color: var(--brand-600); color:#fff; border-radius: 1rem;">
+      Submit
+    </button>
+  </div>
+<% end %>

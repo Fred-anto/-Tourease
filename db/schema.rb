@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_28_131137) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_01_083329) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "vector"
@@ -54,6 +54,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_28_131137) do
     t.float "latitude"
     t.float "longitude"
     t.vector "embedding", limit: 1536
+    t.integer "reviews_count", default: 0, null: false
+    t.float "rating_avg", default: 0.0, null: false
     t.index ["category_id"], name: "index_activities_on_category_id"
     t.index ["user_id"], name: "index_activities_on_user_id"
   end
@@ -68,10 +70,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_28_131137) do
     t.string "title"
     t.bigint "trip_id"
     t.bigint "user_id", null: false
-    t.bigint "activities_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["activities_id"], name: "index_chats_on_activities_id"
     t.index ["trip_id"], name: "index_chats_on_trip_id"
     t.index ["user_id"], name: "index_chats_on_user_id"
   end
@@ -104,12 +104,23 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_28_131137) do
     t.index ["chat_id"], name: "index_messages_on_chat_id"
   end
 
+  create_table "reviews", force: :cascade do |t|
+    t.bigint "activity_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "rating", null: false
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["activity_id", "user_id"], name: "index_reviews_on_activity_id_and_user_id", unique: true
+    t.index ["activity_id"], name: "index_reviews_on_activity_id"
+    t.index ["user_id"], name: "index_reviews_on_user_id"
+  end
+
   create_table "trip_activities", force: :cascade do |t|
     t.bigint "activity_id", null: false
     t.bigint "trip_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "comment"
     t.datetime "start_date_time"
     t.datetime "end_date_time"
     t.index ["activity_id"], name: "index_trip_activities_on_activity_id"
@@ -165,10 +176,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_28_131137) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "activities", "categories"
   add_foreign_key "activities", "users"
-  add_foreign_key "chats", "activities", column: "activities_id"
   add_foreign_key "chats", "trips"
   add_foreign_key "chats", "users"
   add_foreign_key "messages", "chats"
+  add_foreign_key "reviews", "activities"
+  add_foreign_key "reviews", "users"
   add_foreign_key "trip_activities", "activities"
   add_foreign_key "trip_activities", "trips"
   add_foreign_key "trip_categories", "categories"
