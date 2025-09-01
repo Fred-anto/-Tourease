@@ -48,6 +48,7 @@
       radial-gradient(1100px 200px at 0% 0%, rgba(159,255,203,0.12), transparent 45%),
       radial-gradient(800px 180px at 100% 0%, rgba(0,165,207,0.08), transparent 55%),
       #fff;
+     padding: 30px;
   }
 
   .info-grid {
@@ -153,9 +154,50 @@
     transition: all 0.2s ease-in-out;
   }
 
-.conversation-badge:hover {
+  .conversation-badge:hover {
     background-color: #e9ecef5d;
     color: #212529;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .simple-calendar {
+  font-family: "Work Sans", "Poppins", sans-serif;
+  }
+  .simple-calendar .day {
+    background-color: #fff; /* couleur des cases */
+  }
+
+  .simple-calendar .day .event {
+  background-color: #f9f9f9; /* gris clair pour les événements des autres jours */
+  }
+
+  .simple-calendar .today {
+  background-color: #f0f8ff; /* couleur spéciale pour aujourd'hui */
+  }
+
+  .simple-calendar .today .event {
+    background-color: #f0f8ff; /* couleur spéciale pour les événements du jour */
+  }
+
+  .simple-calendar span {
+    color: white;
+  }
+
+  .simple-calendar a {
+  color: white;
+  }
+
+  .simple-calendar table {
+  border-collapse: separate; /* important, sinon le radius est ignoré */
+  border-spacing: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  border-collapse: collapse;
+  box-shadow: 5px 5px 15px rgba(0,78,100,0.10);
+  }
+
+  .swipe-carousel__track {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
   }
 }
