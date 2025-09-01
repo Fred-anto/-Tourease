@@ -127,7 +127,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_01_130249) do
     t.datetime "updated_at", null: false
     t.index ["conversation_id"], name: "index_private_messages_on_conversation_id"
     t.index ["user_id"], name: "index_private_messages_on_user_id"
-    
+  end
+  
   create_table "reviews", force: :cascade do |t|
     t.bigint "activity_id", null: false
     t.bigint "user_id", null: false
