@@ -2,7 +2,6 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="trip-card shadow-lg">
-
         <div class="trip-card__header">
           <div class="d-flex justify-content-between align-items-start">
             <h1 class="title mb-0"><%= @trip.name %></h1>
@@ -13,12 +12,10 @@
               <i class="fas fa-trash-alt"></i>
             <% end %>
           </div>
-
           <p class="subtitle mt-2">
           <span class="muted">Destination:</span>
           <strong><%= @trip.destination %></strong>
           </p>
-
           <div class="chips">
             <% if @trip.start_date.present? %>
               <span class="chip">
@@ -30,13 +27,10 @@
             <% end %>
           </div>
         </div>
-
         <div class="trip-card__body p-4 p-md-3">
           <h3 class="section-title mb-0">My activities</h3>
           <div class="row">
-
             <% if @trip.trip_activities.any? %>
-
               <div class="swipe-carousel" data-controller="swipe">
 
                 <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="My activities"  style="margin-right: 10px; border-radius: 4px;">
@@ -54,14 +48,13 @@
                               <div class="event-time"><%= event.start_date_time.strftime("%H:%M") %></div>
                               <div class="event-name"><strong><%= event.activity.name %></strong></div>
                             </div>
-
+                          <% end %>
                         <% end %>
                       </div>
                     <% end %>
                   <% end %>
                 </div>
               </div>
-
               <div class="swipe-carousel" data-controller="swipe">
                 <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="My activities">
                   <% @trip.trip_activities.each do |trip_activity| %>
@@ -98,11 +91,11 @@
             <div class="d-flex flex-wrap gap-3 mt-4">
               <%= button_to "🚀 Enhance with guAIde", chats_path(trip_id: @trip.id), method: :post, class: "btn btn-primary" %>
               <%= button_to "🔎 Find activities", trip_trip_activities_path(trip_id: @trip.id), method: :get, class: "btn btn-primary" %>
+
             </div>
           </div>
         </div>
       </div>
-
       <% if @chats.present? && @chats.any? %>
         <div class="mt-4 text-center">
           <h4 class="mb-3">Previous conversations:</h4>
@@ -117,7 +110,6 @@
           </div>
         </div>
       <% end %>
-
     </div>
   </div>
 </div>
