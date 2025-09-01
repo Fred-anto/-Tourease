@@ -11,10 +11,7 @@ class TripsController < ApplicationController
   end
 
   def show
-    @chats = current_user.chats
-                         .where(trip: @trip)
-                         .order(:created_at)
-    @trip = Trip.find(params[:id])
+    @chats = current_user.chats.where(trip: @trip).order(:created_at)
 
     @calendar_start_date =
       if params[:start_date].present?
@@ -45,42 +42,33 @@ class TripsController < ApplicationController
   def save_message
     trip_plan = JSON.parse(params[:content])
 
+    unless trip_plan.values.all? { |activities| activities.is_a?(Array) }
+      return redirect_to trips_path, alert: "Non scheduled message can't be saved."
+    end
 
     trip_plan.each do |day, activities|
       create_trip_activities(activities)
     end
-    # @chat_message = RubyLLM.chat
-    # system_prompt = "You will receive a message describing a multi-day trip itinerary with activities listed day by day.
-    # Task:
-    # - Keep the same day-by-day structure with Markdown formatting.
-    # - For each activity, keep only these details:
-    #   - ID
-    #   - description
-    #   - start_time
-    #   - time allocated (duration)
-    #   - one type of activity among: Culture, Nature, Sport, Stroll, Food, or Nightlife
-    #   - address
-    # - Remove any extra comments, tips, or conversational phrases (e.g., 'Enjoy your trip!').
-    # - Keep the content factual and clean, without adding new information."
-    # response = @chat_message.with_instructions(system_prompt).ask(params[:content])
-    # @trip.update(description: response.content)
+
     redirect_to @trip, notice: "Saved to trip!"
   end
 
   private
 
   def create_trip_activities(activities)
+    existing_activity_ids = @trip.trip_activities.pluck(:activity_id)
+
     activities.each do |activity|
       real_activity = Activity.find_by(id: activity["id"])
+      next unless real_activity
+      next if existing_activity_ids.include?(real_activity.id)
 
-      if real_activity != nil
-        TripActivity.create(
-          trip: @trip,
-          activity: real_activity,
-          start_date_time: activity["start_date_time"],
-          end_date_time: activity["end_date_time"]
-        )
-      end
+      TripActivity.create(
+        trip: @trip,
+        activity: real_activity,
+        start_date_time: activity["start_date_time"],
+        end_date_time: activity["end_date_time"]
+      )
     end
   end
 
