@@ -1,0 +1,9 @@
+<h1>My Conversations</h1>
+<ul>
+  <% @conversations.each do |conversation| %>
+    <li>
+      <%= link_to conversation.title, conversation_path(conversation) %>
+      (<%= conversation.users.map(&:email).join(", ") %>)
+    </li>
+  <% end %>
+</ul>

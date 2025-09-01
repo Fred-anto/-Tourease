@@ -31,8 +31,11 @@ Rails.application.routes.draw do
     end
   end
 
-
   # root "posts#index"
+
+  resources :conversations, only: [:index, :show, :create] do
+    resources :private_messages, only: :create
+  end
 
   resources :chats, only: [:create, :show, :index] do
     resources :trips, only: [:create]
