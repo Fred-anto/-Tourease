@@ -1,0 +1,11 @@
+<%# 1) Remplace l’avis modifié %>
+<%= turbo_stream.replace dom_id(@review) do %>
+  <%= render "reviews/review", review: @review %>
+<% end %>
+
+<%# 2) Met à jour la moyenne + compteur %>
+<%= turbo_stream.replace "activity-rating" do %>
+  <%= render "shared/rating",
+             rating: @activity.rating_avg,
+             reviews_count: @activity.reviews_count %>
+<% end %>
