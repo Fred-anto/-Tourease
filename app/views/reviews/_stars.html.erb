@@ -1,0 +1,18 @@
+<% rating = rating.to_f %>
+<% full = rating.floor %>
+<% half = (rating - full) >= 0.5 %>
+<% empty = 5 - full - (half ? 1 : 0) %>
+
+<span class="stars">
+  <% full.times do %>
+    <i class="fa-solid fa-star"></i>
+  <% end %>
+
+  <% if half %>
+    <i class="fa-solid fa-star-half-stroke"></i>
+  <% end %>
+
+  <% empty.times do %>
+    <i class="fa-regular fa-star"></i>
+  <% end %>
+</span>

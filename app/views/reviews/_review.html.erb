@@ -1,0 +1,40 @@
+<!-- app/views/reviews/_review.html.erb -->
+<div id="<%= dom_id(review) %>" class="list-group-item py-3">
+  <div class="d-flex align-items-start justify-content-between">
+    <!-- Avatar + auteur + étoiles -->
+    <div class="d-flex align-items-center gap-3">
+      <% if review.user.respond_to?(:avatar) && review.user.avatar.attached? %>
+        <%= image_tag review.user.avatar.variant(resize_to_fill: [48, 48]),
+                      class: "rounded-circle shadow-sm",
+                      alt: review.user.username %>
+      <% else %>
+        <%= image_tag "default-avatar.svg",
+                      class: "rounded-circle shadow-sm",
+                      width: 48, height: 48,
+                      alt: (review.user&.username || "User") %>
+      <% end %>
+
+      <div>
+        <div class="fw-semibold"><%= review.user&.username || "User" %></div>
+
+        <!-- Étoiles couleur brand (sans compteur) -->
+        <div class="review-stars" aria-label="<%= "#{review.rating}/5" %>">
+          <% full = review.rating.to_i %>
+          <% empty = 5 - full %>
+          <% full.times  { %><i class="fa-solid fa-star"></i><% } %>
+          <% empty.times { %><i class="fa-regular fa-star"></i><% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Date -->
+    <small class="text-muted ms-3">
+      <%= l(review.created_at, format: :short) %>
+    </small>
+  </div>
+
+  <!-- Commentaire -->
+  <% if review.comment.present? %>
+    <p class="mb-0 mt-2"><%= review.comment %></p>
+  <% end %>
+</div>

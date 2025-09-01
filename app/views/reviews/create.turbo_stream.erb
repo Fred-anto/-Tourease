@@ -1,0 +1,24 @@
+<%# 1) Met à jour la moyenne et le compteur %>
+<%= turbo_stream.replace "activity-rating" do %>
+  <%= render "shared/rating",
+             rating: @activity.rating_avg,
+             reviews_count: @activity.reviews_count %>
+<% end %>
+
+<%# 2) Retire l’ancienne carte si l’utilisateur avait déjà un avis %>
+<%= turbo_stream.remove dom_id(@review) %>
+
+<%# 3) Ajoute le nouvel avis en tête de liste %>
+<%= turbo_stream.prepend "reviews-list" do %>
+  <%= render "reviews/review", review: @review %>
+<% end %>
+
+<%# 4) Retire le placeholder s’il existe %>
+<%= turbo_stream.remove "no-reviews-placeholder" %>
+
+<%# 5) Réinitialise uniquement l’intérieur du formulaire (pas la card) %>
+<%= turbo_stream.replace "review-form-inner" do %>
+  <%= render "reviews/form",
+             activity: @activity,
+             review: (@activity.reviews.find_by(user: current_user) || @activity.reviews.new) %>
+<% end %>
