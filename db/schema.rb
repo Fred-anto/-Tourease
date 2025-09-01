@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_01_130249) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_01_140058) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "vector"
@@ -128,7 +128,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_01_130249) do
     t.index ["conversation_id"], name: "index_private_messages_on_conversation_id"
     t.index ["user_id"], name: "index_private_messages_on_user_id"
   end
-  
+
   create_table "reviews", force: :cascade do |t|
     t.bigint "activity_id", null: false
     t.bigint "user_id", null: false
@@ -139,6 +139,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_01_130249) do
     t.index ["activity_id", "user_id"], name: "index_reviews_on_activity_id_and_user_id", unique: true
     t.index ["activity_id"], name: "index_reviews_on_activity_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
+  end
+
+  create_table "solid_cable_messages", force: :cascade do |t|
+    t.text "channel"
+    t.text "payload"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["channel"], name: "index_solid_cable_messages_on_channel"
+    t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
 
   create_table "trip_activities", force: :cascade do |t|
