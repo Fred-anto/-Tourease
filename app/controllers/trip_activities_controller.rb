@@ -11,7 +11,7 @@ class TripActivitiesController < ApplicationController
     @trip_activity = @trip.trip_activities.build(activity: activity)
 
     if @trip_activity.save
-      redirect_to params[:redirect_to] || trip_trip_activities_path(@trip), notice: "✅ Activity added to your trip!"
+      redirect_to params[:redirect_to] || trip_trip_activities_path(@trip), notice: "Activity added to your trip!"
     else
       redirect_to trip_path(@trip), alert: "❌ Could not add activity."
     end
