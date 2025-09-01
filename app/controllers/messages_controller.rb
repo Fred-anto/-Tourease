@@ -78,8 +78,8 @@ class MessagesController < ApplicationController
     2. The JSON object must start with a key 'Schedule':
       - true if the user requested to plan the trip, schedule activities, or modify the plan.
       - false if the user only asked a question without requesting planning.
-    3. If 'Schedule' is true, following the 'Schedule' key, include one key per day of the trip,
-    formatted as 'DayOfWeek, YYYY-MM-DD' based on my trip schedule. Each day key should be a list of activity objects.
+    3. If 'Schedule' is true, following the 'Schedule' key, include one key per day of the trip.
+    Each day key must be formatted strictly as 'YYYY-MM-DD' (do not include the day of week). Each day key should be a list of activity objects.
     Each activity must include the following keys:
       - 'id': Id of the record given to you
       - 'name': short name of the activity
@@ -96,10 +96,10 @@ class MessagesController < ApplicationController
     - If 'Schedule' is true, provide all activity objects for each day.
     - If 'Schedule' is false, do not provide activity objects. Instead, leave other fields empty and fill the response in 'notes'.
 
-    Example JSON for a planned trip (DO NOT USE THIS):
+    Example JSON for a planned trip:
     {
       'Schedule': true,
-      'Monday, 2025-08-27': [
+      '2025-08-25': [
         {
           'id': 34,
           'name': 'Musée d'Orsay',

@@ -40,7 +40,7 @@
                     <div style="display: inline-block; vertical-align: top; width: 170px; min-height: 100px; mx-2">
 
                       <div>
-                        <em><%= date.strftime("%a %d %b") %></em>
+                        <em><%= date.strftime("%d %b") %></em>
 
                         <% @trip.trip_activities.each do |event| %>
                           <% if event.start_date_time.to_date <= date && event.end_date_time.to_date >= date %>
