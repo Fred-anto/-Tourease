@@ -16,10 +16,26 @@
             <div class="form-group">
               <div class="row">
                 <div class="col-md-6">
-                  <%= f.input :start_date, as: :string, label: 'Start date', input_html: { id: 'start_date', class: 'form-control' } %>
+                  <%= f.input :start_date,
+                        label: 'Start date',
+                        as: :string,
+                        input_html: {
+                          value: f.object.start_date&.strftime("%Y-%m-%d"),
+                          data: { controller: "datepicker" },
+                          autocomplete: "off",
+                          class: "form-control"
+                        } %>
                 </div>
                 <div class="col-md-6">
-                  <%= f.input :end_date, as: :string, label: 'End date', input_html: { id: 'end_date', class: 'form-control' } %>
+                  <%= f.input :end_date,
+                        label: 'End date',
+                        as: :string,
+                        input_html: {
+                          value: f.object.end_date&.strftime("%Y-%m-%d"),
+                          data: { controller: "datepicker" },
+                          autocomplete: "off",
+                          class: "form-control"
+                        } %>
                 </div>
               </div>
             </div>
@@ -33,22 +49,21 @@
 
             <div class="form-group">
               <label class="form-label mb-2">Pick categories</label>
-                <div class="category-grid">
-                  <% Category.all.each do |category| %>
-                    <% checkbox_id = "trip_category_ids_#{category.id}" %>
-                    <div class="category-tile">
-                      <%= f.check_box :category_ids, { multiple: true, id: checkbox_id, class: "category-checkbox" }, category.id, nil %>
-                      <label for="<%= checkbox_id %>" class="category-content">
-                        <%= category.name %>
-                      </label>
-                    </div>
-                  <% end %>
-                </div>
-                </div>
+              <div class="category-grid">
+                <% Category.all.each do |category| %>
+                  <% checkbox_id = "trip_category_ids_#{category.id}" %>
+                  <div class="category-tile">
+                    <%= f.check_box :category_ids, { multiple: true, id: checkbox_id, class: "category-checkbox" }, category.id, nil %>
+                    <label for="<%= checkbox_id %>" class="category-content">
+                      <%= category.name %>
+                    </label>
+                  </div>
+                <% end %>
+              </div>
+            </div>
 
             <div class="form-group d-flex mt-4 gap-4">
               <%= f.submit '➕ Create trip', class: 'btn btn-primary' %>
-              <%# <%= button_to "Plan your trip with guAIde", chats_path, method: :post, class: "btn btn-primary" %>
             </div>
           <% end %>
         </div>

@@ -6,18 +6,19 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css">
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.1/mapbox-gl-geocoder.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
-                        integrity: "sha512-dyZ88n1M8f2xq4k3vG3m6KZ3V+UzS5Tj9kq+7wUpVjpc2wP6uZfclFybpQX1+Pc5iZ3nIUzRe+P9zOZ5d0ZG2Q==",
-                        crossorigin: "anonymous",
-                        referrerpolicy: "no-referrer" %>
+                            integrity: "sha512-dyZ88n1M8f2xq4k3vG3m6KZ3V+UzS5Tj9kq+7wUpVjpc2wP6uZfclFybpQX1+Pc5iZ3nIUzRe+P9zOZ5d0ZG2Q==",
+                            crossorigin: "anonymous",
+                            referrerpolicy: "no-referrer" %>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-
   </head>
 
   <body>
@@ -27,28 +28,31 @@
       <%= yield %>
     </main>
 
-    <%= render "layouts/shared/footer"  unless @hide_footer%>
+    <%= render "layouts/shared/footer" unless @hide_footer %>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/rangePlugin.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
-    <script>
-      document.addEventListener("turbo:load", () => {
-        flatpickr.localize(flatpickr.l10ns.fr)
 
-        flatpickr("#start_date", {
-          altInput: true,
-          altFormat: "d-m-Y",
-          dateFormat: "Y-m-d",
-          locale: "fr"
-        })
-        flatpickr("#end_date", {
-          altInput: true,
-          altFormat: "d-m-Y",
-          dateFormat: "Y-m-d",
-          locale: "fr"
-        })
-      })
+    <script>
+      function initLegacyDatepickers() {
+        if (!window.flatpickr) return;
+
+        document.querySelectorAll('.js-datepicker').forEach(function(el) {
+          if (el._flatpickr) return;
+          flatpickr.localize(flatpickr.l10ns.fr);
+          flatpickr(el, {
+            locale: "fr",
+            altInput: true,
+            altFormat: "d-m-Y",
+            dateFormat: "Y-m-d",
+            allowInput: true,
+            disableMobile: true
+          });
+        });
+      }
+
+      document.addEventListener("turbo:load",   initLegacyDatepickers);
+      document.addEventListener("turbo:render", initLegacyDatepickers);
     </script>
   </body>
 </html>
