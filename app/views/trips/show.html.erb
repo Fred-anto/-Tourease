@@ -43,7 +43,7 @@
                  <% number_of_days = (@trip.end_date.to_date - @trip.start_date.to_date).to_i + 1 %>
 
                   <%= calendar(start_date: @trip.start_date.to_date, number_of_days: number_of_days) do |date|%>
-                  <div style="display: inline-block; vertical-align: top; width: 170px; min-height: 100px; mx-2">
+                  <div style="display: inline-block; vertical-align: top; width: 170px; mx-2">
 
                     <div>
                       <em><%= date.strftime("%a %d %b") %></em>
@@ -90,7 +90,7 @@
                 <div class="empty-state">
                   <p class="m-0">No Activity planned yet </p>
                 </div>
-                
+
               </div>
             </div>
           <% end %>
