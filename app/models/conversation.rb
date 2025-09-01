@@ -3,5 +3,12 @@ class Conversation < ApplicationRecord
   has_many :users, through: :conversation_users
   has_many :private_messages, dependent: :destroy
 
-  validates :users, length: { minimum: 2 }
+  validates :title, presence: true
+
+  scope :between, ->(user_id1, user_id2) {
+    joins(:conversation_users)
+      .where(conversation_users: { user_id: [user_id1, user_id2] })
+      .group("conversations.id")
+      .having("COUNT(conversations.id) = 2")
+  }
 end

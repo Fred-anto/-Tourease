@@ -1,0 +1,20 @@
+<h1><%= @conversation.title %></h1>
+
+<div class="conversation-messages border rounded p-3 mb-3" style="max-height: 500px; overflow-y: auto;">
+  <% @messages.each do |msg| %>
+    <div class="d-flex mb-2 <%= msg.user == current_user ? 'justify-content-end' : 'justify-content-start' %>">
+      <div class="message p-2 rounded <%= msg.user == current_user ? 'bg-primary text-white' : 'bg-light' %>">
+        <strong><%= msg.user.username %></strong><br>
+        <%= msg.content %>
+        <div class="text-muted small"><%= l(msg.created_at, format: :short) %></div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<%= form_with(model: [@conversation, @message], local: true) do |f| %>
+  <div class="input-group">
+    <%= f.text_area :content, rows: 2, placeholder: "Type your message...", class: "form-control" %>
+    <button class="btn btn-primary" type="submit">Send</button>
+  </div>
+<% end %>
