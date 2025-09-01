@@ -16,6 +16,11 @@
           <span class="muted">Destination:</span>
           <strong><%= @trip.destination %></strong>
           </p>
+          <div>
+           <span class="my-2">
+              <em><%= @trip.categories.map(&:name).join(' & ') %></em>
+            </span>
+          </div>
           <div class="chips">
             <% if @trip.start_date.present? %>
               <span class="chip">
@@ -25,13 +30,6 @@
             <% if @trip.mood.present? %>
               <span class="chip chip--mint"><%= @trip.mood %></span>
             <% end %>
-          </div>
-          <div>
-           <span class="chip my-1">
-              <% @trip.categories.each do |category| %>
-              <%= category.name %>
-              <% end %>
-            </span>
           </div>
         </div>
         <div class="trip-card__body p-6 p-md-3">
