@@ -42,7 +42,7 @@
 
         <!-- BODY -->
         <div class="trip-card__body p-6 p-md-3">
-          <h3 class="section-title m-0">My activities</h3>
+          <h3 class="chip-title m-0">My activities</h3>
           <div class="row">
             <% if @trip.trip_activities.any? %>
               <!-- CALENDAR -->
@@ -66,7 +66,7 @@
                             <% end %>
                           <% end %>
                         </div>
-                        
+
                       </div>
                     <% end %>
                   <% end %>
@@ -118,7 +118,7 @@
       </div>
 
       <!-- CHATS History -->
-      
+
       <% if @chats.present? && @chats.any? %>
         <div class="mt-4 text-center">
           <h4 class="mb-3">Previous conversations:</h4>

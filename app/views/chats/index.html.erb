@@ -3,7 +3,7 @@
   <div class="d-flex flex-column align-items-center">
     <% @chats.each do |chat| %>
       <%= link_to "Chat ##{chat.id}", chat_path(chat),
-                  class: "btn btn-outline-primary mb-2 w-50" %>
+                  class: "btn-new" %>
     <% end %>
   </div>
 </div>

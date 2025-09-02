@@ -10,7 +10,7 @@
   padding: 6px 12px;
   border-radius: 9999px;
   border: 1.5px solid rgba(0,0,0,.08);
-  background: #fff;
+  background: #ffffff22;
   box-shadow: 0 1px 0 rgba(0,0,0,.02);
   line-height: 1;
   font-size: 0.95rem;
@@ -33,4 +33,37 @@
   font-weight: 500;
   font-size: 1.75rem;
   line-height: 1;
+}
+
+.chip-title {
+  font-family: inherit;      /* garde la police existante */
+  font-weight: 700;          /* gras comme ton exemple */
+  font-size: 1.5rem;         /* adapte selon ton besoin */
+  color: #004E64;            /* couleur du texte */
+  display: inline-block;     /* nécessaire pour placer la barre */
+  position: relative;        /* pour placer la pseudo-élément */
+  margin-bottom: 0.5rem;
+  padding-bottom: 5px;     /* espace sous le titre */
+}
+
+.chip-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;              /* décale un peu sous le texte */
+  width: 60px;               /* longueur de la barre */
+  height: 4px;               /* épaisseur de la barre */
+  background-color: #7AE582; /* couleur de la barre */
+  border-radius: 2px;        /* coins arrondis */
+}
+
+.cat-title {
+  font-family: inherit;      /* garde la police existante */
+  font-weight: 700;          /* gras comme ton exemple */
+  font-size: 1.5rem;         /* adapte selon ton besoin */
+  color: #004E64;            /* couleur du texte */
+  display: inline-block;     /* nécessaire pour placer la barre */
+  position: relative;        /* pour placer la pseudo-élément */
+  margin-bottom: 0.5rem;
+  padding-bottom: 5px;     /* espace sous le titre */
 }

@@ -6,7 +6,7 @@
 
       <% if @favorite_activities.any? %>
         <h2 class="mb-4 section-title">
-          <span class="chip">My Favorites</span>
+          <span class="chip-title">My Favorites</span>
         </h2>
         <div class="swipe-carousel" data-controller="swipe">
           <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Favorites activities">
@@ -74,7 +74,7 @@
         <div class="text-center my-5">
           <i class="fa-regular fa-face-sad-tear fa-3x text-muted mb-3"></i>
           <p class="mb-2">Nothing here yet...</p>
-          <%= link_to "✨ Find some activities here", activities_path, class: "btn btn-outline-primary rounded-4" %>
+          <%= link_to "Find some activities here", activities_path, class: "btn-new" %>
         </div>
       <% end %>
 
