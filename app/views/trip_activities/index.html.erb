@@ -3,17 +3,18 @@
 <div class="container mt-1">
   <div class="row justify-content-center mb-5">
     <div class="col-md-8">
+
    <!-- Back arrow à gauche -->
     <div class="d-flex align-items-center">
       <%= link_to trip_path(@trip), class: "text-decoration-none text-dark d-flex align-items-center justify-content-center me-2 my-4 rounded-4",
                       style: "border: 1px solid #adb5bd; width: 60px; height: 60px; line-height: 60px;" do %>
         <i class="fa-solid fa-arrow-left fs-3"></i>
       <% end %>
-      <h2 class="d-flex align-items-center justify-content-center my-4">🔎 Select your activities</h2>
+      <h2 class="d-flex align-items-center justify-content-center my-4 section-title chip">🔎 Select your activities</h2>
       </div>
 
       <% @categories.each do |category| %>
-        <h3 class="mt-5"><%= category.name %></h3>
+        <h3 class="mt-2 cat-title"><%= category.name %></h3>
 
         <div class="swipe-carousel" data-controller="swipe">
           <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="<%= category.name %>">
@@ -42,7 +43,7 @@
         </div>
       <% end %>
 
-      <h2 class="mb-4 mt-5">📈 Top Trendy Activities</h2>
+      <h2 class="mt-2 cat-title">📈 Top Trendy Activities</h2>
       <div class="swipe-carousel" data-controller="swipe">
         <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Top trendy activities">
           <% @activities.sample(20).each do |activity| %>
@@ -67,7 +68,7 @@
         </div>
       </div>
 
-      <h2 class="mb-4 mt-5">👀 Must-See Activities</h2>
+      <h2 class="cat-title">👀 Must-See Activities</h2>
       <div class="swipe-carousel" data-controller="swipe">
         <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Must-see activities">
           <% @activities.sample(20).each do |activity| %>

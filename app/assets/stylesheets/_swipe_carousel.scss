@@ -10,7 +10,7 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     &::-webkit-scrollbar { display: none; }
-
+    min-height: 305px;
     .card {
       /* largeur mobile: montrer un peu la carte suivante */
       flex: 0 0 75%;
