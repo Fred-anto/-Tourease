@@ -20,7 +20,13 @@
     <div class="swipe-carousel" data-controller="swipe">
       <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Top trendy activities">
         <% @activities.last(10).each do |activity| %>
-          <div class="card h-100">
+          <div class="card h-100 position-relative"><!-- 👈 rend possible le stretched-link global -->
+
+            <!-- Lien étiré qui couvre TOUTE la card -->
+            <%= link_to "", activity_path(activity),
+                        class: "stretched-link",
+                        aria: { label: "View #{activity.name}" } %>
+
             <% if activity.photo.attached? %>
               <%= cl_image_tag activity.photo.key, class: "card-img-top", alt: activity.name %>
             <% else %>
@@ -31,27 +37,19 @@
               <h5 class="card-title"><strong><%= activity.name %></strong></h5>
               <p class="description flex-grow-1"><%= activity.description %></p>
 
-              <!-- Chip de catégorie en bas à droite -->
+              <!-- Chip de catégorie -->
               <div class="text-start mt-2">
                 <span class="chip"><%= activity.category.name %></span>
               </div>
-
-              <%= link_to "", activity_path(activity),
-                          class: "stretched-link",
-                          aria: { label: "View #{activity.name}" } %>
             </div>
 
-            <!-- Footer empilé : Adresse (2 lignes max) + Étoiles (1 ligne) -->
+            <!-- Footer : Adresse + Étoiles (non cliquables ici, la card entière mène à la show) -->
             <div class="card-footer bg-transparent footer-stack">
               <p class="mb-1 address-line"><%= activity.address %></p>
-              <div class="rating-row">
-                <%= link_to activity_reviews_path(activity),
-                            class: "text-decoration-none d-inline-flex align-items-center gap-2 rating-link",
-                            aria: { label: "See reviews for #{activity.name}" } do %>
-                  <%= render "shared/rating",
-                             rating: activity.rating_avg,
-                             reviews_count: activity.reviews_count %>
-                <% end %>
+              <div class="rating-row d-inline-flex align-items-center gap-2">
+                <%= render "shared/rating",
+                           rating: activity.rating_avg,
+                           reviews_count: activity.reviews_count %>
               </div>
             </div>
           </div>
@@ -71,7 +69,13 @@
     <div class="swipe-carousel" data-controller="swipe">
       <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Must-see activities">
         <% @activities.first(10).each do |activity| %>
-          <div class="card h-100">
+          <div class="card h-100 position-relative"><!-- 👈 rend possible le stretched-link global -->
+
+            <!-- Lien étiré qui couvre TOUTE la card -->
+            <%= link_to "", activity_path(activity),
+                        class: "stretched-link",
+                        aria: { label: "View #{activity.name}" } %>
+
             <% if activity.photo.attached? %>
               <%= cl_image_tag activity.photo.key, class: "card-img-top", alt: activity.name %>
             <% else %>
@@ -82,27 +86,19 @@
               <h5 class="card-title"><strong><%= activity.name %></strong></h5>
               <p class="description flex-grow-1"><%= activity.description %></p>
 
-              <!-- Chip de catégorie en bas à droite -->
+              <!-- Chip de catégorie -->
               <div class="text-start mt-2">
                 <span class="chip"><%= activity.category.name %></span>
               </div>
-
-              <%= link_to "", activity_path(activity),
-                          class: "stretched-link",
-                          aria: { label: "View #{activity.name}" } %>
             </div>
 
-            <!-- Footer empilé : Adresse (2 lignes max) + Étoiles (1 ligne) -->
+            <!-- Footer : Adresse + Étoiles (non cliquables ici) -->
             <div class="card-footer bg-transparent footer-stack">
               <p class="mb-1 address-line"><%= activity.address %></p>
-              <div class="rating-row">
-                <%= link_to activity_reviews_path(activity),
-                            class: "text-decoration-none d-inline-flex align-items-center gap-2 rating-link",
-                            aria: { label: "See reviews for #{activity.name}" } do %>
-                  <%= render "shared/rating",
-                             rating: activity.rating_avg,
-                             reviews_count: activity.reviews_count %>
-                <% end %>
+              <div class="rating-row d-inline-flex align-items-center gap-2">
+                <%= render "shared/rating",
+                           rating: activity.rating_avg,
+                           reviews_count: activity.reviews_count %>
               </div>
             </div>
           </div>
@@ -111,3 +107,4 @@
     </div>
   </div>
 </div>
+

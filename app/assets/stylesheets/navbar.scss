@@ -1,10 +1,30 @@
-/* ===== Palette ===== */
+/* ===== Palette & variables ===== */
 :root {
   --deep:    #004E64;
   --primary: #00A5CF; /* bleu principal */
   --mint:    #9FFFCB;
   --teal:    #25A18E;
   --lime:    #7AE582;
+
+  /* Hauteur du pictogramme (logo) et correction pour le wordmark SVG */
+  --brand-h: 36px;          /* hauteur visuelle du picto */
+  --wordmark-scale: 1.60;   /* compense le viewBox “large” du TourEase.svg */
+}
+
+/* Petits écrans : compacter un peu le lockup */
+@media (max-width: 420px) {
+  :root {
+    --brand-h: 32px;
+    --wordmark-scale: 1.35;
+  }
+}
+
+/* Écrans >= tablet */
+@media (min-width: 768px) {
+  :root {
+    --brand-h: 38px;
+    --wordmark-scale: 1.32;
+  }
 }
 
 /* ===== Navbar (isolée de Bootstrap) ===== */
@@ -16,54 +36,67 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  padding: .6rem 1rem;
+  padding: .55rem 1rem;
   background: var(--primary);
   border-bottom: 1px solid var(--deep);
   width: 100%;
   box-sizing: border-box;
-  min-height: 56px;              /* hauteur confortable et stable */
-  white-space: nowrap;           /* empêche les retours à la ligne */
+  min-height: 56px;           /* hauteur confortable et stable */
+  white-space: nowrap;        /* empêche les retours à la ligne */
 }
 
-/* Gauche */
+/* ===== Gauche : logo + wordmark ===== */
 .te-navbar-left {
   display: flex;
   align-items: center;
-  gap: .5rem;
 }
 
 .logo-link {
   display: flex;
   align-items: center;
-  gap: .25rem;   /* contrôle l’espace */
+  gap: .3rem;                 /* rapproche logo + mot */
+  line-height: 1;
 }
 
+/* Picto */
 .logo {
-  height: 36px;
+  height: var(--brand-h);
   width: auto;
-}
-
-.logo-wordmark {
-  height: 42px;
-  width: auto;
-  margin-left: .5rem;
   display: block;
+  align-self: center;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.18));
 }
 
+/* Wordmark (TourEase.svg)
+   -> on sur-dimensionne un peu pour compenser le viewBox trop grand,
+   -> même “hauteur visuelle” que le picto. */
+.logo-wordmark {
+  height: calc(var(--brand-h) * var(--wordmark-scale));
+  width: auto;
+  display: block;
+  align-self: center;
+  margin-left: .2rem;
+  transform: translateY(-1px); /* petit nudging optique */
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.22)); /* lisibilité sur fond teal */
+}
+
+/* (Si vous utilisez du texte à la place du SVG wordmark) */
 .app-name {
   font-size: 1.25rem;
-  font-weight: bold;
+  font-weight: 800;
   color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.28);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Droite */
+/* ===== Droite : actions / avatar ===== */
 .te-navbar-right {
   display: flex;
   align-items: center;
-  gap: 1rem;                      /* espace entre loupe / champ / avatar */
+  gap: 1rem;                  /* espace entre éléments */
 }
 
-/* Bouton loupe */
+/* Bouton loupe (si réactivé) */
 .search-btn {
   background: none;
   border: none;
@@ -74,12 +107,8 @@
 .search-btn:hover { opacity: .7; }
 
 /* Champ recherche : n’occupe AUCUN espace quand fermé */
-.search-box {
-  display: none;                  /* clé pour éviter le “décalage” */
-}
-.search-box.active {
-  display: block;                 /* apparaît à côté de la loupe */
-}
+.search-box { display: none; }
+.search-box.active { display: block; }
 .search-input {
   padding: .3rem .6rem;
   border-radius: 6px;
@@ -92,7 +121,6 @@
   display: flex;
   align-items: center;
 }
-
 .avatar {
   width: 36px;
   height: 36px;
@@ -103,5 +131,5 @@
 
 /* ===== Responsive léger ===== */
 @media (max-width: 420px) {
-  .app-name { display: none; }    /* garder une barre compacte sur mobile */
+  .app-name { display: none; }  /* garder une barre compacte sur mobile */
 }
