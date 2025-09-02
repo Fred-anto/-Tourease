@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get "webmanifest"    => "pwa#manifest"
+  get "service-worker" => "pwa#service_worker"
+
   devise_for :users
 
   # Healthcheck
