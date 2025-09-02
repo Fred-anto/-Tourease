@@ -1,6 +1,11 @@
 .alert {
   position: fixed;
-  bottom: 16px;
-  right: 16px;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1000;
+  background: linear-gradient(0deg, rgba(0,165,207,.45), rgba(0,165,207,.45)) #fff;
+  color: #004E64;
+  border: 1px solid rgba(0,165,207,.9);
+  border-radius: 12px;
 }
