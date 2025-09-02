@@ -10,6 +10,13 @@
             <div class="chips">
               <span class="chip"><%= @activity.category.name %></span>
             </div>
+
+            <div class="creator d-flex align-items-center gap-2 mt-2">
+              <%= avatar_tag(@activity.user, size: 32, class_name: "border") %>
+              <span class="small text-white">
+                Created by <strong><%= @activity.user.username %></strong>
+              </span>
+            </div>
           </div>
 
           <% if user_signed_in? %>
@@ -73,12 +80,10 @@
             <%= image_tag "placeholder.svg", class: "card-img-top" %>
           <% end %>
 
-          <!-- Pavé description -->
           <div class="card-body">
             <h5 class="card-title"><%= @activity.description %></h5>
           </div>
 
-          <!-- Pavé notation (moyenne + nb commentaires) cliquable -->
           <div class="card-body review-card text-center">
             <%= link_to activity_reviews_path(@activity),
                         class: "text-decoration-none d-inline-flex align-items-center gap-2 rating-link" do %>

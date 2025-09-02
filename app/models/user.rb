@@ -1,7 +1,6 @@
 class User < ApplicationRecord
   acts_as_favoritor
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
@@ -11,10 +10,11 @@ class User < ApplicationRecord
   has_many :trips, through: :trip_users
   has_many :conversation_users
   has_many :conversations, through: :conversation_users
-
   has_many :private_messages
+
   has_one_attached :avatar
 
   # validates :email, :username, :age, :phone_number, presence: true
   # validates :email, :username, :phone_number, uniqueness: true
 end
+
