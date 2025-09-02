@@ -43,9 +43,24 @@
 
       /* --- CONTENU --- */
       .card-body {
-        flex: 1;                   /* prend l’espace restant */
-        padding: 0.75rem;
-        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+
+        .chip {
+          font-size: 0.85rem;         /* plus grand qu’avant */
+          padding: 0.35rem 0.75rem;
+          border-radius: 14px;
+          background: #f0f0f0;
+          display: inline-block;
+          font-weight: 500;
+          white-space: nowrap;
+          margin-top: auto;           /* pousse vers le bas si besoin */
+        }
+
+        .text-end {
+          margin-top: auto; /* pousse la chip vers le bas du body */
+        }
       }
 
       /* ✅ Titre : gras, 1 ligne max */
@@ -80,33 +95,37 @@
         height: calc(3 * 1.3em);
       }
 
-      /* ✅ Footer uniforme : 2 lignes max */
+      /* --- FOOTER : 2 lignes adresse + 1 ligne étoiles --- */
       .card-footer {
         background: transparent;
-        font-size: 0.8rem;
-        line-height: 1.25;
         padding: 0.5rem 0.75rem;
 
-        /* hauteur FIXE = 2 lignes + padding */
-        min-height: calc(2.5em + 1rem);
-
+        font-size: 0.85rem;
+        line-height: 1.25rem; /* base pour le calcul */
+        display: block;
         margin-top: auto;
+      }
 
+      .footer-stack {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
+        gap: 0.25rem;
 
-        p {
-          margin: 0 !important;          /* annule un éventuel .mb-1 */
-          font-weight: 400;
+        .address-line {
+          margin: 0;
           display: -webkit-box;
-          -webkit-line-clamp: 2;         /* 2 lignes max */
           -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
           overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: normal;
-          font-size: inherit;
-          line-height: inherit;
+
+          /* réserve toujours 2 lignes */
+          min-height: calc(2 * 1.25rem);
+        }
+
+        .rating-row {
+          display: flex;
+          align-items: center;
+          min-height: 1.25rem; /* 1 ligne */
         }
       }
     }
@@ -117,19 +136,21 @@
         flex-basis: 280px;
         max-width: 280px;
         height: 360px;                   /* un peu plus haut en desktop */
-      }
-      .card-img-top { height: 180px; }
 
-      /* (optionnel) 4 lignes en desktop :
-      .card-body .description,
-      .card-body > p:not(.card-title) {
-        -webkit-line-clamp: 4;
-        height: calc(4 * 1.3em);
-      } */
+        .card-img-top { height: 180px; }
 
-      .card-footer {
-        font-size: 0.85rem;
-        height: calc(2.5em + 1rem);      /* toujours 2 lignes + padding */
+        .card-footer {
+          font-size: 0.85rem;
+          line-height: 1.25rem;
+        }
+
+        .footer-stack .address-line {
+          min-height: calc(2 * 1.25rem);
+        }
+
+        .footer-stack .rating-row {
+          min-height: 1.25rem;
+        }
       }
     }
   }

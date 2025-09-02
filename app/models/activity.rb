@@ -6,7 +6,7 @@ class Activity < ApplicationRecord
   belongs_to :user
 
   has_many :trip_activities, dependent: :destroy
-  has_many :trips, through: :trip_categories
+  has_many :trips, through: :trip_activities
 
   # Association aux reviews
   has_many :reviews, dependent: :destroy

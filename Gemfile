@@ -60,6 +60,8 @@ gem "geocoder"
 gem 'acts_as_favoritor'
 gem "simple_calendar"
 gem "neighbor"
+gem "faker"
+
 gem "solid_cable"
 gem "ruby-openai"
 
