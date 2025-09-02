@@ -43,9 +43,24 @@
 
       /* --- CONTENU --- */
       .card-body {
-        flex: 1;                   /* prend l’espace restant */
-        padding: 0.75rem;
-        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+
+        .chip {
+          font-size: 0.85rem;         /* plus grand qu’avant */
+          padding: 0.35rem 0.75rem;
+          border-radius: 14px;
+          background: #f0f0f0;
+          display: inline-block;
+          font-weight: 500;
+          white-space: nowrap;
+          margin-top: auto;           /* pousse vers le bas si besoin */
+        }
+
+        .text-end {
+          margin-top: auto; /* pousse la chip vers le bas du body */
+        }
       }
 
       /* ✅ Titre : gras, 1 ligne max */

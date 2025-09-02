@@ -27,10 +27,18 @@
               <%= image_tag "placeholder.svg", class: "card-img-top", alt: "Placeholder" %>
             <% end %>
 
-            <div class="card-body">
+            <div class="card-body d-flex flex-column">
               <h5 class="card-title"><strong><%= activity.name %></strong></h5>
-              <p class="description"><%= activity.description %></p>
-              <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "View #{activity.name}" } %>
+              <p class="description flex-grow-1"><%= activity.description %></p>
+
+              <!-- Chip de catégorie en bas à droite -->
+              <div class="text-start mt-2">
+                <span class="chip"><%= activity.category.name %></span>
+              </div>
+
+              <%= link_to "", activity_path(activity),
+                          class: "stretched-link",
+                          aria: { label: "View #{activity.name}" } %>
             </div>
 
             <!-- Footer empilé : Adresse (2 lignes max) + Étoiles (1 ligne) -->
@@ -70,10 +78,18 @@
               <%= image_tag "placeholder.svg", class: "card-img-top", alt: "Placeholder" %>
             <% end %>
 
-            <div class="card-body">
+            <div class="card-body d-flex flex-column">
               <h5 class="card-title"><strong><%= activity.name %></strong></h5>
-              <p class="description"><%= activity.description %></p>
-              <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "View #{activity.name}" } %>
+              <p class="description flex-grow-1"><%= activity.description %></p>
+
+              <!-- Chip de catégorie en bas à droite -->
+              <div class="text-start mt-2">
+                <span class="chip"><%= activity.category.name %></span>
+              </div>
+
+              <%= link_to "", activity_path(activity),
+                          class: "stretched-link",
+                          aria: { label: "View #{activity.name}" } %>
             </div>
 
             <!-- Footer empilé : Adresse (2 lignes max) + Étoiles (1 ligne) -->
