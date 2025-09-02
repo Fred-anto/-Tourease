@@ -1,9 +1,27 @@
-<h1>My Conversations</h1>
-<ul>
-  <% @conversations.each do |conversation| %>
-    <li>
-      <%= link_to conversation.title, conversation_path(conversation) %>
-      (<%= conversation.users.map(&:email).join(", ") %>)
-    </li>
-  <% end %>
-</ul>
+<%= render "shared/navbar" %>
+<div class="container mt-5 trips-show">
+  <h2 class="mb-4 section-title">
+    <span class="chip">My Conversations</span>
+  </h2>
+    <div class="row g-2 justify-content-center">
+      <% @conversations.each do |conversation| %>
+        <% other_user = conversation.users.where.not(id: current_user.id).first %>
+        <div class="col-12 d-flex align-items-center gap-3">
+          <% if other_user&.avatar&.attached? %>
+            <%= image_tag other_user.avatar.variant(resize_to_fill: [48, 48]),
+                          class: "rounded-circle shadow-sm",
+                          alt: other_user.username %>
+          <% else %>
+            <%= image_tag "default-avatar.svg",
+                          class: "rounded-circle shadow-sm",
+                          width: 48, height: 48,
+                          alt: other_user&.username || "User" %>
+          <% end %>
+
+          <%= link_to conversation.title,
+                      conversation_path(conversation),
+                      class: "badge d-block text-truncate bg-light px-3 py-2 rounded-3 text-dark text-decoration-none conversation-badge"%>
+        </div>
+      <% end %>
+    </div>
+  </div>

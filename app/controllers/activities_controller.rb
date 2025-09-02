@@ -45,12 +45,18 @@ class ActivitiesController < ApplicationController
 
   def favorite
     current_user.favorite(@activity)
-    redirect_to my_activities_activities_path, notice: "Added to fav!"
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to @activity }
+    end
   end
 
   def unfavorite
     current_user.unfavorite(@activity)
-    redirect_to my_activities_activities_path, notice: "Deleted from fav"
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to @activity }
+    end
   end
 
   def my_activities

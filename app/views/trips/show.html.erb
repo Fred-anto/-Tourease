@@ -100,20 +100,19 @@
                 </div>
               </div>
 
-            <% else %>
+             <% else %>
               <!-- EMPTY STATE -->
-              <div class="col-12">
-                <div class="empty-state mt-2">
-                  <p class="m-0">No Activity planned yet</p>
-                </div>
-              </div>
-            <% end %>
+               <div class="col-12">
+                  <div class="empty-state mt-2">
+                    <p class="m-0">No Activity planned yet</p>
+                  </div>
+               </div>
+             <% end %>
           </div>
 
-          <!-- BUTTONS -->
-          <div class="d-flex flex-wrap gap-3 mt-4">
-            <%= button_to "🚀 Enhance with guAIde", chats_path(trip_id: @trip.id), method: :post, class: "btn btn-primary" %>
-            <%= button_to "🔍 Find activities", trip_trip_activities_path(trip_id: @trip.id), method: :get, class: "btn btn-primary" %>
+            <div class="d-flex flex-wrap gap-3 mt-4">
+              <%= button_to "🗓️ guAIde planning", chats_path(trip_id: @trip.id), method: :post, class: "btn btn-primary" %>
+              <%= button_to "🔎 activities ", trip_trip_activities_path(trip_id: @trip.id), method: :get, class: "btn btn-primary" %>
           </div>
         </div>
       </div>
