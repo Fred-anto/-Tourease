@@ -1,10 +1,16 @@
 class ActivitiesController < ApplicationController
+  # Devise : on laisse index/show publics, le reste nécessite d'être connecté
   skip_before_action :authenticate_user!, only: [:index, :show]
 
+  # On a besoin de @activity pour show/favorite/unfavorite
   before_action :set_activity, only: [:show, :favorite, :unfavorite]
 
   def index
-    @activities = Activity.all
+    # Précharge category, user (+ avatar) et photo pour éviter les N+1 dans les vues & partials
+    @activities = Activity
+                    .with_attached_photo
+                    .includes(:category, user: { avatar_attachment: :blob })
+
     @markers = @activities.geocoded.map do |activity|
       {
         lat: activity.latitude,
@@ -15,25 +21,21 @@ class ActivitiesController < ApplicationController
     end
 
     @trips = user_signed_in? ? current_user.trips.order(created_at: :desc) : Trip.none
-    # @favorites = current_user.all_favorites.select { |f| f.favoritable_type == "Activity" }.map(&:favoritable)
-    # @activities = Activity.includes(:category, :user).order(created_at: :desc)
-    # @trips = user_signed_in? ? current_user.trips.order(created_at: :desc) : Trip.none
   end
-   # @trips = user_signed_in? ? current_user.trips : Trip.none
-   # @activities = Activity.includes(:category, :user).order(created_at: :desc)
 
   def new
     @activity = Activity.new
   end
 
   def show
-    @trip = Trip.find(params[:trip_id]) if params[:trip_id].present?
-    @trip_activity = @trip.trip_activities.find_by(activity_id: @activity.id) if params[:trip_id].present?
+    if params[:trip_id].present?
+      @trip = Trip.find(params[:trip_id])
+      @trip_activity = @trip.trip_activities.find_by(activity_id: @activity.id)
+    end
   end
 
   def create
-    @activity = Activity.new(activity_params)
-    @activity.user = current_user
+    @activity = current_user.activities.build(activity_params)
     if @activity.save
       redirect_to my_activities_activities_path, notice: "activity created"
     else
@@ -52,23 +54,27 @@ class ActivitiesController < ApplicationController
   end
 
   def my_activities
-    @favorite_activities = current_user.all_favorites.select { |f| f.favoritable_type == "Activity" }.map(&:favoritable)
+    @favorite_activities = current_user.all_favorites
+                                       .select { |f| f.favoritable_type == "Activity" }
+                                       .map(&:favoritable)
     @created_activities = current_user.activities
     @favorite_activities ||= []
     @created_activities ||= []
   end
 
   def trip_activities
-    @favorite_activities = current_user.all_favorites.select { |f| f.favoritable_type == "Activity" }.map(&:favoritable)
+    @favorite_activities = current_user.all_favorites
+                                       .select { |f| f.favoritable_type == "Activity" }
+                                       .map(&:favoritable)
     @created_activities = current_user.activities
     @favorite_activities ||= []
     @created_activities ||= []
   end
 
   def destroy
-   @activity = current_user.activities.find(params[:id])
-   @activity.destroy
-   redirect_back fallback_location: my_activities_activities_path, notice: "Activity deleted."
+    @activity = current_user.activities.find(params[:id])
+    @activity.destroy
+    redirect_back fallback_location: my_activities_activities_path, notice: "Activity deleted."
   end
 
   def choose_trip
@@ -79,7 +85,10 @@ class ActivitiesController < ApplicationController
   private
 
   def set_activity
-    @activity = Activity.find(params[:id])
+    @activity = Activity
+                  .with_attached_photo
+                  .includes(:category, user: { avatar_attachment: :blob })
+                  .find(params[:id])
   end
 
   def activity_params
