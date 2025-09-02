@@ -4,7 +4,10 @@
 <% current_trips = @trips.select { |t| t.end_date && t.end_date > Date.current } %>
 <% past_trips    = @trips.select { |t| t.end_date && t.end_date < Date.current } %>
 
-<% if current_trips.empty? && past_trips.empty? %>
+<%# Tri décroissant par création pour les current trips %>
+<% current_trips_sorted = current_trips.sort_by(&:created_at).reverse %>
+
+<% if current_trips_sorted.empty? && past_trips.empty? %>
   <!-- ===== Empty state ===== -->
   <div class="container mt-5">
     <div class="row justify-content-center">
@@ -19,34 +22,59 @@
   </div>
 <% else %>
 
-  <% if current_trips.any? %>
+  <% if current_trips_sorted.any? %>
     <div class="container mt-5">
       <div class="row justify-content-center">
         <div class="col-md-8">
-          <h2 class="mb-4 section-title">
-            <span class="chip">My current trips</span>
-          </h2>
+          <div class="section-block align-with-cards">
+            <h2 class="mb-4 section-title">
+              <span class="chip">My current trips</span>
+            </h2>
 
-          <div class="swipe-carousel" data-controller="swipe">
-            <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Current trips">
-              <% current_trips.first(5).each do |trip| %>
-                <div class="card h-100 position-relative"><!-- nécessaire pour stretched-link -->
-                  <%= link_to "", trip_path(trip), class: "stretched-link", aria: { label: "View #{trip.name}" } %>
+            <div class="swipe-carousel" data-controller="swipe">
+              <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Current trips">
+                <% current_trips_sorted.each do |trip| %>
+                  <div class="card h-100 position-relative"><!-- nécessaire pour stretched-link -->
+                    <!-- lien étiré qui couvre TOUTE la card -->
+                    <%= link_to "", trip_path(trip), class: "stretched-link", aria: { label: "View #{trip.name}" } %>
 
-                  <%= image_tag trip_cover_url(trip), class: "card-img-top", alt: (trip.destination || trip.name) %>
+                    <%= image_tag trip_cover_url(trip), class: "card-img-top", alt: (trip.destination || trip.name) %>
 
-                  <div class="card-body">
-                    <h5 class="card-title"><b><%= trip.name %></b></h5>
+                    <div class="card-body">
+                      <h5 class="card-title mb-1"><b><%= trip.name %></b></h5>
+
+                      <%# Dates sous le nom (format compact) %>
+                      <% if trip.start_date.present? && trip.end_date.present? %>
+                        <p class="card-subtitle text-muted mb-2">
+                          <%= l(trip.start_date, format: "%d %b %Y") %> – <%= l(trip.end_date, format: "%d %b %Y") %>
+                        </p>
+                      <% elsif trip.start_date.present? %>
+                        <p class="card-subtitle text-muted mb-2">
+                          <%= l(trip.start_date, format: "%d %b %Y") %>
+                        </p>
+                      <% elsif trip.end_date.present? %>
+                        <p class="card-subtitle text-muted mb-2">
+                          <%= l(trip.end_date, format: "%d %b %Y") %>
+                        </p>
+                      <% end %>
+
+                      <%# Mood en chip sous les dates %>
+                      <% if trip.mood.present? %>
+                        <div class="mt-n1">
+                          <span class="chip chip--mint"><%= trip.mood %></span>
+                        </div>
+                      <% end %>
+                    </div>
+
+                    <div class="card-footer bg-transparent">
+                      <h6 class="mb-1">📍 <%= trip.destination %></h6>
+                    </div>
                   </div>
-
-                  <div class="card-footer bg-transparent">
-                    <h6 class="mb-1">🌴 <%= trip.destination %></h6>
-                  </div>
-                </div>
-              <% end %>
+                <% end %>
+              </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
     </div>
@@ -56,30 +84,55 @@
     <div class="container mt-5">
       <div class="row justify-content-center">
         <div class="col-md-8">
-          <h2 class="mb-4 section-title">
-            <span class="chip">My past trips</span>
-          </h2>
+          <div class="section-block align-with-cards">
+            <h2 class="mb-4 section-title">
+              <span class="chip">My past trips</span>
+            </h2>
 
-          <div class="swipe-carousel" data-controller="swipe">
-            <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Past trips">
-              <% past_trips.first(10).each do |trip| %>
-                <div class="card h-100 position-relative"><!-- nécessaire pour stretched-link -->
-                  <%= link_to "", trip_path(trip), class: "stretched-link", aria: { label: "View #{trip.name}" } %>
+            <div class="swipe-carousel" data-controller="swipe">
+              <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Past trips">
+                <% past_trips.first(10).each do |trip| %>
+                  <div class="card h-100 position-relative"><!-- nécessaire pour stretched-link -->
+                    <!-- lien étiré qui couvre TOUTE la card -->
+                    <%= link_to "", trip_path(trip), class: "stretched-link", aria: { label: "View #{trip.name}" } %>
 
-                  <%= image_tag trip_cover_url(trip), class: "card-img-top", alt: (trip.destination || trip.name) %>
+                    <%= image_tag trip_cover_url(trip), class: "card-img-top", alt: (trip.destination || trip.name) %>
 
-                  <div class="card-body">
-                    <h5 class="card-title"><b><%= trip.name %></b></h5>
+                    <div class="card-body">
+                      <h5 class="card-title mb-1"><b><%= trip.name %></b></h5>
+
+                      <%# Dates sous le nom (format compact) %>
+                      <% if trip.start_date.present? && trip.end_date.present? %>
+                        <p class="card-subtitle text-muted mb-2">
+                          <%= l(trip.start_date, format: "%d %b %Y") %> – <%= l(trip.end_date, format: "%d %b %Y") %>
+                        </p>
+                      <% elsif trip.start_date.present? %>
+                        <p class="card-subtitle text-muted mb-2">
+                          <%= l(trip.start_date, format: "%d %b %Y") %>
+                        </p>
+                      <% elsif trip.end_date.present? %>
+                        <p class="card-subtitle text-muted mb-2">
+                          <%= l(trip.end_date, format: "%d %b %Y") %>
+                        </p>
+                      <% end %>
+
+                      <%# Mood en chip sous les dates %>
+                      <% if trip.mood.present? %>
+                        <div class="mt-n1">
+                          <span class="chip chip--mint"><%= trip.mood %></span>
+                        </div>
+                      <% end %>
+                    </div>
+
+                    <div class="card-footer bg-transparent">
+                      <h6 class="mb-1"> 📍 <%= trip.destination %></h6>
+                    </div>
                   </div>
-
-                  <div class="card-footer bg-transparent">
-                    <h6 class="mb-1">🌴 <%= trip.destination %></h6>
-                  </div>
-                </div>
-              <% end %>
+                <% end %>
+              </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
     </div>

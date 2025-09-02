@@ -21,7 +21,7 @@
           </p>
 
           <div>
-            <span class="my-2">
+            <span class="my-2">Interests:
               <em><%= @trip.categories.map(&:name).join(' & ') %></em>
             </span>
           </div>
@@ -29,6 +29,7 @@
           <div class="chips">
             <% if @trip.start_date.present? %>
               <span class="chip">
+
                 📆 <%= l(@trip.start_date, format: "%d %B %Y") %> - <%= l(@trip.end_date, format: "%d %B %Y") %>
               </span>
             <% end %>
