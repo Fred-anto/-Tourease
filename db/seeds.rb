@@ -3,18 +3,21 @@ require "open-uri"
 require "faker"
 
 puts "Cleaning…"
-# Respect FK order
-Favorite.destroy_all      if defined?(Favorite)
-Message.destroy_all       if defined?(Message)
-Chat.destroy_all          if defined?(Chat)
-Review.destroy_all        if defined?(Review)
-TripActivity.destroy_all  if defined?(TripActivity)
-TripCategory.destroy_all  if defined?(TripCategory)
-TripUser.destroy_all      if defined?(TripUser)
-Activity.destroy_all
-Category.destroy_all
-Trip.destroy_all          if defined?(Trip)
-User.destroy_all
+
+# Purge en respectant les FKs (les enfants/jointures en premier)
+Favorite.destroy_all            if defined?(Favorite)
+Message.destroy_all             if defined?(Message)
+ConversationUser.destroy_all    if defined?(ConversationUser) # <-- jointure
+Conversation.destroy_all        if defined?(Conversation)     # <-- parent
+Chat.destroy_all                if defined?(Chat)
+Review.destroy_all              if defined?(Review)
+TripActivity.destroy_all        if defined?(TripActivity)
+TripCategory.destroy_all        if defined?(TripCategory)
+TripUser.destroy_all            if defined?(TripUser)
+Activity.destroy_all            if defined?(Activity)
+Category.destroy_all            if defined?(Category)
+Trip.destroy_all                if defined?(Trip)
+User.destroy_all                if defined?(User)
 
 # ---------- Helpers (Cloudinary + fallback local) ----------
 # Encodage "safe" des URLs (accents, espaces, etc.). Utilise addressable si dispo.
@@ -89,11 +92,11 @@ end
 # -----------------------------------------------------------
 
 ActiveRecord::Base.transaction do
-  # --- Admin ---
-  puts "Creating admin user (Devise)…"
+  # --- Admin TourEase ---
+  puts "Creating TourEase admin user (Devise)…"
   admin = User.create!(
     email: "admin@paris.com",
-    username: "admin",
+    username: "TourEase",
     age: 35,
     phone_number: "0601020304",
     password: "azerty",
@@ -129,39 +132,39 @@ ActiveRecord::Base.transaction do
   end
   Faker::UniqueGenerator.clear
 
-  # --- Avatars des 4 users (LOCAL) ---
-  # Ton modèle User déclare has_one_attached :avatar
-  puts "Attaching profile avatars (local)…"
-  {
-    "tiph"  => "app/assets/images/users/tiph.jpg",
-    "virg"  => "app/assets/images/users/virg.jpg",
-    "aurel" => "app/assets/images/users/aurel.jpg",
-    "fred"  => "app/assets/images/users/fred.jpg"
-  }.each do |username, path|
-    user = User.find_by(username: username)
-    unless user
-      warn "⚠️ User not found: #{username}"
-      next
-    end
+# --- Avatars (LOCAL) ---
+puts "Attaching profile avatars (local)…"
+avatars_map = {
+  "tiph"     => "app/assets/images/users/tiph.jpg",
+  "virg"     => "app/assets/images/users/virg.jpg",
+  "aurel"    => "app/assets/images/users/aurel.jpg",
+  "fred"     => "app/assets/images/users/fred.jpg",
+  "TourEase" => "app/assets/images/users/logo.jpg", # <- logo
+}
 
-    unless File.exist?(path)
-      warn "⚠️ File not found for #{username}: #{path}"
-      next
-    end
-
-    size = (File.size(path) rescue 0)
-    if size.nil? || size == 0
-      warn "⚠️ Empty avatar file for #{username}: #{path}"
-      next
-    end
-
-    user.avatar.attach(
-      io: File.open(path),
-      filename: File.basename(path),
-      content_type: "image/jpeg"
-    )
-    puts "✔ Attached avatar for #{username}"
+avatars_map.each do |username, path|
+  user = User.find_by(username: username)
+  unless user
+    warn "⚠️ User not found: #{username}"
+    next
   end
+  unless File.exist?(path)
+    warn "⚠️ File not found for #{username}: #{path}"
+    next
+  end
+  size = (File.size(path) rescue 0)
+  if size.nil? || size == 0
+    warn "⚠️ Empty avatar file for #{username}: #{path}"
+    next
+  end
+
+  user.avatar.attach(
+    io: File.open(path),
+    filename: File.basename(path),
+    content_type: "image/jpeg"
+  )
+  puts "✔ Attached avatar for #{username}"
+end
 
   # --- Categories (avec emojis comme dans ton extrait) ---
   puts "Creating categories…"
@@ -284,7 +287,7 @@ ActiveRecord::Base.transaction do
   tiph  = User.find_by(username: "tiph")
   fred  = User.find_by(username: "fred")
 
-  base_pool = User.where.not(username: %w[virg aurel tiph fred admin])
+  base_pool = User.where.not(username: %w[virg aurel tiph fred TourEase])
 
   comments = [
     "Great experience!", "Loved it!", "Highly recommend.",
