@@ -14,7 +14,7 @@ class ConversationsController < ApplicationController
     other_user = User.find(params[:user_id])
 
     @conversation = Conversation.between(current_user.id, other_user.id).first_or_create! do |c|
-      c.title = "Chat between #{current_user.username} & #{other_user.username}"
+      c.title = "Chat with #{other_user.username}"
       c.users << current_user
       c.users << other_user
     end

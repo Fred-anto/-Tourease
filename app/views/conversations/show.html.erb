@@ -1,20 +1,54 @@
-<h1><%= @conversation.title %></h1>
+<h2 class="mb-4 mt-3 section-title">
+    <span class="chip"><%= @conversation.title %></span>
+  </h2>
 
-<div class="conversation-messages border rounded p-3 mb-3" style="max-height: 500px; overflow-y: auto;">
+<div class="conversation-messages border rounded-4 p-3 mb-3 bg-white shadow-sm"
+     style="max-height: 500px; overflow-y: auto;">
+
   <% @messages.each do |msg| %>
-    <div class="d-flex mb-2 <%= msg.user == current_user ? 'justify-content-end' : 'justify-content-start' %>">
-      <div class="message p-2 rounded <%= msg.user == current_user ? 'bg-primary text-white' : 'bg-light' %>">
-        <strong><%= msg.user.username %></strong><br>
-        <%= msg.content %>
-        <div class="text-muted small"><%= l(msg.created_at, format: :short) %></div>
+    <% is_mine = msg.user == current_user %>
+
+    <div class="d-flex mb-3 <%= is_mine ? 'justify-content-end' : 'justify-content-start' %>">
+      <div class="d-flex <%= 'flex-row-reverse' if is_mine %> align-items-end gap-2">
+
+        <% unless is_mine %>
+          <% if msg.user.avatar&.attached? %>
+            <%= image_tag msg.user.avatar.variant(resize_to_fill: [36, 36]),
+                          class: "rounded-circle shadow-sm",
+                          alt: msg.user.username %>
+          <% else %>
+            <%= image_tag "default-avatar.svg",
+                          class: "rounded-circle shadow-sm",
+                          width: 36, height: 36,
+                          alt: msg.user.username %>
+          <% end %>
+        <% end %>
+
+        <div class="px-3 py-2 rounded-4 shadow-sm"
+             style="max-width: 70%; word-wrap: break-word;
+                    background-color: <%= is_mine ? '#1EDD88' : '#f1f3f5' %>;
+                    color: <%= is_mine ? 'white' : '#212529' %>;">
+          <p class="mb-1"><%= msg.content %></p>
+          <small class="d-block text-end text-muted" style="font-size: 0.75rem;">
+            <%= l(msg.created_at, format: :short) %>
+          </small>
+        </div>
+
       </div>
     </div>
   <% end %>
 </div>
 
 <%= form_with(model: [@conversation, @message], local: true) do |f| %>
-  <div class="input-group">
-    <%= f.text_area :content, rows: 2, placeholder: "Type your message...", class: "form-control" %>
-    <button class="btn btn-primary" type="submit">Send</button>
+  <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
+    <%= f.text_area :content,
+          rows: 1,
+          placeholder: "Type your message...",
+          class: "form-control rounded-4",
+          style: "max-width: 70%; min-width: 200px; resize: none;" %>
+
+    <button class="btn btn-success rounded-4 px-4" type="submit">
+      Send
+    </button>
   </div>
 <% end %>
