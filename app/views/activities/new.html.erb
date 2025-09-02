@@ -49,11 +49,10 @@
               <%= f.input :name, label: "Activity Name", input_html: { class: "form-control" } %>
 
               <!-- Address (Mapbox) -->
-              <div class="mb-3"
+              <div class="mb-3 address-geocoder"
                    data-controller="address-autocomplete"
                    data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
 
-                <!-- Label manuel pour garder l’astérisque (champ hidden) -->
                 <label class="form-label mb-1">
                   Address <span class="required">*</span>
                 </label>
@@ -62,7 +61,7 @@
                 <div class="form-control p-0"
                      data-address-autocomplete-target="container"></div>
 
-                <!-- Champ soumis -->
+                <!-- Champ soumis (hidden) -->
                 <%= f.input :address,
                       as: :hidden,
                       label: false,

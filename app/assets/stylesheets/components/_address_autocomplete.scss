@@ -1,55 +1,59 @@
-/* Neutraliser le style Mapbox et harmoniser avec Bootstrap .form-control */
+/* Styles spécifiques AU geocoder du formulaire "New Activity".
+   On les scope sous .address-geocoder pour ne pas impacter la recherche de la carte. */
 
-.mapboxgl-ctrl-geocoder {
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  width: 100% !important;
-  min-height: auto !important;
-}
-
-.mapboxgl-ctrl-geocoder--input {
-  width: 100% !important;
-  padding: .375rem .75rem !important;   /* padding Bootstrap */
-  padding-left: 2rem !important;        /* espace pour la loupe */
-  font-size: 1rem !important;
-  line-height: 1.5 !important;
-  border: 0 !important;
-  outline: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-
-  &::placeholder {
-    color: var(--bs-secondary-color);
-    opacity: 1;
+.address-geocoder {
+  /* Neutraliser le style Mapbox et harmoniser avec Bootstrap .form-control */
+  .mapboxgl-ctrl-geocoder {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-height: auto !important;
   }
-}
 
-/* Position de la loupe */
-.mapboxgl-ctrl-geocoder--icon-search {
-  position: absolute !important;
-  left: .75rem !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 1rem !important;
-  height: 1rem !important;
-  pointer-events: none;
-  color: var(--bs-secondary-color);
-}
+  .mapboxgl-ctrl-geocoder--input {
+    width: 100% !important;
+    padding: .375rem .75rem !important;   /* padding Bootstrap */
+    padding-left: 2rem !important;        /* espace pour la loupe */
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
 
-/* Icônes internes */
-.mapboxgl-ctrl-geocoder--icon { margin-left: 0 !important; }
-.mapboxgl-ctrl-geocoder--button { margin-right: .5rem !important; }
+    &::placeholder {
+      color: var(--bs-secondary-color);
+      opacity: 1;
+    }
+  }
 
-/* Dropdown suggestions */
-.mapboxgl-ctrl-geocoder .suggestions {
-  z-index: 2000;
-  font-size: 1rem;
-  border-radius: .5rem;
-}
+  /* Position de la loupe */
+  .mapboxgl-ctrl-geocoder--icon-search {
+    position: absolute !important;
+    left: .75rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    pointer-events: none;
+    color: var(--bs-secondary-color);
+  }
 
-/* Astérisque "required" en vert, comme les autres champs */
-label .required, .form-label .required {
-  color: var(--bs-success) !important;
+  /* Icônes internes */
+  .mapboxgl-ctrl-geocoder--icon { margin-left: 0 !important; }
+  .mapboxgl-ctrl-geocoder--button { margin-right: .5rem !important; }
+
+  /* Dropdown suggestions */
+  .mapboxgl-ctrl-geocoder .suggestions {
+    z-index: 2000;
+    font-size: 1rem;
+    border-radius: .5rem;
+  }
+
+  /* Astérisque "required" en vert, comme les autres champs */
+  label .required, .form-label .required {
+    color: var(--bs-success) !important;
+  }
 }
