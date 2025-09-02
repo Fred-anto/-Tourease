@@ -9,6 +9,7 @@
         <div class="card-body">
           <%= simple_form_for @activity, html: { multipart: true } do |f| %>
 
+            <!-- Image -->
             <div class="form-group mb-3" data-controller="file-input">
               <label class="form-label d-block mb-2">Image</label>
 
@@ -43,18 +44,45 @@
               </div>
             </div>
 
+            <!-- Activity name -->
             <div class="form-group">
               <%= f.input :name, label: "Activity Name", input_html: { class: "form-control" } %>
 
-              <%= f.input :address,
-                  input_html: { class: "d-none", data: { address_autocomplete_target: "address" } },
-                  wrapper_html: { data: { controller: "address-autocomplete", address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"] } } %>
+              <!-- Address (Mapbox) -->
+              <div class="mb-3"
+                   data-controller="address-autocomplete"
+                   data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
+
+                <!-- Label manuel pour garder l’astérisque (champ hidden) -->
+                <label class="form-label mb-1">
+                  Address <span class="required">*</span>
+                </label>
+
+                <!-- UI du geocoder avec le rendu .form-control -->
+                <div class="form-control p-0"
+                     data-address-autocomplete-target="container"></div>
+
+                <!-- Champ soumis -->
+                <%= f.input :address,
+                      as: :hidden,
+                      label: false,
+                      input_html: {
+                        data: { "address-autocomplete-target": "address" }
+                      } %>
+
+                <div class="invalid-feedback d-block">
+                  <%= f.error :address %>
+                </div>
+              </div>
             </div>
 
+            <!-- Description -->
             <div class="form-group">
-              <%= f.input :description, as: :text, label: "Description", input_html: { rows: 4, class: "form-control" } %>
+              <%= f.input :description, as: :text, label: "Description",
+                          input_html: { rows: 4, class: "form-control" } %>
             </div>
 
+            <!-- Categories -->
             <div class="form-group">
               <label class="form-label mb-2">Pick a Category</label>
               <div class="category-grid">
@@ -70,6 +98,7 @@
               </div>
             </div>
 
+            <!-- Submit -->
             <div class="form-group d-flex mt-4 gap-3">
               <%= f.submit "➕ Create activity", class: "btn btn-primary" %>
             </div>
@@ -80,23 +109,3 @@
     </div>
   </div>
 </div>
-
-
-<%# <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const pageContainer = document.querySelector(".creations-new");
-    if (!pageContainer) return;
-
-    const checkboxes = pageContainer.querySelectorAll(".category-checkbox");
-
-    checkboxes.forEach((checkbox) => {
-      checkbox.addEventListener("change", function() {
-        if (this.checked) {
-          checkboxes.forEach((cb) => {
-            if (cb !== this) cb.checked = false;
-          });
-        }
-      });
-    });
-  });
-</script> %>
