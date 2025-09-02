@@ -1,0 +1,16 @@
+.rating-stars {
+  .star {
+    font-size: 28px;            /* ajuste si besoin */
+    line-height: 1;
+    padding: 0 2px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    color: #c3f4f4;             /* gris clair (étoile inactive) */
+    transition: transform .08s ease;
+  }
+
+  .star.is-active { color: #004E64; }    /* étoile sélectionnée (teal) */
+  .star:hover { transform: scale(1.05); }
+  .star:focus-visible { outline: 2px solid #004E64; border-radius: 4px; }
+}

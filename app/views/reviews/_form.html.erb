@@ -1,31 +1,53 @@
 <%= form_with url: activity_reviews_path(activity), method: :post, data: { turbo_stream: true } do |f| %>
-  <div>
-    <h4 class="mb-3">Leave a Review</h4>
+  <!-- ===== Titre + avatar (avatar à droite) ===== -->
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h4 class="mb-0">Leave a Review</h4>
+
+    <% if defined?(current_user) && current_user.present? %>
+      <div class="text-end">
+        <% if current_user.avatar&.attached? %>
+          <%= image_tag url_for(current_user.avatar),
+                        alt: (current_user.username || "user"),
+                        class: "rounded-circle border",
+                        style: "width:48px; height:48px; object-fit:cover;" %>
+        <% else %>
+          <%= image_tag "placeholder.svg",
+                        alt: (current_user.username || "user"),
+                        class: "rounded-circle border",
+                        style: "width:48px; height:48px; object-fit:cover;" %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 
-  <div class="mb-3">
+  <!-- ===== Note par étoiles (Stimulus) ===== -->
+  <div class="mb-3" data-controller="stars">
     <div class="d-flex align-items-center gap-3">
-      <label class="form-label m-0" for="review_rating">Your Rating</label>
+      <label class="form-label m-0">Your Rating</label>
 
-      <select id="review_rating"
-              name="review[rating]"
-              class="form-select w-auto"
-              style="border-color: var(--brand-200);">
-        <option value="">—</option>
-        <% 1.upto(5) do |n| %>
-          <option value="<%= n %>" <%= "selected" if review.rating == n %>><%= n %>/5</option>
+      <%= f.hidden_field :rating,
+            value: (review.rating || 0),
+            data: { stars_target: "input" } %>
+
+      <div class="rating-stars d-inline-flex align-items-center gap-2">
+        <% 1.upto(5) do |i| %>
+          <button type="button"
+                  class="star"
+                  data-stars-target="star"
+                  data-action="click->stars#select mouseover->stars#hover mouseout->stars#leave"
+                  data-value="<%= i %>"
+                  aria-label="<%= i %> star<%= 's' if i > 1 %>">
+            ★
+          </button>
         <% end %>
-      </select>
-
-      <!-- Aperçu (étoiles couleur brand) -->
-      <span class="stars stars-brand" aria-hidden="true">
-        <% n = (review.rating || 0).to_i %>
-        <% n.times { %><i class="fa-solid fa-star"></i><% } %>
-        <% (5 - n).times { %><i class="fa-regular fa-star"></i><% } %>
-      </span>
+        <span class="rating-value text-muted" data-stars-target="label">
+          <%= review.rating.present? ? "#{review.rating}/5" : "—" %>
+        </span>
+      </div>
     </div>
   </div>
 
+  <!-- ===== Commentaire ===== -->
   <div class="mb-3">
     <label class="form-label mb-1" for="review_comment">Your Comment</label>
     <textarea id="review_comment"
@@ -37,6 +59,7 @@
               placeholder="Share your experience…"><%= review.comment %></textarea>
   </div>
 
+  <!-- ===== Bouton Submit ===== -->
   <div class="text-end">
     <button class="btn px-4"
             style="background: var(--brand-600); border-color: var(--brand-600); color:#fff; border-radius: 1rem;">

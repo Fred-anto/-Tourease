@@ -21,7 +21,6 @@
 
           <% if user_signed_in? %>
             <div class="ms-3 d-flex flex-column align-items-center gap-2">
-
               <%= render partial: "activities/favorite_button", locals: { activity: @activity } %>
 
               <% if params[:trip_id].present? %>
@@ -30,16 +29,16 @@
                                 method: :delete,
                                 class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
                                 style: "width: 50px; height: 50px; font-size: 45px; border-radius: 50%;" do %>
-                                <iconify-icon icon="icon-park:add-print"
-                                style="color: black; width: 50px; height: 30px;"></iconify-icon>
+                    <iconify-icon icon="icon-park:add-print"
+                                  style="color: black; width: 50px; height: 30px;"></iconify-icon>
                   <% end %>
                 <% else %>
                   <%= button_to trip_trip_activities_path(@trip, activity_id: @activity.id),
                                 method: :post,
                                 class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
                                 style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
-                                <iconify-icon icon="mingcute:plus-line"
-                                style="color: blue; width: 50px; height: 30px;"></iconify-icon>
+                    <iconify-icon icon="mingcute:plus-line"
+                                  style="color: blue; width: 50px; height: 30px;"></iconify-icon>
                   <% end %>
                 <% end %>
               <% else %>
@@ -47,8 +46,8 @@
                               method: :get,
                               class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
                               style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
-                              <iconify-icon icon="arcticons:kb-plus"
-                              style="color: blue; width: 50px; height: 30px; font-size: 50px"></iconify-icon>
+                  <iconify-icon icon="arcticons:kb-plus"
+                                style="color: blue; width: 50px; height: 30px; font-size: 50px"></iconify-icon>
                 <% end %>
               <% end %>
             </div>
@@ -68,14 +67,26 @@
           </div>
 
           <div class="card-body review-card text-center">
-            <%= link_to activity_reviews_path(@activity),
-                        class: "text-decoration-none d-inline-flex align-items-center gap-2 rating-link" do %>
-              <%= render "shared/rating",
-                         rating: @activity.rating_avg,
-                         reviews_count: @activity.reviews_count %>
+            <% if user_signed_in? %>
+              <%= link_to activity_reviews_path(@activity),
+                          class: "text-decoration-none d-inline-flex align-items-center gap-2 rating-link" do %>
+                <%= render "shared/rating",
+                           rating: @activity.rating_avg,
+                           reviews_count: @activity.reviews_count %>
+              <% end %>
+            <% else %>
+              <%= link_to new_user_session_path,
+                          class: "text-decoration-none d-inline-flex align-items-center gap-2 rating-link",
+                          data: { turbo_frame: "_top" },
+                          title: "Log in to leave a review" do %>
+                <%= render "shared/rating",
+                           rating: @activity.rating_avg,
+                           reviews_count: @activity.reviews_count %>
+              <% end %>
             <% end %>
           </div>
         </div>
+
       </div>
     </div>
   </div>

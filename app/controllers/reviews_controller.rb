@@ -1,7 +1,7 @@
 # app/controllers/reviews_controller.rb
 class ReviewsController < ApplicationController
   before_action :set_activity
-  before_action :authenticate_user!, only: [:create, :update, :destroy]
+  before_action :authenticate_user!, only: [:index, :create, :update, :destroy]
   before_action :set_review, only: [:update, :destroy]
 
   # GET /activities/:activity_id/reviews
