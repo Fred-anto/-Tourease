@@ -9,7 +9,10 @@ class User < ApplicationRecord
   has_many :chats, dependent: :destroy
   has_many :trip_users, dependent: :destroy
   has_many :trips, through: :trip_users
+  has_many :conversation_users
+  has_many :conversations, through: :conversation_users
 
+  has_many :private_messages
   has_one_attached :avatar
 
   # validates :email, :username, :age, :phone_number, presence: true

@@ -48,16 +48,18 @@
                         <em><%= date.strftime("%d %b") %></em>
 
                         <% @trip.trip_activities.each do |event| %>
-                          <% if event.start_date_time.to_date <= date && event.end_date_time.to_date >= date %>
-                            <div class="event my-1" style= "border: 1px solid #ddd; border-radius: 8px; padding: 8px; min-height: 90px;">
-                                <div class="event-time"><%= event.start_date_time.strftime("%H:%M") %></div>
-                                <div class="event-name"><strong><%= event.activity.name %></strong></div>
-                              </div>
+                          <% if event.start_date_time&.to_date && event.end_date_time.to_date.present?%>
+                            <% if event.start_date_time.to_date <= date && event.end_date_time.to_date >= date %>
+                              <div class="event my-1" style= "border: 1px solid #ddd; border-radius: 8px; padding: 8px; min-height: 90px;">
+                                  <div class="event-time"><%= event.start_date_time.strftime("%H:%M") %></div>
+                                  <div class="event-name"><strong><%= event.activity.name %></strong></div>
+                                </div>
                             <% end %>
-                        <% end %>
+                          <% end %>
+                          <% end %>
+                        </div>
                       </div>
-                    </div>
-                  <% end %>
+                    <% end %>
                 </div>
 
               <div class="swipe-carousel" data-controller="swipe">
@@ -117,4 +119,3 @@
         </div>
       <% end %>
   </div>
-</div>

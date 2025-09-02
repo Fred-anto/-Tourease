@@ -33,9 +33,19 @@ Rails.application.routes.draw do
     end
   end
 
-  # Chats (général)
+  # root "posts#index"
+
+  resources :conversations, only: [:index, :show] do
+    collection do
+      post :find_or_create
+    end
+    resources :private_messages, only: :create
+  end
+
   resources :chats, only: [:create, :show, :index] do
     resources :trips, only: [:create]
     resources :messages, only: [:create]
   end
+
+  mount ActionCable.server => "/cable"
 end
