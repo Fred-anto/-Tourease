@@ -129,6 +129,16 @@
   border: 2px solid #fff;
 }
 
+.contact-btn {
+  background-color: transparent; /* fond transparent */
+  color: #ffffff;
+  font-family: "Gill Sans Extrabold", sans-serif;              /* texte de la même couleur que le contour */
+  border: 2px solid #3cbc44;    /* contour */           /* bords arrondis */
+  padding: 6px 16px;             /* padding confortable */
+  font-weight: 700;            /* légèrement transparent */
+  padding: 6px 16px;
+}
+
 /* ===== Responsive léger ===== */
 @media (max-width: 420px) {
   .app-name { display: none; }  /* garder une barre compacte sur mobile */
