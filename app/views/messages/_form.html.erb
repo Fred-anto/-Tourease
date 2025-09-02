@@ -1,7 +1,15 @@
-  <%= form_with(model: [chat, message], local: false, class: "d-flex mt-3") do |form| %>
-    <%= form.text_area :content,
-          class: "form-control me-2",
-          rows: 2,
-          placeholder: "Write your message..." %>
-    <%= form.submit "Send", style: "background-color:#00A5CF; font-weight:bold", class: "btn align-self-stretch text-white rounded-4"%>
-  <% end %>
+
+
+<div id="new_message"
+     style="position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            max-width: 900px; width: 100%;
+            background-color: transparent; padding: 10px 10px;
+            z-index: 100">
+            <%= form_with(model: [chat, message], local: false, class: "d-flex mt-3") do |form| %>
+              <%= form.text_area :content,
+                    class: "form-control me-2",
+                    rows: 2,
+                    placeholder: "Write your message..." %>
+              <%= form.submit "Send", style: "background-color:#00A5CF; font-weight:bold", class: "btn align-self-stretch text-white rounded-4"%>
+            <% end %>
+</div>

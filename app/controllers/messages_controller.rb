@@ -1,5 +1,4 @@
 class MessagesController < ApplicationController
-
   def create
     @chat = Chat.find(params[:chat_id])
     @user = @chat.user
@@ -7,17 +6,29 @@ class MessagesController < ApplicationController
     @trip = @chat.trip if @chat.trip
     @existing_trip_activities = @trip&.trip_activities&.includes(:activity) || []
     existing_activity_ids = @existing_trip_activities.map { |ta| ta.activity.id }
+
     if @message.save
+      Turbo::StreamsChannel.broadcast_append_to(
+        @chat,
+        target: "messages",
+        html: render_to_string(partial: "messages/message_item", locals: { message: @message, trip: @trip })
+      )
 
-      build_conversation_history
+      Turbo::StreamsChannel.broadcast_replace_to(
+        @chat,
+        target: "new_message",
+        html: render_to_string(partial: "messages/form", locals: { chat: @chat, message: Message.new })
+      )
 
-      #embedding
-      embedding = RubyLLM.embed(params[:message][:content])
+      build_conversation_history(except: @message)
+
+      embedding = RubyLLM.embed(@message.content.to_s)
       category_ids = @trip.categories.ids
       activities = Activity.where(category_id: category_ids)
                            .where.not(id: existing_activity_ids)
                            .nearest_neighbors(:embedding, embedding.vectors, distance: "euclidean")
                            .first(15)
+
       existing_activities_text = existing_activities_prompt
       instructions = system_prompt
       instructions += "\n\nHere are the activities already in the trip : use them to understand what the user likes:\n"
@@ -25,16 +36,17 @@ class MessagesController < ApplicationController
       instructions += "\n\nIMPORTANT: Do NOT include any activity that is already listed above in your suggestions. Each activity must be unique.\n\n"
       instructions += "\n\nHere are new suggestions based on the user's message:"
       instructions += activities.map { |activity| activity_prompt(activity) }.join("\n\n")
-      response = @chat_message.with_instructions(instructions).ask(@message.content.to_s)
 
-      @chat.messages.create(role: "assistant", content: response.content, parsed_content: JSON.parse(response.content))
-      @chat.generate_title_from_first_message if @chat.title == "New Chat"
+      assistant = @chat.messages.create!(role: "assistant", content: "", parsed_content: nil)
+      Turbo::StreamsChannel.broadcast_append_to(
+        @chat,
+        target: "messages",
+        html: render_to_string(partial: "messages/message_item", locals: { message: assistant, trip: @trip })
+      )
 
-      respond_to do |format|
-        format.turbo_stream # va chercher `app/views/messages/create.turbo_stream.erb`
-        format.html { redirect_to chat_path(@chat) }
-      end
+      stream_ai_answer(assistant: assistant, instructions: instructions, user_prompt: @message.content)
 
+      head :ok
     else
       respond_to do |format|
         format.turbo_stream do
@@ -51,19 +63,87 @@ class MessagesController < ApplicationController
 
   private
 
-  def build_conversation_history
+  def build_conversation_history(except: nil)
     @chat_message = RubyLLM.chat
-    @chat.messages.each do |message|
-      @chat_message.add_message(
-        role: message.role,
-        content: message.content
-      )
+    @chat.messages.each do |m|
+      next if except && m.id == except.id
+      @chat_message.add_message(role: m.role, content: m.content)
     end
   end
 
+  def stream_ai_answer(assistant:, instructions:, user_prompt:)
+    buffer = +""
+    last_push = Time.now
+
+    if @chat_message.respond_to?(:with_instructions) && @chat_message.respond_to?(:stream)
+      @chat_message.with_instructions(instructions).stream(user_prompt.to_s) do |chunk|
+        next if chunk.blank?
+        buffer << chunk
+        throttled_replace(assistant: assistant, content: buffer, last_push: last_push)
+        last_push = Time.now
+      end
+    else
+      client = OpenAI::Client.new
+      msgs = [{ role: "system", content: instructions }]
+      msgs += @chat.messages.order(:created_at).map { |m| { role: m.role, content: m.content } }
+
+      client.chat(parameters: {
+        model: "gpt-4o-mini",
+        messages: msgs,
+        stream: proc { |evt|
+          delta = evt.dig("choices", 0, "delta", "content")
+          next unless delta
+          buffer << delta
+          throttled_replace(assistant: assistant, content: buffer, last_push: last_push)
+          last_push = Time.now
+        }
+      })
+    end
+
+    broadcast_replace_message(assistant: assistant, content: buffer)
+
+    parsed = safe_parse_json(buffer)
+    assistant.update!(content: buffer, parsed_content: parsed)
+
+    html = render_to_string(
+      partial: "messages/message_item",
+      locals: { message: assistant, trip: @trip }
+    )
+    Turbo::StreamsChannel.broadcast_replace_to(
+      @chat,
+      target: ActionView::RecordIdentifier.dom_id(assistant),
+      html: html
+    )
+
+    @chat.generate_title_from_first_message if @chat.title == "New Chat"
+  end
+
+  def throttled_replace(assistant:, content:, last_push:)
+    return unless Time.now - last_push > 0.04 # ~40ms
+    broadcast_replace_message(assistant: assistant, content: content)
+  end
+
+  def broadcast_replace_message(assistant:, content:)
+    html = render_to_string(
+      partial: "messages/message_item",
+      locals: { message: assistant.tap { |m| m.content = content; m.parsed_content = nil }, trip: @trip }
+    )
+    Turbo::StreamsChannel.broadcast_replace_to(
+      @chat,
+      target: ActionView::RecordIdentifier.dom_id(assistant),
+      html: html
+    )
+  end
+
+  def safe_parse_json(text)
+    JSON.parse(text)
+  rescue JSON::ParserError
+    nil
+  end
+
   def activity_prompt(activity)
-    "ACTIVITY id: #{activity.id}, name: #{activity.name}, description: #{activity.description}, \
-    address: #{activity.address}, category: #{activity.category.name}, latitude: #{activity.latitude}, longitude: #{activity.longitude}"
+    "ACTIVITY id: #{activity.id}, name: #{activity.name}, description: #{activity.description}, " \
+    "address: #{activity.address}, category: #{activity.category.name}, latitude: #{activity.latitude}, longitude: #{activity.longitude}"
   end
 
   def existing_activities_prompt
@@ -78,8 +158,8 @@ class MessagesController < ApplicationController
     2. The JSON object must start with a key 'Schedule':
       - true if the user requested to plan the trip, schedule activities, or modify the plan.
       - false if the user only asked a question without requesting planning.
-    3. If 'Schedule' is true, following the 'Schedule' key, include one key per day of the trip,
-    formatted as 'DayOfWeek, YYYY-MM-DD' based on my trip schedule. Each day key should be a list of activity objects.
+    3. If 'Schedule' is true, following the 'Schedule' key, include one key per day of the trip.
+    Each day key must be formatted strictly as 'YYYY-MM-DD' (do not include the day of week). Each day key should be a list of activity objects.
     Each activity must include the following keys:
       - 'id': Id of the record given to you
       - 'name': short name of the activity
@@ -96,10 +176,10 @@ class MessagesController < ApplicationController
     - If 'Schedule' is true, provide all activity objects for each day.
     - If 'Schedule' is false, do not provide activity objects. Instead, leave other fields empty and fill the response in 'notes'.
 
-    Example JSON for a planned trip (DO NOT USE THIS):
+    Example JSON for a planned trip:
     {
       'Schedule': true,
-      'Monday, 2025-08-27': [
+      '2025-08-25': [
         {
           'id': 34,
           'name': 'Musée d'Orsay',

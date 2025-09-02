@@ -62,6 +62,8 @@ gem "simple_calendar"
 gem "neighbor"
 gem "faker"
 
+gem "solid_cable"
+gem "ruby-openai"
 
 group :development, :test do
   gem "dotenv-rails"

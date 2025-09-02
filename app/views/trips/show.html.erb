@@ -2,7 +2,7 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="trip-card shadow-lg">
-        <div class="trip-card__header">
+        <div class="trip-card__header p-6 p-md-3">
           <div class="d-flex justify-content-between align-items-start">
             <h1 class="title mb-0"><%= @trip.name %></h1>
             <%= link_to trip_path(@trip),
@@ -16,6 +16,11 @@
           <span class="muted">Destination:</span>
           <strong><%= @trip.destination %></strong>
           </p>
+          <div>
+           <span class="my-2">
+              <em><%= @trip.categories.map(&:name).join(' & ') %></em>
+            </span>
+          </div>
           <div class="chips">
             <% if @trip.start_date.present? %>
               <span class="chip">
@@ -27,8 +32,13 @@
             <% end %>
           </div>
         </div>
+<<<<<<< HEAD
         <div class="trip-card__body p-4 p-md-3">
           <h3 class="section-title">My activities</h3>
+=======
+        <div class="trip-card__body p-6 p-md-3">
+          <h3 class="section-title m-0">My activities</h3>
+>>>>>>> master
           <div class="row">
             <% if @trip.trip_activities.any? %>
               <div class="swipe-carousel" data-controller="swipe">
@@ -37,21 +47,21 @@
                     <% number_of_days = (@trip.end_date.to_date - @trip.start_date.to_date).to_i + 1 %>
                     <%= calendar(start_date: @trip.start_date.to_date, number_of_days: number_of_days) do |date| %>
                       <div>
-                        <em><%= date.strftime("%a %d") %></em>
+                        <em><%= date.strftime("%d %b") %></em>
+
                         <% @trip.trip_activities.each do |event| %>
-                          <% next if event.start_date_time.blank? %>
-                          <% start_d = event.start_date_time.to_date %>
-                          <% end_d = (event.end_date_time || event.start_date_time).to_date %>
-                          <% if (start_d..end_d).cover?(date) %>
-                            <div class="event">
-                              <span class="event-time"><%= event.start_date_time&.strftime("%H:%M") %></span>
-                              <strong class="event-name"><%= event.activity&.name || event.name %></strong>
-                            </div>
+                          <% if event.start_date_time&.to_date && event.end_date_time.to_date.present?%>
+                            <% if event.start_date_time.to_date <= date && event.end_date_time.to_date >= date %>
+                              <div class="event my-1" style= "border: 1px solid #ddd; border-radius: 8px; padding: 8px; min-height: 90px;">
+                                  <div class="event-time"><%= event.start_date_time.strftime("%H:%M") %></div>
+                                  <div class="event-name"><strong><%= event.activity.name %></strong></div>
+                                </div>
+                            <% end %>
                           <% end %>
-                        <% end %>
+                          <% end %>
+                        </div>
                       </div>
                     <% end %>
-                  <% end %>
                 </div>
               </div>
               <div class="swipe-carousel" data-controller="swipe">
@@ -106,4 +116,3 @@
       <% end %>
     </div>
   </div>
-</div>

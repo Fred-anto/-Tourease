@@ -29,7 +29,7 @@
     <% end %>
 
     <!-- Social -->
-    <%= link_to chats_path, class: "footer-item #{'is-active' if current_page?(chats_path)}" do %>
+    <%= link_to conversations_path, class: "footer-item #{'is-active' if current_page?(chats_path)}" do %>
       <iconify-icon icon="wpf:chat" class="footer-icon <%='is-active' if current_page?(chats_path)%>"></iconify-icon>
       <span>Social</span>
     <% end %>
