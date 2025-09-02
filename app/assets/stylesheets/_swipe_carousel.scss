@@ -6,7 +6,6 @@
     display: flex;                 /* cartes sur une seule ligne */
     overflow-x: auto;              /* scroll horizontal */
     gap: 0.75rem;
-    padding: 0.5rem 0.75rem;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
