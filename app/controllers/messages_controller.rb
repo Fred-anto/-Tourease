@@ -31,11 +31,10 @@ class MessagesController < ApplicationController
 
       existing_activities_text = existing_activities_prompt
       instructions = system_prompt
-      instructions += "\n\nHere are the activities already in the trip : use them to understand what the user likes:\n"
-      instructions += existing_activities_text unless @existing_trip_activities.empty?
-      instructions += "\n\nIMPORTANT: Do NOT include any activity that is already listed above in your suggestions. Each activity must be unique.\n\n"
-      instructions += "\n\nHere are new suggestions based on the user's message:"
       instructions += activities.map { |activity| activity_prompt(activity) }.join("\n\n")
+      instructions += "\n\nHere are the activities already in the trip : you MUST include any activity that is listed below in your suggestions \n"
+      instructions += existing_activities_text unless @existing_trip_activities.empty?
+      instructions += "\n\nIMPORTANT: Each activity must be unique.\n\n"
 
       assistant = @chat.messages.create!(role: "assistant", content: "", parsed_content: nil)
       Turbo::StreamsChannel.broadcast_append_to(
@@ -200,7 +199,7 @@ class MessagesController < ApplicationController
       ]
     }
 
-    You must only suggest me activities that are below.
+    You must only suggest me activities that are below and/or are already in the trip.
     Here are the nearest activities based on the user's question and chosen categories: "
   end
 end

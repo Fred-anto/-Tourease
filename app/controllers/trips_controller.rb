@@ -56,19 +56,24 @@ class TripsController < ApplicationController
   private
 
   def create_trip_activities(activities)
-    existing_activity_ids = @trip.trip_activities.pluck(:activity_id)
-
     activities.each do |activity|
       real_activity = Activity.find_by(id: activity["id"])
       next unless real_activity
-      next if existing_activity_ids.include?(real_activity.id)
 
-      TripActivity.create(
-        trip: @trip,
-        activity: real_activity,
-        start_date_time: activity["start_date_time"],
-        end_date_time: activity["end_date_time"]
-      )
+      existing_trip_activity = TripActivity.find_by(activity: real_activity, trip: @trip)
+      if existing_trip_activity
+        existing_trip_activity.update(
+          start_date_time: activity["start_date_time"],
+          end_date_time: activity["end_date_time"]
+        )
+      else
+        TripActivity.create(
+          trip: @trip,
+          activity: real_activity,
+          start_date_time: activity["start_date_time"],
+          end_date_time: activity["end_date_time"]
+        )
+      end
     end
   end
 
