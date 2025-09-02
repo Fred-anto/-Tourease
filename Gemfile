@@ -87,3 +87,5 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "redis", ">= 4.0.1"
