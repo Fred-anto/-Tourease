@@ -1,56 +1,88 @@
 <%= render "shared/navbar" %>
 
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <h2 class="mb-4 section-title">
-        <span class="chip">My current trips</span>
-      </h2>
+<%# Prépare les collections une seule fois %>
+<% current_trips = @trips.select { |t| t.end_date && t.end_date > Date.current } %>
+<% past_trips    = @trips.select { |t| t.end_date && t.end_date < Date.current } %>
 
-      <div class="swipe-carousel" data-controller="swipe">
-        <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Current trips">
-          <% @trips.select { |t| t.end_date > Date.today }.first(5).each do |trip| %>
-            <div class="card h-100">
-              <%= image_tag trip_cover_url(trip), class: "card-img-top", alt: (trip.destination || trip.name) %>
-              <div class="card-body">
-                <h5 class="card-title"><b><%= trip.name %></b></h5>
-                <%= link_to "", trip_path(trip), class: "stretched-link", aria: { label: "View #{trip.name}" } %>
-              </div>
-              <div class="card-footer bg-transparent">
-                <h6 class="mb-1">🌴 <%= trip.destination %></h6>
-              </div>
-            </div>
-          <% end %>
+<% if current_trips.empty? && past_trips.empty? %>
+  <!-- ===== Empty state ===== -->
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="text-center my-5">
+          <i class="fa-regular fa-face-sad-tear fa-3x text-muted mb-3"></i>
+          <p class="mb-2">No trips yet...</p>
+          <%= link_to "✨ Create your first trip", new_trip_path, class: "btn btn-outline-primary rounded-4" %>
         </div>
       </div>
-
     </div>
   </div>
-</div>
+<% else %>
 
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <h2 class="mb-4 section-title">
-        <span class="chip">My past trips</span>
-      </h2>
-      <div class="swipe-carousel" data-controller="swipe">
-        <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Past trips">
-          <% @trips.select { |t| t.end_date < Date.today }.first(10).each do |trip| %>
-            <div class="card h-100">
-              <%= image_tag trip_cover_url(trip), class: "card-img-top", alt: (trip.destination || trip.name) %>
-              <div class="card-body">
-                <h5 class="card-title"><b><%= trip.name %></b></h5>
-                <%= link_to "", trip_path(trip), class: "stretched-link", aria: { label: "View #{trip.name}" } %>
-              </div>
-              <div class="card-footer bg-transparent">
-                <h6 class="mb-1">🌴 <%= trip.destination %></h6>
-              </div>
+  <% if current_trips.any? %>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <h2 class="mb-4 section-title">
+            <span class="chip">My current trips</span>
+          </h2>
+
+          <div class="swipe-carousel" data-controller="swipe">
+            <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Current trips">
+              <% current_trips.first(5).each do |trip| %>
+                <div class="card h-100 position-relative"><!-- nécessaire pour stretched-link -->
+                  <%= link_to "", trip_path(trip), class: "stretched-link", aria: { label: "View #{trip.name}" } %>
+
+                  <%= image_tag trip_cover_url(trip), class: "card-img-top", alt: (trip.destination || trip.name) %>
+
+                  <div class="card-body">
+                    <h5 class="card-title"><b><%= trip.name %></b></h5>
+                  </div>
+
+                  <div class="card-footer bg-transparent">
+                    <h6 class="mb-1">🌴 <%= trip.destination %></h6>
+                  </div>
+                </div>
+              <% end %>
             </div>
-          <% end %>
+          </div>
+
         </div>
       </div>
-
     </div>
-  </div>
-</div>
+  <% end %>
+
+  <% if past_trips.any? %>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <h2 class="mb-4 section-title">
+            <span class="chip">My past trips</span>
+          </h2>
+
+          <div class="swipe-carousel" data-controller="swipe">
+            <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Past trips">
+              <% past_trips.first(10).each do |trip| %>
+                <div class="card h-100 position-relative"><!-- nécessaire pour stretched-link -->
+                  <%= link_to "", trip_path(trip), class: "stretched-link", aria: { label: "View #{trip.name}" } %>
+
+                  <%= image_tag trip_cover_url(trip), class: "card-img-top", alt: (trip.destination || trip.name) %>
+
+                  <div class="card-body">
+                    <h5 class="card-title"><b><%= trip.name %></b></h5>
+                  </div>
+
+                  <div class="card-footer bg-transparent">
+                    <h6 class="mb-1">🌴 <%= trip.destination %></h6>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+<% end %>
