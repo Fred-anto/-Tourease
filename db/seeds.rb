@@ -1,13 +1,95 @@
 # db/seeds.rb
 require "open-uri"
+require "faker"
 
 puts "Cleaning…"
+# Respect FK order
+Favorite.destroy_all      if defined?(Favorite)
+Message.destroy_all       if defined?(Message)
+Chat.destroy_all          if defined?(Chat)
+Review.destroy_all        if defined?(Review)
+TripActivity.destroy_all  if defined?(TripActivity)
+TripCategory.destroy_all  if defined?(TripCategory)
+TripUser.destroy_all      if defined?(TripUser)
 Activity.destroy_all
 Category.destroy_all
+Trip.destroy_all          if defined?(Trip)
 User.destroy_all
 
-ActiveRecord::Base.transaction do
+# ---------- Helpers (Cloudinary + fallback local) ----------
+# Encodage "safe" des URLs (accents, espaces, etc.). Utilise addressable si dispo.
+begin
+  require "addressable/uri"
+  def safe_url(url)
+    Addressable::URI.parse(url).normalize.to_s
+  end
+rescue LoadError
+  # Fallback minimal si la gem addressable n'est pas installée
+  def safe_url(url)
+    # Évite d'échapper les :// ; on encode grossièrement uniquement si besoin
+    URI::DEFAULT_PARSER.escape(url)
+  end
+end
 
+def attach_cloudinary_or_local!(record, cloud_url, local_path)
+  # 1) Tentative Cloudinary (URL encodée)
+  begin
+    url = safe_url(cloud_url)
+    io  = URI.open(url)
+    size = (io.respond_to?(:size) ? io.size : nil)
+    raise "empty remote file" if size.nil? || size == 0
+
+    record.photo.attach(
+      io: io,
+      filename: File.basename(URI.parse(url).path),
+      content_type: "image/jpeg"
+    )
+    puts "✔ Cloudinary attached: #{record.name}"
+    return
+  rescue OpenURI::HTTPError => e
+    # Si 404 et URL versionnée (/v1234/), réessaye sans version
+    if e.io.status[0] == "404" && cloud_url =~ %r{/image/upload/v\d+/(.+)$}
+      begin
+        retry_url = cloud_url.sub(%r{/image/upload/v\d+/}, "/image/upload/")
+        io2 = URI.open(safe_url(retry_url))
+        size2 = (io2.respond_to?(:size) ? io2.size : nil)
+        raise "empty remote file" if size2.nil? || size2 == 0
+
+        record.photo.attach(
+          io: io2,
+          filename: File.basename(URI.parse(retry_url).path),
+          content_type: "image/jpeg"
+        )
+        puts "✔ Cloudinary attached (no version): #{record.name}"
+        return
+      rescue => e2
+        warn "⚠️ Cloudinary retry failed for '#{record.name}': #{e2.class} - #{e2.message}"
+      end
+    else
+      warn "⚠️ Cloudinary HTTP error for '#{record.name}': #{e.class} - #{e.message}"
+    end
+  rescue URI::InvalidURIError => e
+    warn "⚠️ Invalid Cloudinary URL for '#{record.name}': #{e.class} - #{e.message}"
+  rescue => e
+    warn "⚠️ Cloudinary attach failed for '#{record.name}': #{e.class} - #{e.message}"
+  end
+
+  # 2) Fallback local (si fichier présent et non vide)
+  if File.exist?(local_path) && (File.size(local_path) rescue 0) > 0
+    record.photo.attach(
+      io: File.open(local_path),
+      filename: File.basename(local_path),
+      content_type: "image/jpeg"
+    )
+    puts "✔ Local attached fallback: #{record.name}"
+  else
+    warn "⚠️ No image for '#{record.name}' (Cloudinary failed, local missing/empty)"
+  end
+end
+# -----------------------------------------------------------
+
+ActiveRecord::Base.transaction do
+  # --- Admin ---
   puts "Creating admin user (Devise)…"
   admin = User.create!(
     email: "admin@paris.com",
@@ -16,11 +98,12 @@ ActiveRecord::Base.transaction do
     phone_number: "0601020304",
     password: "azerty",
     password_confirmation: "azerty"
-    # admin: true
   )
 
+  # --- 4 fixed users ---
   puts "Creating 4 specific users (email=username@mail.fr, password=azerty)…"
-  %w[aurel virg tiph fred].each_with_index do |uname, idx|
+  fixed_usernames = %w[aurel virg tiph fred]
+  fixed_usernames.each_with_index do |uname, idx|
     User.create!(
       email: "#{uname}@mail.fr",
       username: uname,
@@ -31,20 +114,71 @@ ActiveRecord::Base.transaction do
     )
   end
 
+  # --- 50 Faker users ---
+  puts "Creating 50 random users with Faker (password=azerty)…"
+  50.times do
+    uname = Faker::Internet.unique.username(specifier: 5..10)
+    User.create!(
+      email: "#{uname}@mail.fr",
+      username: uname,
+      age: rand(18..65),
+      phone_number: Faker::PhoneNumber.cell_phone_in_e164.sub("+33", "0"),
+      password: "azerty",
+      password_confirmation: "azerty"
+    )
+  end
+  Faker::UniqueGenerator.clear
+
+  # --- Avatars des 4 users (LOCAL) ---
+  # Ton modèle User déclare has_one_attached :avatar
+  puts "Attaching profile avatars (local)…"
+  {
+    "tiph"  => "app/assets/images/users/tiph.jpg",
+    "virg"  => "app/assets/images/users/virg.jpg",
+    "aurel" => "app/assets/images/users/aurel.jpg",
+    "fred"  => "app/assets/images/users/fred.jpg"
+  }.each do |username, path|
+    user = User.find_by(username: username)
+    unless user
+      warn "⚠️ User not found: #{username}"
+      next
+    end
+
+    unless File.exist?(path)
+      warn "⚠️ File not found for #{username}: #{path}"
+      next
+    end
+
+    size = (File.size(path) rescue 0)
+    if size.nil? || size == 0
+      warn "⚠️ Empty avatar file for #{username}: #{path}"
+      next
+    end
+
+    user.avatar.attach(
+      io: File.open(path),
+      filename: File.basename(path),
+      content_type: "image/jpeg"
+    )
+    puts "✔ Attached avatar for #{username}"
+  end
+
+  # --- Categories (avec emojis comme dans ton extrait) ---
   puts "Creating categories…"
   cats = {
-    culture: Category.create!(name: "🏰 Culture"),
-    nature: Category.create!(name: "🌿 Nature"),
-    sport: Category.create!(name: "🏋️ Sport"),
+    culture:    Category.create!(name: "🏰 Culture"),
+    nature:     Category.create!(name: "🌿 Nature"),
+    sport:      Category.create!(name: "🏋️‍♀️ Sport"),
     relaxation: Category.create!(name: "🧘 Relaxation"),
-    food: Category.create!(name: "🍣 Food"),
-    leisure: Category.create!(name: "🎭 Leisure"),
-    bar: Category.create!(name: "🍻 Bar"),
-    nightclub: Category.create!(name: "🪩 Nightclub")
+    food:       Category.create!(name: "🍣 Food"),
+    leisure:    Category.create!(name: "🎭 Leisure"),
+    bar:        Category.create!(name: "🍻 Bar"),
+    nightclub:  Category.create!(name: "🪩 Nightclub")
   }
 
+  # --- Activities (pas d'attachement local ici; l'attache se fait après via Cloudinary+fallback) ---
   puts "Creating activities (English names & descriptions)…"
-  activities = [
+  activities_data = [
     # --- Culture ---
     { name: "Musée d'Orsay", address: "1 Rue de la Légion d'Honneur, 75007 Paris", description: "Housed in a Beaux-Arts railway station, featuring Impressionist and Post-Impressionist masterpieces. Ideal for a half-day immersion in French art.", category: :culture },
     { name: "Panthéon", address: "Place du Panthéon, 75005 Paris", description: "Neoclassical monument where France honors its great citizens. Explore the crypts and gaze at the stunning dome from inside.", category: :culture },
@@ -117,8 +251,6 @@ ActiveRecord::Base.transaction do
     { name: "Promenade du Quai Branly", address: "75007 Paris", description: "Riverfront walk along the museum with sculptures and views of the Eiffel Tower.", category: :leisure },
 
     # --- Nightlife ---
-    { name: "Moulin Rouge", address: "82 Boulevard de Clichy, 75018 Paris", description: "Legendary cabaret of feathers and sequins—the home of the French cancan.", category: :nightclub },
-    { name: "Rex Club", address: "5 Boulevard Poissonnière, 75002 Paris", description: "Temple of Paris's electronic scene with curated line-ups for techno lovers.", category: :nightclub },
     { name: "Le Baron", address: "6 Avenue Marceau, 75008 Paris", description: "Exclusive nightclub with chic crowd and iconic DJ sets.", category: :nightclub },
     { name: "La Bellevilloise", address: "19-21 Rue Boyer, 75020 Paris", description: "Concerts, exhibitions, and parties in a former factory space.", category: :bar },
     { name: "Experimental Cocktail Club", address: "37 Rue Saint-Sauveur, 75002 Paris", description: "Trendy bar with creative cocktails and a lively atmosphere.", category: :bar },
@@ -129,128 +261,213 @@ ActiveRecord::Base.transaction do
     { name: "La Machine du Moulin Rouge", address: "90 Boulevard de Clichy, 75018 Paris", description: "Club hosting DJ sets and concerts, combining modern beats with historic cabaret energy.", category: :nightclub }
   ]
 
-  activities.each do |attrs|
-    activity = Activity.new(
+  created_activities = []
+
+  activities_data.each do |attrs|
+    activity = Activity.create!(
       name: attrs[:name],
       description: attrs[:description],
       address: attrs[:address],
       category: cats.fetch(attrs[:category]),
       user: admin
     )
-    activity.photo.attach(
-    io: File.open("public/images/#{activity.name}.jpeg"),
-    filename: "#{activity.name}.jpeg", # use the extension of the attached file here
-    content_type: 'image/jpeg' # use the mime type of the attached file here
-    )
-    activity.save!
+    created_activities << { activity: activity, category_key: attrs[:category] }
   end
 
-  puts "✅ Seed OK — Users: #{User.count}, Categories: #{Category.count}, Activities: #{Activity.count}"
+  puts "Users: #{User.count}, Categories: #{Category.count}, Activities: #{Activity.count}"
 
-# --- Attach Cloudinary photos to Activities ---
+  # --- Reviews (comptes fixes par catégorie, dernières 3 par tiph, aurel, fred ; virg ne review pas) ---
+  puts "Creating reviews with fixed counts per category…"
 
-PHOTO_URLS = {
-  # --- Culture ---
-  "Musée d'Orsay" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Musee_d_Orsay_Paris.jpg",
-  "Panthéon" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Pantheon_Paris.jpg",
-  "Opéra Garnier" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Opera_Garnier_Paris.jpg",
-  "Musée Rodin" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Musee_Rodin_Paris.jpg",
-  "Musée Picasso" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Musee_Picasso_Paris.jpg",
-  "Sainte-Chapelle" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Sainte_Chapelle_Paris.jpg",
-  "Palais de Tokyo" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Palais_de_Tokyo_Paris.jpg",
-  "Petit Palais" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Petit_Palais_Paris.jpg",
-  "Maison de Victor Hugo" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Maison_Victor_Hugo_Paris.jpg",
-  "Musée de l'Orangerie" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Musee_Orangerie_Paris.jpg",
+  aurel = User.find_by(username: "aurel")
+  virg  = User.find_by(username: "virg")
+  tiph  = User.find_by(username: "tiph")
+  fred  = User.find_by(username: "fred")
 
-  # --- Nature ---
-  "Jardin des Tuileries" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Jardin_des_Tuileries_Paris.jpg",
-  "Parc Monceau" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_Monceau_Paris.jpg",
-  "Parc de la Villette" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_de_la_Villette_Paris.jpg",
-  "Parc André Citroën" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_Andre_Citroen_Paris.jpg",
-  "Île aux Cygnes" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Ile_aux_Cygnes_Paris.jpg",
-  "Bois de Vincennes" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Bois_de_Vincennes_Paris.jpg",
-  "Jardin des Plantes" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Jardin_des_Plantes_Paris.jpg",
-  "Parc Floral de Paris" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_Floral_Paris.jpg",
-  "Square du Vert-Galant" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Square_Vert_Galant_Paris.jpg",
-  "Promenade Plantée" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Promenade_Plantée_Paris.jpg",
+  base_pool = User.where.not(username: %w[virg aurel tiph fred admin])
 
-  # --- Sport ---
-  "Stade de France" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Stade_de_France.jpg",
-  "Accor Arena" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Accor_Arena_Paris.jpg",
-  "Roland Garros" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Roland_Garros_Paris.jpg",
-  "Paris Jean-Bouin Stadium" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Jean_Bouin_Stadium_Paris.jpg",
-  "Piscine Molitor" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Piscine_Molitor_Paris.jpg",
-  "Velodrome de Vincennes" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Velodrome_Vincennes_Paris.jpg",
-  "La Coulée Verte Cyclable" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Coulee_Verte_Paris.jpg",
-  "Golf de Paris Longchamp" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Golf_Paris_Longchamp.jpg",
-  "Parc de Choisy Sports Complex" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_Choisy_Sports.jpg",
-  "Skatepark du Quai de la Gare" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Skatepark_Quai_Gare_Paris.jpg",
+  comments = [
+    "Great experience!", "Loved it!", "Highly recommend.",
+    "Super fun.", "Amazing time.", "Beautiful place.",
+    "Awesome vibes.", "Excellent.", "Really nice.",
+    "Perfect for an afternoon.", "A must-see.", "Friendly staff.",
+    "Stunning setting.", "Well worth it.", "Will come back!",
+    "Flawless.", "Very enjoyable.", "A Paris highlight.", "Our favorite."
+  ]
 
-  # --- Relaxation ---
-  "Spa NUXE Montorgueil" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Spa_NUXE_Paris.jpg",
-  "Hammam Pacha" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Hammam_Pacha_Paris.jpg",
-  "Institut Dior Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Institut_Dior_Spa_Paris.jpg",
-  "Calicéo Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Caliceo_Spa_Paris.jpg",
-  "Deep Nature Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Deep_Nature_Spa_Paris.jpg",
-  "Spa My Blend by Clarins" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/My_Blend_Spa_Paris.jpg",
-  "Les Cent Ciels Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Les_Cent_Ciels_Spa_Paris.jpg",
-  "Cinq Mondes Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Cinq_Mondes_Spa_Paris.jpg",
-  "Spa L'Occitane" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Spa_LOccitane_Paris.jpg",
-  "Hôtel Molitor Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Hotel_Molitor_Spa_Paris.jpg",
+  # --- Fixed number of reviews per category ---
+  category_targets = {
+    culture: 18,   # valeur par défaut si non précisé au niveau activité
+    nature: 7,
+    sport: 15,
+    relaxation: 12,
+    food: 10,
+    leisure: 8,
+    bar: 6,
+    nightclub: 20
+  }
+  category_targets.each { |k, v| puts " - #{k}: #{v} reviews per activity (default)" }
 
-  # --- Food ---
-  "Marché des Enfants Rouges" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Enfants_Rouges_Paris.jpg",
-  "Rue Montorgueil" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Rue_Montorgueil_Paris.jpg",
-  "La Rue Cler" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Rue_Cler_Paris.jpg",
-  "Marché Bastille" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Bastille_Paris.jpg",
-  "Marché Saint-Quentin" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Saint_Quentin_Paris.jpg",
-  "Rue Mouffetard Food Street" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Rue_Mouffetard_Paris.jpg",
-  "Marché d'Aligre" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Aligre_Paris.jpg",
-  "Rue de la Huchette" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Rue_de_la_Huchette_Paris.jpg",
-  "La Grande Épicerie" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Grande_Epicerie_Paris.jpg",
-  "Marché des Batignolles" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Batignolles_Paris.jpg",
+  # --- OVERRIDES : nombre de reviews différent par activité pour la catégorie Culture ---
+  CULTURE_PER_ACTIVITY_TARGETS = {
+    "Musée d'Orsay"          => 20,
+    "Panthéon"               => 14,
+    "Opéra Garnier"          => 18,
+    "Musée Rodin"            => 12,
+    "Musée Picasso"          => 16,
+    "Sainte-Chapelle"        => 9,
+    "Palais de Tokyo"        => 11,
+    "Petit Palais"           => 7,
+    "Maison de Victor Hugo"  => 5,
+    "Musée de l'Orangerie"   => 13
+  }
 
-  # --- Leisure ---
-  "Montmartre Walking Tour" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Montmartre_Walk_Paris.jpg",
-  "Batobus" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Batobus_Paris.jpg",
-  "Paris Open-Air Cinema" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Open_Air_Cinema_Paris.jpg",
-  "Picasso Sculpture Garden" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Picasso_Sculpture_Garden_Paris.jpg",
-  "Latin Quarter Stroll" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Latin_Quarter_Paris.jpg",
-  "Île Saint-Louis Exploration" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Ile_Saint_Louis_Paris.jpg",
-  "Canal Saint-Martin Walk" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Canal_Saint_Martin_Paris.jpg",
-  "Parc de Belleville" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_de_Belleville_Paris.jpg",
-  "Promenade du Quai Branly" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Quai_Branly_Paris.jpg",
+  rating_3_to_5 = -> { rand(3..5) }
 
-  # --- Nightlife ---
-  "Le Baron" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Le_Baron_Paris.jpg",
-  "La Bellevilloise" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/La_Bellevilloise_Paris.jpg",
-  "Experimental Cocktail Club" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Experimental_Cocktail_Club_Paris.jpg",
-  "Le Perchoir" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Le_Perchoir_Paris.jpg",
-  "L'Arc Paris" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/LArc_Paris.jpg",
-  "Chez Moune" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Chez_Moune_Paris.jpg",
-  "Badaboum" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Badaboum_Paris.jpg",
-  "La Machine du Moulin Rouge" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/La_Machine_Moulin_Rouge_Paris.jpg"
-}
+  created_activities.each do |item|
+    act = item[:activity]
+    category_key = item[:category_key]
 
-# puts "Attaching Cloudinary photos to Activities…"
-# PHOTO_URLS.each do |activity_name, url|
-#   act = Activity.find_by(name: activity_name)
-#   unless act
-#     warn "⚠️ Not found: #{activity_name}"
-#     next
-#   end
+    total_for_this_activity =
+      if category_key == :culture
+        CULTURE_PER_ACTIVITY_TARGETS.fetch(act.name, category_targets[:culture])
+      else
+        category_targets.fetch(category_key)
+      end
 
-#   next if act.photo.attached?
+    random_needed = [total_for_this_activity - 3, 0].max
+    random_reviewers = base_pool.order("RANDOM()").limit(random_needed)
 
-#   file = URI.open(url)
-#   act.photo.attach(
-#     io: file,
-#     filename: File.basename(URI.parse(url).path),
-#     content_type: "image/jpeg"
-#   )
-#   puts "✔ Attached: #{activity_name}"
-# rescue => e
-#   warn "⚠️ #{activity_name}: #{e.message}"
-# end
+    # Reviews aléatoires d'abord
+    random_reviewers.each do |u|
+      Review.create!(
+        activity: act,
+        user: u,
+        rating: rating_3_to_5.call,
+        comment: comments.sample
+      )
+    end
 
+    # Les 3 dernières : tiph, aurel, fred (dans cet ordre)
+    [tiph, aurel, fred].each do |u|
+      next unless u
+      next if Review.exists?(activity_id: act.id, user_id: u.id)
+      Review.create!(
+        activity: act,
+        user: u,
+        rating: rating_3_to_5.call,
+        comment: comments.sample
+      )
+    end
+  end
+
+  # Recompute counters/averages
+  puts "Recomputing reviews_count and rating_avg…"
+  Activity.find_each do |a|
+    cnt = a.reviews.count
+    avg = a.reviews.average(:rating)&.to_f || 0.0
+    a.update_columns(reviews_count: cnt, rating_avg: avg)
+  end
+
+  puts "✅ Seed (users/categories/activities/reviews) done."
+
+  # --- Attach Cloudinary photos to Activities (with local fallback) ---
+  PHOTO_URLS = {
+    # --- Culture ---
+    "Musée d'Orsay" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Musee_d_Orsay_Paris.jpg",
+    "Panthéon" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Pantheon_Paris.jpg",
+    "Opéra Garnier" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Opera_Garnier_Paris.jpg",
+    "Musée Rodin" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Musee_Rodin_Paris.jpg",
+    "Musée Picasso" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Musee_Picasso_Paris.jpg",
+    "Sainte-Chapelle" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Sainte_Chapelle_Paris.jpg",
+    "Palais de Tokyo" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Palais_de_Tokyo_Paris.jpg",
+    "Petit Palais" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Petit_Palais_Paris.jpg",
+    "Maison de Victor Hugo" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Maison_Victor_Hugo_Paris.jpg",
+    "Musée de l'Orangerie" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Musee_Orangerie_Paris.jpg",
+
+    # --- Nature ---
+    "Jardin des Tuileries" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Jardin_des_Tuileries_Paris.jpg",
+    "Parc Monceau" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_Monceau_Paris.jpg",
+    "Parc de la Villette" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_de_la_Villette_Paris.jpg",
+    "Parc André Citroën" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_Andre_Citroen_Paris.jpg",
+    "Île aux Cygnes" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Ile_aux_Cygnes_Paris.jpg",
+    "Bois de Vincennes" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Bois_de_Vincennes_Paris.jpg",
+    "Jardin des Plantes" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Jardin_des_Plantes_Paris.jpg",
+    "Parc Floral de Paris" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_Floral_Paris.jpg",
+    "Square du Vert-Galant" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Square_Vert_Galant_Paris.jpg",
+    # encodage du é pour éviter InvalidURIError
+    "Promenade Plantée" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Promenade_Plant%C3%A9e_Paris.jpg",
+
+    # --- Sport ---
+    # (Stade de France retiré car pas d’activité correspondante)
+    "Accor Arena" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Accor_Arena_Paris.jpg",
+    "Roland Garros" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Roland_Garros_Paris.jpg",
+    "Paris Jean-Bouin Stadium" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Jean_Bouin_Stadium_Paris.jpg",
+    "Piscine Molitor" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Piscine_Molitor_Paris.jpg",
+    "Velodrome de Vincennes" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Velodrome_Vincennes_Paris.jpg",
+    "La Coulée Verte Cyclable" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Coulee_Verte_Paris.jpg",
+    "Golf de Paris Longchamp" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Golf_Paris_Longchamp.jpg",
+    "Parc de Choisy Sports Complex" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_Choisy_Sports.jpg",
+    "Skatepark du Quai de la Gare" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Skatepark_Quai_Gare_Paris.jpg",
+
+    # --- Relaxation ---
+    "Spa NUXE Montorgueil" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Spa_NUXE_Paris.jpg",
+    "Hammam Pacha" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Hammam_Pacha_Paris.jpg",
+    "Institut Dior Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Institut_Dior_Spa_Paris.jpg",
+    "Calicéo Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Caliceo_Spa_Paris.jpg",
+    "Deep Nature Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Deep_Nature_Spa_Paris.jpg",
+    "Spa My Blend by Clarins" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/My_Blend_Spa_Paris.jpg",
+    "Les Cent Ciels Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Les_Cent_Ciels_Spa_Paris.jpg",
+    "Cinq Mondes Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Cinq_Mondes_Spa_Paris.jpg",
+    "Spa L'Occitane" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Spa_LOccitane_Paris.jpg",
+    "Hôtel Molitor Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Hotel_Molitor_Spa_Paris.jpg",
+
+    # --- Food ---
+    "Marché des Enfants Rouges" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Enfants_Rouges_Paris.jpg",
+    "Rue Montorgueil" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Rue_Montorgueil_Paris.jpg",
+    "La Rue Cler" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Rue_Cler_Paris.jpg",
+    "Marché Bastille" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Bastille_Paris.jpg",
+    "Marché Saint-Quentin" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Saint_Quentin_Paris.jpg",
+    "Rue Mouffetard Food Street" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Rue_Mouffetard_Paris.jpg",
+    "Marché d'Aligre" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Aligre_Paris.jpg",
+    "Rue de la Huchette" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Rue_de_la_Huchette_Paris.jpg",
+    "La Grande Épicerie" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Grande_Epicerie_Paris.jpg",
+    "Marché des Batignolles" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Batignolles_Paris.jpg",
+
+    # --- Leisure ---
+    "Seine River Cruise" => "", # pas d’URL fournie : laisser vide pour fallback local (public/images/Seine River Cruise.jpeg)
+    "Montmartre Walking Tour" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Montmartre_Walk_Paris.jpg",
+    "Batobus" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Batobus_Paris.jpg",
+    "Paris Open-Air Cinema" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Open_Air_Cinema_Paris.jpg",
+    "Picasso Sculpture Garden" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Picasso_Sculpture_Garden_Paris.jpg",
+    "Latin Quarter Stroll" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Latin_Quarter_Paris.jpg",
+    "Île Saint-Louis Exploration" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Ile_Saint_Louis_Paris.jpg",
+    "Canal Saint-Martin Walk" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Canal_Saint_Martin_Paris.jpg",
+    "Parc de Belleville" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_de_Belleville_Paris.jpg",
+    "Promenade du Quai Branly" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Quai_Branly_Paris.jpg",
+
+    # --- Nightlife ---
+    "Le Baron" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Le_Baron_Paris.jpg",
+    "La Bellevilloise" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/La_Bellevilloise_Paris.jpg",
+    "Experimental Cocktail Club" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Experimental_Cocktail_Club_Paris.jpg",
+    "Le Perchoir" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Le_Perchoir_Paris.jpg",
+    "L'Arc Paris" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/LArc_Paris.jpg",
+    "Chez Moune" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Chez_Moune_Paris.jpg",
+    "Badaboum" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Badaboum_Paris.jpg",
+    "La Machine du Moulin Rouge" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/La_Machine_Moulin_Rouge_Paris.jpg"
+  }
+
+  puts "Attaching activity photos (Cloudinary with local fallback)…"
+  PHOTO_URLS.each do |activity_name, url|
+    act = Activity.find_by(name: activity_name)
+    unless act
+      warn "⚠️ Activity not found: #{activity_name}"
+      next
+    end
+
+    local_path = "public/images/#{activity_name}.jpeg"
+    attach_cloudinary_or_local!(act, url, local_path)
+  end
+
+  puts "✅ Seed OK — Users: #{User.count}, Categories: #{Category.count}, Activities: #{Activity.count}, Reviews: #{Review.count}"
 end
