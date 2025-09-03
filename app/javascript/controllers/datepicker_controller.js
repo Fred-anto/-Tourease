@@ -15,7 +15,7 @@ export default class extends Controller {
 
     if (this.fp) this.fp.destroy()
 
-    try { fp.localize(fp.l10ns.fr) } catch(_) {}
+    try { fp.localize(fp.l10ns.en) } catch(_) {}
 
     this.fp = fp(this.element, {
       altInput: true,
