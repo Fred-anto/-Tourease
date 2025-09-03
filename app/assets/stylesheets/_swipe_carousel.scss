@@ -1,156 +1,171 @@
-/* Composant swipe compatible Bootstrap */
+/* Composant swipe compatible Bootstrap — version robuste, cross-pages */
+
+/* —————————————————— Variables par défaut (peut être surchargé page par page) */
+.swipe-carousel {
+  /* largeur d’une “slide” (mobile > tablette > desktop) */
+  --slide-w: 78%;
+
+  @media (min-width: 576px) {
+    --slide-w: calc(50% - .5rem);   /* ≈ 2 cartes visibles */
+  }
+  @media (min-width: 992px) {
+    --slide-w: 280px;               /* largeur fixe confortable en desktop */
+  }
+}
+
+/* —————————————————— Wrapper du carrousel */
 .swipe-carousel {
   position: relative;
+  overflow: visible;                 /* évite toute coupe verticale */
 
+  /* ——— Piste ——— */
   &__track {
-    display: flex;                 /* cartes sur une seule ligne */
-    overflow-x: auto;              /* scroll horizontal */
+    display: flex;                   /* cartes sur une seule ligne */
     gap: 0.75rem;
+
+    /* Scroll horizontal */
+    overflow-x: auto;
+    overflow-y: visible;             /* important pour iOS */
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
+
+    /* Masque la scrollbar (Firefox/WebKit) */
     scrollbar-width: none;
     &::-webkit-scrollbar { display: none; }
-    
-    .card {
-      /* largeur mobile: montrer un peu la carte suivante */
-      flex: 0 0 75%;
-      width: 250px;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
 
-      display: flex;
-      flex-direction: column;
-      height: 320px;               /* hauteur uniforme globale */
-      border-radius: 0.75rem;
-      overflow: hidden;
+    /* Neutralise toute puce/marker (UL/LI, Safari iOS inclus) */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 
-      /* ✅ Ombre légère */
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      transition: box-shadow 0.2s ease, transform 0.2s ease;
+  /* ——— “Slides” : fonctionne avec LI, DIV, .card, .swipe-carousel__item ——— */
+  &__track > .swipe-carousel__item,
+  &__track > .card,
+  &__track > li,
+  &__track > div {
+    flex: 0 0 var(--slide-w);        /* largeur d’une carte */
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    list-style: none;                 /* sécurité */
+  }
+  &__track > li::marker { content: ""; }  /* iOS peut ignorer list-style */
 
-      &:hover {
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-        transform: translateY(-2px);
-      }
+  /* ——— Styles de carte (restent très génériques) ——— */
+  &__track > .card,
+  &__track > .swipe-carousel__item .card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;                    /* évite les débordements en flex */
+    border-radius: 0.75rem;
+    overflow: hidden;
 
-      .card-img-top {
-        width: 100%;
-        height: 160px;             /* image uniforme */
-        object-fit: cover;
-        display: block;
-      }
+    /* Ombre légère + hover (desktop) */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
 
-      /* --- CONTENU --- */
-      .card-body {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-
-        .chip {
-          font-size: 0.85rem;         /* plus grand qu’avant */
-          padding: 0.35rem 0.75rem;
-          border-radius: 14px;
-          background: #f0f0f0;
-          display: inline-block;
-          font-weight: 500;
-          white-space: nowrap;
-          margin-top: auto;           /* pousse vers le bas si besoin */
-        }
-
-        .text-end {
-          margin-top: auto; /* pousse la chip vers le bas du body */
-        }
-      }
-
-      /* ✅ Titre : gras, 1 ligne max */
-      .card-body .card-title {
-        font-size: 1rem;
-        line-height: 1.2;
-        margin: 0 0 0.25rem 0;
-        font-weight: 700;                 /* gras uniquement pour le titre */
-
-        display: -webkit-box;
-        -webkit-line-clamp: 1;            /* 1 ligne max (passe à 2 si besoin) */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      /* ✅ Description : normal, toujours 3 lignes visuelles */
-      .card-body .description,
-      .card-body > p:not(.card-title) {
-        font-size: 0.9rem;
-        line-height: 1.3;
-        margin: 0;
-        font-weight: 400;                 /* jamais en gras */
-
-        display: -webkit-box;
-        -webkit-line-clamp: 3;            /* coupe si > 3 lignes */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-
-        /* réserve l’espace de 3 lignes même si texte court */
-        height: calc(3 * 1.3em);
-      }
-
-      /* --- FOOTER : 2 lignes adresse + 1 ligne étoiles --- */
-      .card-footer {
-        background: transparent;
-        padding: 0.5rem 0.75rem;
-
-        font-size: 0.85rem;
-        line-height: 1.25rem; /* base pour le calcul */
-        display: block;
-        margin-top: auto;
-      }
-
-      .footer-stack {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-
-        .address-line {
-          margin: 0;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
-          overflow: hidden;
-
-          /* réserve toujours 2 lignes */
-          min-height: calc(2 * 1.25rem);
-        }
-
-        .rating-row {
-          display: flex;
-          align-items: center;
-          min-height: 1.25rem; /* 1 ligne */
-        }
-      }
+    &:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
     }
 
-    /* ✅ Tablettes / Desktop */
-    @media (min-width: 768px) {
-      .card {
-        flex-basis: 280px;
-        max-width: 280px;
-        height: 360px;                   /* un peu plus haut en desktop */
+    /* Hauteur : si tu veux un alignement strict, décommente la ligne suivante */
+    /* height: 320px; */
 
-        .card-img-top { height: 180px; }
+    .card-img-top {
+      width: 100%;
+      height: 160px;                 /* uniforme et non tronquée */
+      object-fit: cover;
+      display: block;
+    }
 
-        .card-footer {
-          font-size: 0.85rem;
-          line-height: 1.25rem;
-        }
+    /* Corps */
+    .card-body {
+      position: relative;
+      display: flex;
+      flex-direction: column;
 
-        .footer-stack .address-line {
-          min-height: calc(2 * 1.25rem);
-        }
-
-        .footer-stack .rating-row {
-          min-height: 1.25rem;
-        }
+      .chip {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 14px;
+        background: #f0f0f0;
+        display: inline-block;
+        font-weight: 500;
+        white-space: nowrap;
+        margin-top: auto;
       }
+      .text-end { margin-top: auto; }
+    }
+
+    /* Titre */
+    .card-body .card-title {
+      font-size: 1rem;
+      line-height: 1.2;
+      margin: 0 0 0.25rem 0;
+      font-weight: 700;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 1;         /* passe à 2 si besoin */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Description : 3 lignes visuelles */
+    .card-body .description,
+    .card-body > p:not(.card-title) {
+      font-size: 0.9rem;
+      line-height: 1.3;
+      margin: 0;
+      font-weight: 400;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: calc(3 * 1.3em);       /* réserve la hauteur */
+    }
+
+    /* Footer (adresse + rating) */
+    .card-footer {
+      background: transparent;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.85rem;
+      line-height: 1.25rem;
+      display: block;
+      margin-top: auto;
+    }
+    .footer-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      .address-line {
+        margin: 0;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        min-height: calc(2 * 1.25rem);
+      }
+      .rating-row {
+        display: flex;
+        align-items: center;
+        min-height: 1.25rem;
+      }
+    }
+  }
+
+  /* ——— Breakpoints desktop : image un peu plus grande ——— */
+  @media (min-width: 992px) {
+    &__track > .card,
+    &__track > .swipe-carousel__item .card {
+      /* height: 360px; */           /* option : fixe la hauteur en desktop */
+    }
+    &__track > .card .card-img-top,
+    &__track > .swipe-carousel__item .card .card-img-top {
+      height: 180px;
     }
   }
 
@@ -168,9 +183,7 @@
     &:active { transform: translateY(-50%) scale(.96); }
     &:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
   }
-
-  .swipe-item {
-    flex: 0 0 auto;
-    width: 70%;
-  }
 }
+
+/* Parachute global si un reset réintroduit des puces */
+.swipe-carousel, .swipe-carousel * { list-style: none !important; }
