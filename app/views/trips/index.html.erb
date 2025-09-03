@@ -28,7 +28,7 @@
         <div class="col-md-8">
           <div class="section-block align-with-cards">
             <h2 class="mb-4 section-title">
-              <span class="chip-title">My current trips</span>
+              <span class="chip-title">My Current Trips</span>
             </h2>
 
             <div class="swipe-carousel" data-controller="swipe">
@@ -46,7 +46,7 @@
                       <%# Dates sous le nom (format compact) %>
                       <% if trip.start_date.present? && trip.end_date.present? %>
                         <p class="card-subtitle text-muted mb-2">
-                          <%= l(trip.start_date, format: "%d %b %Y") %> – <%= l(trip.end_date, format: "%d %b %Y") %>
+                          <%= l(trip.start_date, format: "%b %d %Y") %> – <%= l(trip.end_date, format: "%b %d %Y") %>
                         </p>
                       <% elsif trip.start_date.present? %>
                         <p class="card-subtitle text-muted mb-2">
@@ -61,7 +61,7 @@
                       <%# Mood en chip sous les dates %>
                       <% if trip.mood.present? %>
                         <div class="mt-n1">
-                          <span class="chip chip--mint"><%= trip.mood %></span>
+                          <span class="chip"><%= trip.mood %></span>
                         </div>
                       <% end %>
                     </div>
