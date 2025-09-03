@@ -2,84 +2,97 @@
 
 <div class="container mt-5">
   <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-10">
 
+      <%# ———————————————— 1) MY FAVORITES ———————————————— %>
       <% if @favorite_activities.any? %>
         <h2 class="mb-4 section-title">
           <span class="chip-title">My Favorites</span>
         </h2>
+
         <div class="swipe-carousel" data-controller="swipe">
-          <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Favorites activities">
+          <ul class="swipe-carousel__track" data-swipe-target="track" role="list" aria-label="Favorite activities">
             <% @favorite_activities.each do |activity| %>
-              <div class="card h-100 position-relative">
-                <% if activity.photo.attached? %>
-                  <%= cl_image_tag activity.photo.key, class: "card-img-top" %>
-                <% else %>
-                  <%= image_tag "placeholder.svg", class: "card-img-top" %>
-                <% end %>
+              <li class="swipe-carousel__item">
+                <div class="card h-100 position-relative">
+                  <% if activity.photo.attached? %>
+                    <%= cl_image_tag activity.photo.key, class: "card-img-top" %>
+                  <% else %>
+                    <%= image_tag "placeholder.svg", class: "card-img-top" %>
+                  <% end %>
 
-                <div class="card-body">
-                  <h5 class="card-title"><b><%= activity.name %></b></h5>
-                  <h5 class="description"><%= activity.description %></h5>
-                  <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
+                  <div class="card-body">
+                    <h5 class="card-title"><b><%= activity.name %></b></h5>
+                    <h5 class="description"><%= activity.description %></h5>
+                    <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
+                  </div>
+
+                  <!-- Footer : Adresse + Étoiles -->
+                  <div class="card-footer bg-transparent footer-stack">
+                    <p class="mb-1 address-line"><%= activity.address %></p>
+                    <div class="rating-row d-inline-flex align-items-center gap-2">
+                      <%= render "shared/rating",
+                                rating: activity.rating_avg,
+                                reviews_count: activity.reviews_count %>
+                    </div>
+                  </div>
                 </div>
-
-            <!-- Footer : Adresse + Étoiles (non cliquables ici, la card entière mène à la show) -->
-            <div class="card-footer bg-transparent footer-stack">
-              <p class="mb-1 address-line"><%= activity.address %></p>
-              <div class="rating-row d-inline-flex align-items-center gap-2">
-                <%= render "shared/rating",
-                           rating: activity.rating_avg,
-                           reviews_count: activity.reviews_count %>
-              </div>
-            </div>
+              </li>
             <% end %>
-          </div>
+          </ul>
         </div>
       <% end %>
 
+      <%# ———————————————— 2) MY ACTIVITIES (créées) ———————————————— %>
       <% if @created_activities.any? %>
         <h2 class="mb-4 mt-5 section-title">
           <span class="chip">My Activities</span>
         </h2>
+
         <div class="swipe-carousel" data-controller="swipe">
-          <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Your created activities">
+          <ul class="swipe-carousel__track" data-swipe-target="track" role="list" aria-label="Your created activities">
             <% @created_activities.each do |activity| %>
-              <div class="card h-100 position-relative">
-                <% if activity.photo.attached? %>
-                  <%= cl_image_tag activity.photo.key, class: "card-img-top" %>
-                <% else %>
-                  <%= image_tag "placeholder.svg", class: "card-img-top" %>
-                <% end %>
-
-                <div class="card-body">
-                  <h5 class="card-title"><b><%= activity.name %></b></h5>
-                  <h5 class="description"><%= activity.description %></h5>
-                  <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
-                </div>
-
-            <!-- Footer : Adresse + Étoiles (non cliquables ici, la card entière mène à la show) -->
-            <div class="card-footer bg-transparent footer-stack">
-              <p class="mb-1 address-line"><%= activity.address %></p>
-              <div class="rating-row d-inline-flex align-items-center gap-2">
-                <%= render "shared/rating",
-                           rating: activity.rating_avg,
-                           reviews_count: activity.reviews_count %>
-              </div>
-                  <%= link_to activity_path(activity),
-                        data: { turbo_method: :delete, turbo_confirm: "Delete this activity?" },
-                        class: "trash-icon bottom-right",
-                        title: "Delete activity",
-                        aria: { label: "Delete #{activity.name}" } do %>
-                    <i class="fas fa-trash-alt"></i>
+              <li class="swipe-carousel__item">
+                <div class="card h-100 position-relative">
+                  <% if activity.photo.attached? %>
+                    <%= cl_image_tag activity.photo.key, class: "card-img-top" %>
+                  <% else %>
+                    <%= image_tag "placeholder.svg", class: "card-img-top" %>
                   <% end %>
+
+                  <div class="card-body">
+                    <h5 class="card-title"><b><%= activity.name %></b></h5>
+                    <h5 class="description"><%= activity.description %></h5>
+                    <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
+                  </div>
+
+                  <!-- Footer : Adresse + Étoiles + Poubelle -->
+                  <div class="card-footer bg-transparent footer-stack">
+                    <p class="mb-1 address-line"><%= activity.address %></p>
+                    <div class="d-flex align-items-center justify-content-between">
+                      <div class="rating-row d-inline-flex align-items-center gap-2">
+                        <%= render "shared/rating",
+                                  rating: activity.rating_avg,
+                                  reviews_count: activity.reviews_count %>
+                      </div>
+
+                      <%= link_to activity_path(activity),
+                            data: { turbo_method: :delete, turbo_confirm: "Delete this activity?" },
+                            class: "trash-icon",
+                            title: "Delete activity",
+                            aria: { label: "Delete #{activity.name}" } do %>
+                        <i class="fas fa-trash-alt"></i>
+                      <% end %>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </li>
             <% end %>
-          </div>
+          </ul>
         </div>
       <% end %>
 
+      <%# ———————————————— 3) ÉTAT VIDE ———————————————— %>
       <% if @favorite_activities.empty? && @created_activities.empty? %>
         <div class="text-center my-5">
           <i class="fa-regular fa-face-sad-tear fa-3x text-muted mb-3"></i>
