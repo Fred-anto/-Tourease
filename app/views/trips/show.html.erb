@@ -77,6 +77,9 @@
                   <% @trip.trip_activities.each do |trip_activity| %>
                     <% activity = trip_activity.activity %>
                     <div class="card h-100">
+                        <%= link_to "", activity_path(activity, trip_id: @trip.id),
+                              class: "stretched-link",
+                              aria: { label: "Voir #{activity.name}" } %>
                       <% if activity.photo.attached? %>
                         <%= cl_image_tag activity.photo.key, class: "card-img-top" %>
                       <% else %>
@@ -85,9 +88,6 @@
                       <div class="card-body">
                         <h5 class="card-title"><b><%= activity.name %></b></h5>
                         <p class="card-text text-muted mb-0"><%= activity.description %></p>
-                        <%= link_to "", activity_path(activity, trip_id: @trip.id),
-                              class: "stretched-link",
-                              aria: { label: "Voir #{activity.name}" } %>
                       </div>
             <!-- Footer : Adresse + Étoiles (non cliquables ici, la card entière mène à la show) -->
             <div class="card-footer bg-transparent footer-stack">
