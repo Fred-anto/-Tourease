@@ -170,6 +170,7 @@ class MessagesController < ApplicationController
     4. If 'Schedule' is false, **do not include day keys or activity objects**. Instead, include only:
       - 'Schedule': false
       - 'notes': the assistant's textual response
+    5. Sort and display the results by date and time
 
     Behavior rules:
     - If 'Schedule' is true, provide all activity objects for each day.
