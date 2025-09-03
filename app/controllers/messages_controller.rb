@@ -167,40 +167,43 @@ class MessagesController < ApplicationController
       - 'end_date_time': end date and time in 'YYYY-MM-DD HH:MM' format
       - 'category': one of these values only: Culture, Nature, Sport, Relaxation, Food, Leisure, Bar, Nightclub
       - 'address': location of the activity
-    4. If 'Schedule' is false, **do not include day keys or activity objects**. Instead, include only:
-      - 'Schedule': false
-      - 'notes': the assistant's textual response
-    5. Sort and display the results by date and time
+      - Sort and display the results by date and time.
+    4. If 'Schedule' is false:
+     - Do not include day keys or activity objects.
+     - Include only:
+        - 'Schedule': false
+        - 'notes': textual response appropriate to the user's message
+
+      Example JSON if 'Schedule': false:
+      {
+        'Schedule': false,
+        'notes': 'Hello! How can I help you with your trip planning today?'
+      }
+
+      Example JSON for a planned trip:
+      {
+        'Schedule': true,
+        '2025-08-25': [
+          {
+            'id': 34,
+            'name': 'Musée d'Orsay',
+            'description': 'Housed in a Beaux-Arts railway station, featuring Impressionist and Post-Impressionist masterpieces. Ideal for a half-day immersion in French art.',
+            'start_date_time': '2025-08-27 13:00',
+            'end_date_time': '2025-08-27 17:00',
+            'category': 'Culture',
+            'address': '1 Rue de la Légion d'Honneur, 75007 Paris',
+          }
+        ]
+      }
 
     Behavior rules:
-    - If 'Schedule' is true, provide all activity objects for each day.
-    - If 'Schedule' is false, do not provide activity objects. Instead, leave other fields empty and fill the response in 'notes'.
+  - Only output **valid JSON**. No extra text or formatting.
+  - If 'Schedule' is false, do not leave 'notes' empty; always provide a meaningful response.
+  - If 'Schedule' is true, provide all activity objects for each day, including any activities already in the trip.
+  - Each activity must be unique.
+  - Always sort activities by start_date_time.
 
-    Example JSON for a planned trip:
-    {
-      'Schedule': true,
-      '2025-08-25': [
-        {
-          'id': 34,
-          'name': 'Musée d'Orsay',
-          'description': 'Housed in a Beaux-Arts railway station, featuring Impressionist and Post-Impressionist masterpieces. Ideal for a half-day immersion in French art.',
-          'start_date_time': '2025-08-27 13:00',
-          'end_date_time': '2025-08-27 17:00',
-          'category': 'Culture',
-          'address': '1 Rue de la Légion d'Honneur, 75007 Paris',
-        }
-      ]
-    }
-
-    Example JSON for a non-planning request:
-    {
-      'Schedule': false,
-      'notes': 'Yes, the best time to visit the Musée d'Orsay is in the morning to avoid crowds.'
-        }
-      ]
-    }
-
-    You must only suggest me activities that are below and/or are already in the trip.
-    Here are the nearest activities based on the user's question and chosen categories: "
+  You must only suggest activities that are below and/or are already in the trip.
+  Here are the nearest activities based on the user's question and chosen categories: "
   end
 end
