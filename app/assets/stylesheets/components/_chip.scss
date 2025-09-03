@@ -40,10 +40,15 @@
   font-weight: 700;          /* gras comme ton exemple */
   font-size: 1.5rem;         /* adapte selon ton besoin */
   color: #004E64;            /* couleur du texte */
-  display: inline-block;     /* nécessaire pour placer la barre */
+  display: inline-block;
   position: relative;        /* pour placer la pseudo-élément */
   margin-bottom: 0.5rem;
   padding-bottom: 5px;     /* espace sous le titre */
+}
+
+.my-act {
+  margin-left: 12px !important;   /* supprime tout décalage */
+  padding-left: 0 !important;  /* neutralise le padding interne */
 }
 
 .chip-title::after {
