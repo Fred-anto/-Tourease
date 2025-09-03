@@ -18,16 +18,16 @@
           <p class="subtitle mt-2">
             <span class="chip">📍&nbsp;<strong><%= @trip.destination %></strong></span>
              <span class="mt-2 chip">Interests:&nbsp;
-              <span><%= @trip.categories.map { |c| c.name.split.first }.join(' - ') %></span>
+              <span><%= @trip.categories.map { |c| c.name.split.first }.join(' ') %></span>
             </span>
-            <% if @trip.mood.present? %>
-              <span class="chip chip--mint"><%= @trip.mood %></span>
-            <% end %>
           </p>
 
 
 
           <div class="mt-2 chips">
+             <% if @trip.mood.present? %>
+              <span class="chip chip--mint"><%= @trip.mood %></span>
+            <% end %>
             <% if @trip.start_date.present? %>
               <span class="chip">
 
@@ -39,7 +39,7 @@
 
         <!-- BODY -->
         <div class="trip-card__body p-6 p-md-3">
-          <h3 class="chip-title mb-3">My calendar</h3>
+          <h3 class="chip-title mb-3">My Calendar</h3>
           <div class="row">
             <% if @trip.trip_activities.any? %>
               <!-- CALENDAR -->
@@ -71,7 +71,7 @@
               </div>
 
               <!-- ACTIVITY CARDS -->
-              <h3 class="chip-title mb-3">My activities</h3>
+              <h3 class="chip-title mb-3">My Activities</h3>
               <div class="swipe-carousel" data-controller="swipe">
                 <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="My activities">
                   <% @trip.trip_activities.each do |trip_activity| %>
