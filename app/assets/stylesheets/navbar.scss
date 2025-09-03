@@ -4,29 +4,32 @@
 /* ===== Palette & variables ===== */
 :root {
   --deep:    #004E64;
-  --primary: #00A5CF; /* bleu principal */
+  --primary: #00A5CF;
   --mint:    #9FFFCB;
   --teal:    #25A18E;
   --lime:    #7AE582;
 
-  /* Hauteur du pictogramme (logo) */
-  --brand-h: 36px;
+  /* Icônes PLUS GRANDES mais contenues */
+  --brand-h: 42px;   /* logo */
+  --avatar-h: 42px;  /* avatar */
 
-  /* Police dédiée AU SEUL nom de l’app */
+  /* Gutter aligné à la map */
+  --nav-edge: 8px;
+
+  /* Police dédiée au nom de l’app */
   --brand-title-font: 'Pacifico', cursive;
 }
 
-/* Petits écrans : compacter un peu */
+/* Mobile compact */
 @media (max-width: 420px) {
-  :root { --brand-h: 32px; }
+  :root { --brand-h: 40px; --avatar-h: 40px; }
 }
-
-/* Écrans >= tablet */
+/* Tablet+ */
 @media (min-width: 768px) {
-  :root { --brand-h: 40px; }
+  :root { --brand-h: 44px; --avatar-h: 44px; }
 }
 
-/* ===== Navbar ===== */
+/* ===== Navbar compacte ===== */
 .te-navbar {
   position: sticky;
   top: 0;
@@ -34,73 +37,65 @@
   background: var(--primary);
   border-bottom: 1px solid var(--deep);
   width: 100%;
-  box-sizing: border-box;
-  white-space: nowrap;
   color: #fff;
+  white-space: nowrap;
+  box-sizing: border-box;
+
+  /* compacte mais sans couper le contenu */
+  padding-block: .2rem;
+  padding-inline: 0 !important; /* annule un éventuel px-3 */
+  overflow: visible;
 }
 
-/* Grille 3 colonnes : [logo] [CENTRE] [actions] -> centre parfait */
+/* Grille : [logo] [CENTRE] [avatar] */
 .te-navbar-grid {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 1rem;
-  min-height: 56px;
-  padding: .55rem 1rem;
+  gap: .5rem;
+
+  /* La hauteur réelle s’ajuste à l’avatar + un peu d’air */
+  min-height: calc(var(--avatar-h) + .4rem);
+
+  /* bords alignés avec la map + safe areas iOS */
+  padding-left:  calc(env(safe-area-inset-left, 0px)  + var(--nav-edge));
+  padding-right: calc(env(safe-area-inset-right, 0px) + var(--nav-edge));
 }
 
-/* ===== Gauche : logo ===== */
-.te-navbar-left { display: flex; align-items: center; justify-self: start; }
-
-.logo-link {
-  display: flex;
-  align-items: center;
-  gap: .3rem;
-  line-height: 1;
-}
-
+/* ===== Logo gauche ===== */
+.te-navbar-left { justify-self: start; display: flex; align-items: center; }
+.logo-link { display: inline-flex; align-items: center; line-height: 1; }
 .logo {
   height: var(--brand-h);
   width: auto;
   display: block;
-  align-self: center;
   filter: drop-shadow(0 1px 1px rgba(0,0,0,.18));
 }
 
-/* ===== Centre : NOM DE L’APP (Pacifico + plus grand) ===== */
+/* ===== Titre centré ===== */
 .te-navbar-center { justify-self: center; text-align: center; }
-
 .brand-title {
-  font-family: var(--brand-title-font);   /* <- uniquement ici */
-  font-weight: 400;                       /* Pacifico n’a qu’un poids régulier */
-  font-size: clamp(1.9rem, 6.2vw, 3.0rem);/* PLUS GRAND et responsive */
-  line-height: 1.02;
-  letter-spacing: 0;                      /* Pacifico n’a pas besoin d’espacement */
+  font-family: var(--brand-title-font);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 4.8vw, 2.1rem); /* assez grand sans épaissir la barre */
+  line-height: 1.05;
   color: #fff;
   text-decoration: none;
-  /* Légère ombre pour le contraste sur fond bleu (retire si look flat) */
   text-shadow: 0 1px 0 rgba(0,0,0,.10);
 }
 
-/* ===== Droite : avatar ===== */
-.te-navbar-right { justify-self: end; }
-
-.avatar-link { display: flex; align-items: center; }
+/* ===== Avatar droite ===== */
+.te-navbar-right { justify-self: end; display: flex; align-items: center; }
+.avatar-link { display: inline-flex; align-items: center; }
 .avatar {
-  width: 36px;
-  height: 36px;
+  width: var(--avatar-h);
+  height: var(--avatar-h);
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #fff;
 }
 
-/* (Optionnel) Contact button si besoin
-.contact-btn {
-  background-color: transparent;
-  color: #ffffff;
-  border: 2px solid #3cbc44;
-  padding: 6px 16px;
-  font-weight: 700;
-  border-radius: 9999px;
+/* Un peu plus d’air sur grands écrans si tu veux */
+@media (min-width: 992px) {
+  :root { --nav-edge: 12px; }
 }
-*/
