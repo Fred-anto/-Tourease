@@ -4,11 +4,12 @@ require "faker"
 
 puts "Cleaning…"
 
-# Purge en respectant les FKs (les enfants/jointures en premier)
+# --- Purge en respectant les FKs (enfants/jointures d'abord) ---
 Favorite.destroy_all            if defined?(Favorite)
 Message.destroy_all             if defined?(Message)
-ConversationUser.destroy_all    if defined?(ConversationUser) # <-- jointure
-Conversation.destroy_all        if defined?(Conversation)     # <-- parent
+PrivateMessage.destroy_all      if defined?(PrivateMessage)
+ConversationUser.destroy_all    if defined?(ConversationUser)
+Conversation.destroy_all        if defined?(Conversation)
 Chat.destroy_all                if defined?(Chat)
 Review.destroy_all              if defined?(Review)
 TripActivity.destroy_all        if defined?(TripActivity)
@@ -29,7 +30,6 @@ begin
 rescue LoadError
   # Fallback minimal si la gem addressable n'est pas installée
   def safe_url(url)
-    # Évite d'échapper les :// ; on encode grossièrement uniquement si besoin
     URI::DEFAULT_PARSER.escape(url)
   end
 end
@@ -91,6 +91,14 @@ def attach_cloudinary_or_local!(record, cloud_url, local_path)
 end
 # -----------------------------------------------------------
 
+# --- Helper: date/heure aléatoire dans les 6 derniers mois ---
+def rand_time_last_6_months
+  start  = 6.months.ago.beginning_of_day
+  finish = Time.current
+  Time.at(rand(start.to_f..finish.to_f)).in_time_zone
+end
+
+
 ActiveRecord::Base.transaction do
   # --- Admin TourEase ---
   puts "Creating TourEase admin user (Devise)…"
@@ -103,7 +111,7 @@ ActiveRecord::Base.transaction do
     password_confirmation: "azerty"
   )
 
-  # --- 4 fixed users ---
+  # --- 4 users fixes ---
   puts "Creating 4 specific users (email=username@mail.fr, password=azerty)…"
   fixed_usernames = %w[aurel virg tiph fred]
   fixed_usernames.each_with_index do |uname, idx|
@@ -117,7 +125,7 @@ ActiveRecord::Base.transaction do
     )
   end
 
-  # --- 50 Faker users ---
+  # --- 50 users Faker ---
   puts "Creating 50 random users with Faker (password=azerty)…"
   50.times do
     uname = Faker::Internet.unique.username(specifier: 5..10)
@@ -132,41 +140,68 @@ ActiveRecord::Base.transaction do
   end
   Faker::UniqueGenerator.clear
 
-# --- Avatars (LOCAL) ---
-puts "Attaching profile avatars (local)…"
-avatars_map = {
-  "tiph"     => "app/assets/images/users/tiph.jpg",
-  "virg"     => "app/assets/images/users/virg.jpg",
-  "aurel"    => "app/assets/images/users/aurel.jpg",
-  "fred"     => "app/assets/images/users/fred.jpg",
-  "TourEase" => "app/assets/images/users/logo.jpg", # <- logo
-}
+  # --- Avatars (LOCAL) ---
+  puts "Attaching profile avatars (local)…"
+  avatars_map = {
+    "tiph"     => "app/assets/images/users/tiph.jpg",
+    "virg"     => "app/assets/images/users/virg.jpg",
+    "aurel"    => "app/assets/images/users/aurel.jpg",
+    "fred"     => "app/assets/images/users/fred.jpg",
+    "TourEase" => "app/assets/images/users/logo.jpg" # <- logo de l'app
+  }
 
-avatars_map.each do |username, path|
-  user = User.find_by(username: username)
-  unless user
-    warn "⚠️ User not found: #{username}"
-    next
-  end
-  unless File.exist?(path)
-    warn "⚠️ File not found for #{username}: #{path}"
-    next
-  end
-  size = (File.size(path) rescue 0)
-  if size.nil? || size == 0
-    warn "⚠️ Empty avatar file for #{username}: #{path}"
-    next
+  avatars_map.each do |username, path|
+    user = User.find_by(username: username)
+    unless user
+      warn "⚠️ User not found: #{username}"
+      next
+    end
+    unless File.exist?(path)
+      warn "⚠️ File not found for #{username}: #{path}"
+      next
+    end
+    size = (File.size(path) rescue 0)
+    if size.nil? || size == 0
+      warn "⚠️ Empty avatar file for #{username}: #{path}"
+      next
+    end
+
+    user.avatar.attach(
+      io: File.open(path),
+      filename: File.basename(path),
+      content_type: "image/jpeg"
+    )
+    puts "✔ Attached avatar for #{username}"
   end
 
-  user.avatar.attach(
-    io: File.open(path),
-    filename: File.basename(path),
-    content_type: "image/jpeg"
-  )
-  puts "✔ Attached avatar for #{username}"
-end
+  # --- Trips passés (Madrid & Lisbon) pour les 4 users fixes ---
+  puts "Creating 2 past 4-day trips (Madrid, Lisbon) for each fixed user…"
+  fixed_users = User.where(username: %w[aurel virg tiph fred])
+  fixed_users.find_each do |u|
+    # Madrid : 4 jours (passé récent)
+    start1 = Date.today - rand(40..160)
+    Trip.create!(
+      name: "City Break Madrid",
+      destination: "Madrid",
+      start_date: start1,
+      end_date: start1 + 3,
+      mood: "Friends 🤝",
+      description: "Four-day getaway in Madrid 🔆"
+    ).tap { |t| TripUser.create!(user: u, trip: t) }
 
-  # --- Categories (avec emojis comme dans ton extrait) ---
+    # Lisbon : 4 jours (plus ancien)
+    start2 = Date.today - rand(120..300)
+    Trip.create!(
+      name: "Lisbon Escape",
+      destination: "Lisbon",
+      start_date: start2,
+      end_date: start2 + 3,
+      mood: "Friends 🤝",
+      description: "Pastel facades, tram 28 and pasteis de nata 🧁"
+    ).tap { |t| TripUser.create!(user: u, trip: t) }
+  end
+
+  # --- Categories ---
   puts "Creating categories…"
   cats = {
     culture:    Category.create!(name: "Culture 🎨"),
@@ -179,10 +214,10 @@ end
     nightclub:  Category.create!(name: "Nightclub 🪩")
   }
 
-  # --- Activities (pas d'attachement local ici; l'attache se fait après via Cloudinary+fallback) ---
+  # --- Activities ---
   puts "Creating activities (English names & descriptions)…"
   activities_data = [
-    # --- Culture ---
+    # Culture
     { name: "Musée d'Orsay", address: "1 Rue de la Légion d'Honneur, 75007 Paris", description: "Housed in a Beaux-Arts railway station, featuring Impressionist and Post-Impressionist masterpieces. Ideal for a half-day immersion in French art.", category: :culture },
     { name: "Panthéon", address: "Place du Panthéon, 75005 Paris", description: "Neoclassical monument where France honors its great citizens. Explore the crypts and gaze at the stunning dome from inside.", category: :culture },
     { name: "Opéra Garnier", address: "8 Rue Scribe, 75009 Paris", description: "A masterpiece of 19th-century architecture with lavish interiors and grand staircases. Guided tours reveal history and hidden corners.", category: :culture },
@@ -194,7 +229,7 @@ end
     { name: "Maison de Victor Hugo", address: "6 Place des Vosges, 75004 Paris", description: "Historic home of the famous writer, offering insight into his life and works. Located in the picturesque Place des Vosges.", category: :culture },
     { name: "Musée de l'Orangerie", address: "Jardin Tuileries, 75001 Paris", description: "Home to Monet’s Water Lilies series and other impressionist works. Calm and luminous space perfect for art lovers.", category: :culture },
 
-    # --- Nature ---
+    # Nature
     { name: "Jardin des Tuileries", address: "Place de la Concorde, 75001 Paris", description: "Formal French garden connecting Louvre to Place de la Concorde, ideal for a stroll or relaxing by fountains.", category: :nature },
     { name: "Parc Monceau", address: "35 Boulevard de Courcelles, 75008 Paris", description: "Charming park with winding paths, statues, and romantic bridges, loved by locals for jogging and picnics.", category: :nature },
     { name: "Parc de la Villette", address: "211 Avenue Jean Jaurès, 75019 Paris", description: "Modern park with themed gardens, playgrounds, and cultural venues. Great for walking and family-friendly activities.", category: :nature },
@@ -206,7 +241,7 @@ end
     { name: "Square du Vert-Galant", address: "Pont Neuf, 75001 Paris", description: "Tiny riverside park at the tip of Île de la Cité, peaceful and scenic for picnics or a quiet pause.", category: :nature },
     { name: "Promenade Plantée", address: "75012 Paris", description: "Elevated green walkway built on old railway tracks, inspiring the NYC High Line. Ideal for strolling or jogging.", category: :nature },
 
-    # --- Sport ---
+    # Sport
     { name: "Accor Arena", address: "8 Boulevard de Bercy, 75012 Paris", description: "Indoor venue for sports events and concerts. Experience thrilling matches from VIP to general seating.", category: :sport },
     { name: "Roland Garros", address: "2 Avenue Gordon Bennett, 75016 Paris", description: "Legendary tennis stadium, home to the French Open. Off-season tours highlight the courts and museum.", category: :sport },
     { name: "Paris Jean-Bouin Stadium", address: "1 Rue Nicole-Reine Lepaute, 75016 Paris", description: "Multi-purpose stadium mainly for rugby and football, offering an electric atmosphere during matches.", category: :sport },
@@ -217,7 +252,7 @@ end
     { name: "Parc de Choisy Sports Complex", address: "10 Rue des Frères d'Astier de la Vigerie, 75013 Paris", description: "Facilities for tennis, basketball, and indoor sports; a community hub for athletes.", category: :sport },
     { name: "Skatepark du Quai de la Gare", address: "75013 Paris", description: "Urban skatepark along the Seine for skateboarders and rollerbladers of all levels.", category: :sport },
 
-    # --- Relaxation ---
+    # Relaxation
     { name: "Spa NUXE Montorgueil", address: "32 Rue Montorgueil, 75001 Paris", description: "Stone-arched cabins, soft lights, and signature massages craft a deep reset.", category: :relaxation },
     { name: "Hammam Pacha", address: "8 Rue Saint-Denis, 75001 Paris", description: "Traditional Turkish bath with steam rooms, massages, and a calm atmosphere.", category: :relaxation },
     { name: "Institut Dior Spa", address: "28 Avenue Montaigne, 75008 Paris", description: "Luxury spa offering skincare rituals, massages, and a serene ambiance in Paris’ fashion district.", category: :relaxation },
@@ -229,7 +264,7 @@ end
     { name: "Spa L'Occitane", address: "30 Avenue des Champs-Élysées, 75008 Paris", description: "French-inspired wellness treatments in a chic, tranquil environment.", category: :relaxation },
     { name: "Hôtel Molitor Spa", address: "13 Rue Nungesser et Coli, 75016 Paris", description: "Art Deco swimming pool with spa treatments, combining relaxation and iconic architecture.", category: :relaxation },
 
-    # --- Food ---
+    # Food
     { name: "Marché des Enfants Rouges", address: "39 Rue de Bretagne, 75003 Paris", description: "Paris' oldest covered market offering diverse international food stalls and fresh products.", category: :food },
     { name: "Rue Montorgueil", address: "75001 Paris", description: "Lively pedestrian street with bakeries, cafés, fromageries, and restaurants.", category: :food },
     { name: "La Rue Cler", address: "Rue Cler, 75007 Paris", description: "Charming market street near the Eiffel Tower, ideal for sampling French specialties.", category: :food },
@@ -241,7 +276,7 @@ end
     { name: "La Grande Épicerie", address: "38 Rue de Sèvres, 75007 Paris", description: "Upscale food hall offering gourmet products from all over France.", category: :food },
     { name: "Marché des Batignolles", address: "Place du Dr Félix Lobligeois, 75017 Paris", description: "Organic-focused market with fresh vegetables, meats, and cheeses.", category: :food },
 
-    # --- Leisure ---
+    # Leisure
     { name: "Seine River Cruise", address: "Port de la Bourdonnais, 75007 Paris", description: "Commented cruise revealing bridges and monuments from a cinematic angle.", category: :leisure },
     { name: "Montmartre Walking Tour", address: "75018 Paris", description: "Guided exploration of Montmartre's winding streets, artists' squares, and iconic cafés.", category: :leisure },
     { name: "Batobus", address: "75001 Paris", description: "Flexible boat service along the Seine, perfect for sightseeing at your own pace.", category: :leisure },
@@ -253,7 +288,7 @@ end
     { name: "Parc de Belleville", address: "47 Rue des Couronnes, 75020 Paris", description: "Park with panoramic city views, quiet corners, and playgrounds.", category: :leisure },
     { name: "Promenade du Quai Branly", address: "75007 Paris", description: "Riverfront walk along the museum with sculptures and views of the Eiffel Tower.", category: :leisure },
 
-    # --- Nightlife ---
+    # Nightlife
     { name: "Le Baron", address: "6 Avenue Marceau, 75008 Paris", description: "Exclusive nightclub with chic crowd and iconic DJ sets.", category: :nightclub },
     { name: "La Bellevilloise", address: "19-21 Rue Boyer, 75020 Paris", description: "Concerts, exhibitions, and parties in a former factory space.", category: :bar },
     { name: "Experimental Cocktail Club", address: "37 Rue Saint-Sauveur, 75002 Paris", description: "Trendy bar with creative cocktails and a lively atmosphere.", category: :bar },
@@ -279,90 +314,95 @@ end
 
   puts "Users: #{User.count}, Categories: #{Category.count}, Activities: #{Activity.count}"
 
-  # --- Reviews (comptes fixes par catégorie, dernières 3 par tiph, aurel, fred ; virg ne review pas) ---
-  puts "Creating reviews with fixed counts per category…"
+    # --- Reviews (comptes fixes par catégorie, avec dates/heures aléatoires cette année) ---
+    puts "Creating reviews with fixed counts per category…"
 
-  aurel = User.find_by(username: "aurel")
-  virg  = User.find_by(username: "virg")
-  tiph  = User.find_by(username: "tiph")
-  fred  = User.find_by(username: "fred")
+    aurel = User.find_by(username: "aurel")
+    virg  = User.find_by(username: "virg")
+    tiph  = User.find_by(username: "tiph")
+    fred  = User.find_by(username: "fred")
 
-  base_pool = User.where.not(username: %w[virg aurel tiph fred TourEase])
+    base_pool = User.where.not(username: %w[virg aurel tiph fred TourEase])
 
-  comments = [
-    "Great experience!", "Loved it!", "Highly recommend.",
-    "Super fun.", "Amazing time.", "Beautiful place.",
-    "Awesome vibes.", "Excellent.", "Really nice.",
-    "Perfect for an afternoon.", "A must-see.", "Friendly staff.",
-    "Stunning setting.", "Well worth it.", "Will come back!",
-    "Flawless.", "Very enjoyable.", "A Paris highlight.", "Our favorite."
-  ]
+    comments = [
+      "Great experience!", "Loved it!", "Highly recommend.",
+      "Super fun.", "Amazing time.", "Beautiful place.",
+      "Awesome vibes.", "Excellent.", "Really nice.",
+      "Perfect for an afternoon.", "A must-see.", "Friendly staff.",
+      "Stunning setting.", "Well worth it.", "Will come back!",
+      "Flawless.", "Very enjoyable.", "A Paris highlight.", "Our favorite."
+    ]
 
-  # --- Fixed number of reviews per category ---
-  category_targets = {
-    culture: 18,   # valeur par défaut si non précisé au niveau activité
-    nature: 7,
-    sport: 15,
-    relaxation: 12,
-    food: 10,
-    leisure: 8,
-    bar: 6,
-    nightclub: 20
-  }
-  category_targets.each { |k, v| puts " - #{k}: #{v} reviews per activity (default)" }
+    category_targets = {
+      culture: 18,
+      nature: 7,
+      sport: 15,
+      relaxation: 12,
+      food: 10,
+      leisure: 8,
+      bar: 6,
+      nightclub: 20
+    }
+    category_targets.each { |k, v| puts " - #{k}: #{v} reviews per activity (default)" }
 
-  # --- OVERRIDES : nombre de reviews différent par activité pour la catégorie Culture ---
-  CULTURE_PER_ACTIVITY_TARGETS = {
-    "Musée d'Orsay"          => 20,
-    "Panthéon"               => 14,
-    "Opéra Garnier"          => 18,
-    "Musée Rodin"            => 12,
-    "Musée Picasso"          => 16,
-    "Sainte-Chapelle"        => 9,
-    "Palais de Tokyo"        => 11,
-    "Petit Palais"           => 7,
-    "Maison de Victor Hugo"  => 5,
-    "Musée de l'Orangerie"   => 13
-  }
+    CULTURE_PER_ACTIVITY_TARGETS = {
+      "Musée d'Orsay"          => 20,
+      "Panthéon"               => 14,
+      "Opéra Garnier"          => 18,
+      "Musée Rodin"            => 12,
+      "Musée Picasso"          => 16,
+      "Sainte-Chapelle"        => 9,
+      "Palais de Tokyo"        => 11,
+      "Petit Palais"           => 7,
+      "Maison de Victor Hugo"  => 5,
+      "Musée de l'Orangerie"   => 13
+    }
 
-  rating_3_to_5 = -> { rand(3..5) }
+    rating_3_to_5 = -> { rand(3..5) }
 
-  created_activities.each do |item|
-    act = item[:activity]
-    category_key = item[:category_key]
+    created_activities.each do |item|
+      act = item[:activity]
+      category_key = item[:category_key]
 
-    total_for_this_activity =
-      if category_key == :culture
-        CULTURE_PER_ACTIVITY_TARGETS.fetch(act.name, category_targets[:culture])
-      else
-        category_targets.fetch(category_key)
-      end
+      total_for_this_activity =
+        if category_key == :culture
+          CULTURE_PER_ACTIVITY_TARGETS.fetch(act.name, category_targets[:culture])
+        else
+          category_targets.fetch(category_key)
+        end
 
-    random_needed = [total_for_this_activity - 3, 0].max
-    random_reviewers = base_pool.order("RANDOM()").limit(random_needed)
+      random_needed = [total_for_this_activity - 3, 0].max
+      random_reviewers = base_pool.order("RANDOM()").limit(random_needed)
 
     # Reviews aléatoires d'abord
     random_reviewers.each do |u|
-      Review.create!(
+      r = Review.create!(
         activity: act,
         user: u,
         rating: rating_3_to_5.call,
         comment: comments.sample
       )
+      t = rand_time_last_6_months
+      r.update_columns(created_at: t, updated_at: t)
     end
 
-    # Les 3 dernières : tiph, aurel, fred (dans cet ordre)
-    [tiph, aurel, fred].each do |u|
+    # Les 3 dernières : fred, aurel, tiph (dans cet ordre)
+    [fred, aurel, tiph].each_with_index do |u, idx|
       next unless u
       next if Review.exists?(activity_id: act.id, user_id: u.id)
-      Review.create!(
+
+      r = Review.create!(
         activity: act,
         user: u,
         rating: rating_3_to_5.call,
         comment: comments.sample
       )
+      # Pour garantir qu'elles sont les plus récentes :
+      t = (Time.current - (2 - idx).days).change(hour: rand(9..21), min: rand(0..59))
+      r.update_columns(created_at: t, updated_at: t)
     end
   end
+
 
   # Recompute counters/averages
   puts "Recomputing reviews_count and rating_avg…"
@@ -376,7 +416,7 @@ end
 
   # --- Attach Cloudinary photos to Activities (with local fallback) ---
   PHOTO_URLS = {
-    # --- Culture ---
+    # Culture
     "Musée d'Orsay" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Musee_d_Orsay_Paris.jpg",
     "Panthéon" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Pantheon_Paris.jpg",
     "Opéra Garnier" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Opera_Garnier_Paris.jpg",
@@ -388,7 +428,7 @@ end
     "Maison de Victor Hugo" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Maison_Victor_Hugo_Paris.jpg",
     "Musée de l'Orangerie" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Musee_Orangerie_Paris.jpg",
 
-    # --- Nature ---
+    # Nature
     "Jardin des Tuileries" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Jardin_des_Tuileries_Paris.jpg",
     "Parc Monceau" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_Monceau_Paris.jpg",
     "Parc de la Villette" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_de_la_Villette_Paris.jpg",
@@ -398,11 +438,9 @@ end
     "Jardin des Plantes" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Jardin_des_Plantes_Paris.jpg",
     "Parc Floral de Paris" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_Floral_Paris.jpg",
     "Square du Vert-Galant" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Square_Vert_Galant_Paris.jpg",
-    # encodage du é pour éviter InvalidURIError
     "Promenade Plantée" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Promenade_Plant%C3%A9e_Paris.jpg",
 
-    # --- Sport ---
-    # (Stade de France retiré car pas d’activité correspondante)
+    # Sport
     "Accor Arena" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Accor_Arena_Paris.jpg",
     "Roland Garros" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Roland_Garros_Paris.jpg",
     "Paris Jean-Bouin Stadium" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Jean_Bouin_Stadium_Paris.jpg",
@@ -413,7 +451,7 @@ end
     "Parc de Choisy Sports Complex" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_Choisy_Sports.jpg",
     "Skatepark du Quai de la Gare" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Skatepark_Quai_Gare_Paris.jpg",
 
-    # --- Relaxation ---
+    # Relaxation
     "Spa NUXE Montorgueil" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Spa_NUXE_Paris.jpg",
     "Hammam Pacha" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Hammam_Pacha_Paris.jpg",
     "Institut Dior Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Institut_Dior_Spa_Paris.jpg",
@@ -425,7 +463,7 @@ end
     "Spa L'Occitane" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Spa_LOccitane_Paris.jpg",
     "Hôtel Molitor Spa" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Hotel_Molitor_Spa_Paris.jpg",
 
-    # --- Food ---
+    # Food
     "Marché des Enfants Rouges" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Enfants_Rouges_Paris.jpg",
     "Rue Montorgueil" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Rue_Montorgueil_Paris.jpg",
     "La Rue Cler" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Rue_Cler_Paris.jpg",
@@ -437,8 +475,8 @@ end
     "La Grande Épicerie" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Grande_Epicerie_Paris.jpg",
     "Marché des Batignolles" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Marche_Batignolles_Paris.jpg",
 
-    # --- Leisure ---
-    "Seine River Cruise" => "", # pas d’URL fournie : laisser vide pour fallback local (public/images/Seine River Cruise.jpeg)
+    # Leisure
+    "Seine River Cruise" => "",
     "Montmartre Walking Tour" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Montmartre_Walk_Paris.jpg",
     "Batobus" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Batobus_Paris.jpg",
     "Paris Open-Air Cinema" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Open_Air_Cinema_Paris.jpg",
@@ -449,7 +487,7 @@ end
     "Parc de Belleville" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Parc_de_Belleville_Paris.jpg",
     "Promenade du Quai Branly" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Quai_Branly_Paris.jpg",
 
-    # --- Nightlife ---
+    # Nightlife
     "Le Baron" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Le_Baron_Paris.jpg",
     "La Bellevilloise" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/La_Bellevilloise_Paris.jpg",
     "Experimental Cocktail Club" => "https://res.cloudinary.com/dontr5flw/image/upload/v1755720106/Experimental_Cocktail_Club_Paris.jpg",
