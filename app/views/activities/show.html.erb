@@ -15,7 +15,7 @@
             <div class="creator d-flex align-items-center gap-2 mt-2">
               <%= button_to find_or_create_conversations_path(user_id: @activity.user.id),
                             method: :post,
-                            class: "p-0 border-0 bg-transparent",
+                            class: "p-0 border-0 bg-transparent py-1",
                             data: { turbo: false } do %>
                 <%= avatar_tag(@activity.user, size: 32, class_name: "border") %>
                 <span class="small text-white">
