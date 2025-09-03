@@ -17,7 +17,8 @@
 
 .chat-container {
   background: linear-gradient(135deg, var(--brand-900) 0%, var(--brand-700) 100%);
-  min-height: 100vh;
+  min-height: calc(100vh - 76px);
+  padding-bottom: 50px;
 }
 
 // Header amélioré avec glassmorphism

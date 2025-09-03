@@ -1,10 +1,10 @@
 <div class="sticky-top w-100" style="background-color: #f8f9fa; border-bottom: 1px solid #ddd;">
-  <div class="d-flex align-items-center justify-content-between py-2 px-3" style="max-width: 100%; margin: 0 auto; overflow-x: hidden">
+  <div class="d-flex align-items-center justify-content-between py-2 px-1" style="max-width: 100%; margin: 0 auto; overflow-x: hidden">
 
     <!-- Back arrow à gauche -->
-    <div class="d-flex">
+    <div class="d-flex gap-2 justify-content-start">
       <%= link_to trip_path(@trip), class: "text-decoration-none text-dark d-flex align-items-center justify-content-center me-2 rounded-4",
-                      style: "border: 1px solid #adb5bd; width: 60px; height: 60px; line-height: 60px;" do %>
+                      style: "border: 1px solid #adb5bd; width: 60px; height: 60px; line-height: 60px" do %>
         <i class="fa-solid fa-arrow-left fs-3"></i>
       <% end %>
 
@@ -19,7 +19,7 @@
     <div class="d-flex align-items-center rounded-4 px-1"
          style="height: 60px; font-size: 1.5rem; line-height: 60px; color: #004E64; width: 100%">
 
-      <h3 class="mb-0 text-end">
+      <h3 class="mb-0 text-center">
         <%= @chat.title.present? && @chat.title != "New Chat" ? @chat.title : "New Chat" %>
       </h2>
     </div>
