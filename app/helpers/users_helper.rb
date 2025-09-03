@@ -30,7 +30,7 @@ module UsersHelper
   private
 
   def default_avatar(size, class_name)
-    image_tag "avatar_placeholder.png",
+    image_tag "default-avatar.svg",
               width: size, height: size,
               class: "rounded-circle #{class_name}",
               style: "object-fit: cover;",

@@ -17,10 +17,9 @@
 
     <!-- Titre du chat à droite -->
     <div class="d-flex align-items-center rounded-4 px-1"
-         style="background-color: #f8f9fa; height: 60px; font-size: 1.5rem; line-height: 60px; color: #004E64; width: 100%"
-         id="div_chat_title">
+         style="height: 60px; font-size: 1.5rem; line-height: 60px; color: #004E64; width: 100%">
 
-      <h2 class="mb-0 text-end" id="chat_title">
+      <h3 class="mb-0 text-end">
         <%= @chat.title.present? && @chat.title != "New Chat" ? @chat.title : "New Chat" %>
       </h2>
     </div>
@@ -29,7 +28,7 @@
 
 <%= turbo_stream_from @chat %>
 
-<div style="max-width: 900px; margin: 0 auto; padding: 10px 10px; overflow-y: auto">
+<div class = "chat-container" style="max-width: 900px; margin: 0 auto; padding: 10px 10px; overflow-y: auto">
   <div id="messages"
        data-controller="autoscroll"
        class="form group px-1 py-1"
