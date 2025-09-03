@@ -33,9 +33,16 @@
                     <%= link_to "", activity_path(activity, trip_id: @trip.id), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
                   </div>
 
-                  <div class="card-footer bg-transparent">
-                    <p class="mb-1"><%= activity.address %></p>
-                  </div>
+            <!-- Footer : Adresse + Étoiles (non cliquables ici, la card entière mène à la show) -->
+            <div class="card-footer bg-transparent footer-stack">
+              <p class="mb-1 address-line"><%= activity.address %></p>
+              <div class="rating-row d-inline-flex align-items-center gap-2">
+                <%= render "shared/rating",
+                           rating: activity.rating_avg,
+                           reviews_count: activity.reviews_count %>
+              </div>
+            </div>
+
                 </div>
               <% end %>
             <% end %>
@@ -59,9 +66,16 @@
                   <p class="card-title mb-1"><%= activity.description %></p>
                   <%= link_to "", activity_path(activity, trip_id: @trip.id), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
                 </div>
-                <div class="card-footer bg-transparent">
-                  <p class="mb-1"><%= activity.address %></p>
-                </div>
+            <!-- Footer : Adresse + Étoiles (non cliquables ici, la card entière mène à la show) -->
+            <div class="card-footer bg-transparent footer-stack">
+              <p class="mb-1 address-line"><%= activity.address %></p>
+              <div class="rating-row d-inline-flex align-items-center gap-2">
+                <%= render "shared/rating",
+                           rating: activity.rating_avg,
+                           reviews_count: activity.reviews_count %>
+              </div>
+            </div>
+
               </div>
             <% end %>
           <% end %>
@@ -84,9 +98,16 @@
                   <p class="card-title mb-1"><%= activity.description %></p>
                   <%= link_to "", activity_path(activity, trip_id: @trip.id), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
                 </div>
-                <div class="card-footer bg-transparent">
-                  <p class="mb-1"><%= activity.address %></p>
-                </div>
+            <!-- Footer : Adresse + Étoiles (non cliquables ici, la card entière mène à la show) -->
+            <div class="card-footer bg-transparent footer-stack">
+              <p class="mb-1 address-line"><%= activity.address %></p>
+              <div class="rating-row d-inline-flex align-items-center gap-2">
+                <%= render "shared/rating",
+                           rating: activity.rating_avg,
+                           reviews_count: activity.reviews_count %>
+              </div>
+            </div>
+
               </div>
             <% end %>
           <% end %>
