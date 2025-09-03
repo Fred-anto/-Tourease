@@ -1,3 +1,6 @@
+/* ===== Import police UNIQUEMENT pour le titre ===== */
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
+
 /* ===== Palette & variables ===== */
 :root {
   --deep:    #004E64;
@@ -6,59 +9,56 @@
   --teal:    #25A18E;
   --lime:    #7AE582;
 
-  /* Hauteur du pictogramme (logo) et correction pour le wordmark SVG */
-  --brand-h: 36px;          /* hauteur visuelle du picto */
-  --wordmark-scale: 1.60;   /* compense le viewBox “large” du TourEase.svg */
+  /* Hauteur du pictogramme (logo) */
+  --brand-h: 36px;
+
+  /* Police dédiée AU SEUL nom de l’app */
+  --brand-title-font: 'Pacifico', cursive;
 }
 
-/* Petits écrans : compacter un peu le lockup */
+/* Petits écrans : compacter un peu */
 @media (max-width: 420px) {
-  :root {
-    --brand-h: 32px;
-    --wordmark-scale: 1.35;
-  }
+  :root { --brand-h: 32px; }
 }
 
 /* Écrans >= tablet */
 @media (min-width: 768px) {
-  :root {
-    --brand-h: 38px;
-    --wordmark-scale: 1.32;
-  }
+  :root { --brand-h: 40px; }
 }
 
-/* ===== Navbar (isolée de Bootstrap) ===== */
+/* ===== Navbar ===== */
 .te-navbar {
   position: sticky;
   top: 0;
   z-index: 1000;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  padding: .55rem 1rem;
   background: var(--primary);
   border-bottom: 1px solid var(--deep);
   width: 100%;
   box-sizing: border-box;
-  min-height: 56px;           /* hauteur confortable et stable */
-  white-space: nowrap;        /* empêche les retours à la ligne */
+  white-space: nowrap;
+  color: #fff;
 }
 
-/* ===== Gauche : logo + wordmark ===== */
-.te-navbar-left {
-  display: flex;
+/* Grille 3 colonnes : [logo] [CENTRE] [actions] -> centre parfait */
+.te-navbar-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
+  gap: 1rem;
+  min-height: 56px;
+  padding: .55rem 1rem;
 }
+
+/* ===== Gauche : logo ===== */
+.te-navbar-left { display: flex; align-items: center; justify-self: start; }
 
 .logo-link {
   display: flex;
   align-items: center;
-  gap: .3rem;                 /* rapproche logo + mot */
+  gap: .3rem;
   line-height: 1;
 }
 
-/* Picto */
 .logo {
   height: var(--brand-h);
   width: auto;
@@ -67,60 +67,25 @@
   filter: drop-shadow(0 1px 1px rgba(0,0,0,.18));
 }
 
-/* Wordmark (TourEase.svg)
-   -> on sur-dimensionne un peu pour compenser le viewBox trop grand,
-   -> même “hauteur visuelle” que le picto. */
-.logo-wordmark {
-  height: calc(var(--brand-h) * var(--wordmark-scale));
-  width: auto;
-  display: block;
-  align-self: center;
-  margin-left: .2rem;
-  transform: translateY(-1px); /* petit nudging optique */
-  filter: drop-shadow(0 1px 1px rgba(0,0,0,.22)); /* lisibilité sur fond teal */
-}
+/* ===== Centre : NOM DE L’APP (Pacifico + plus grand) ===== */
+.te-navbar-center { justify-self: center; text-align: center; }
 
-/* (Si vous utilisez du texte à la place du SVG wordmark) */
-.app-name {
-  font-size: 1.25rem;
-  font-weight: 800;
+.brand-title {
+  font-family: var(--brand-title-font);   /* <- uniquement ici */
+  font-weight: 400;                       /* Pacifico n’a qu’un poids régulier */
+  font-size: clamp(1.9rem, 6.2vw, 3.0rem);/* PLUS GRAND et responsive */
+  line-height: 1.02;
+  letter-spacing: 0;                      /* Pacifico n’a pas besoin d’espacement */
   color: #fff;
-  text-shadow: 0 1px 2px rgba(0,0,0,.28);
-  -webkit-font-smoothing: antialiased;
+  text-decoration: none;
+  /* Légère ombre pour le contraste sur fond bleu (retire si look flat) */
+  text-shadow: 0 1px 0 rgba(0,0,0,.10);
 }
 
-/* ===== Droite : actions / avatar ===== */
-.te-navbar-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;                  /* espace entre éléments */
-}
+/* ===== Droite : avatar ===== */
+.te-navbar-right { justify-self: end; }
 
-/* Bouton loupe (si réactivé) */
-.search-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: .3rem;
-}
-.search-btn svg { stroke: #fff; }
-.search-btn:hover { opacity: .7; }
-
-/* Champ recherche : n’occupe AUCUN espace quand fermé */
-.search-box { display: none; }
-.search-box.active { display: block; }
-.search-input {
-  padding: .3rem .6rem;
-  border-radius: 6px;
-  border: none;
-  outline: none;
-}
-
-/* Avatar profil */
-.avatar-link {
-  display: flex;
-  align-items: center;
-}
+.avatar-link { display: flex; align-items: center; }
 .avatar {
   width: 36px;
   height: 36px;
@@ -129,17 +94,13 @@
   border: 2px solid #fff;
 }
 
+/* (Optionnel) Contact button si besoin
 .contact-btn {
-  background-color: transparent; /* fond transparent */
+  background-color: transparent;
   color: #ffffff;
-  font-family: "Gill Sans Extrabold", sans-serif;              /* texte de la même couleur que le contour */
-  border: 2px solid #3cbc44;    /* contour */           /* bords arrondis */
-  padding: 6px 16px;             /* padding confortable */
-  font-weight: 700;            /* légèrement transparent */
+  border: 2px solid #3cbc44;
   padding: 6px 16px;
+  font-weight: 700;
+  border-radius: 9999px;
 }
-
-/* ===== Responsive léger ===== */
-@media (max-width: 420px) {
-  .app-name { display: none; }  /* garder une barre compacte sur mobile */
-}
+*/

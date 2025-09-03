@@ -1,20 +1,26 @@
-<nav class="te-navbar d-flex justify-content-between align-items-center px-3">
-  <div class="te-navbar-left d-flex align-items-center">
-    <%= link_to root_path, class: "logo-link d-flex align-items-center" do %>
-      <%= image_tag "logo.svg",      alt: "TourEase logo", class: "logo me-2" %>
-      <%= image_tag "TourEase.svg",  alt: "TourEase",      class: "logo-wordmark" %>
-    <% end %>
-  </div>
-
-  <div class="te-navbar-right d-flex align-items-center gap-3">
-    <%= link_to "Contact", "https://www.linkedin.com/in/frederic-antonietti-4b72ba96/", class: "btn btn-sm contact-btn rounded-4" %>
-
-    <%= link_to (user_signed_in? ? edit_user_registration_path : new_user_session_path), class: "avatar-link" do %>
-      <% if current_user.present? && current_user.respond_to?(:avatar) && current_user.avatar.attached? %>
-        <%= image_tag current_user.avatar.variant(resize_to_fill: [36, 36]), class: "avatar rounded-circle", alt: "Mon profil" %>
-      <% else %>
-        <%= image_tag "default-avatar.svg", class: "avatar rounded-circle", alt: "Profil" %>
+<nav class="te-navbar px-3" role="navigation" aria-label="Menu principal">
+  <div class="te-navbar-grid">
+    <!-- Gauche : logo -->
+    <div class="te-navbar-left">
+      <%= link_to root_path, class: "logo-link d-flex align-items-center", aria: { label: "Accueil TourEase" } do %>
+        <%= image_tag "logo.svg", alt: "TourEase logo", class: "logo me-2" %>
       <% end %>
-    <% end %>
+    </div>
+
+    <!-- Centre : nom de l’app (texte avec Pacifico) -->
+    <div class="te-navbar-center">
+      <%= link_to "TourEase", root_path, class: "brand-title", aria: { label: "Accueil TourEase" } %>
+    </div>
+
+    <!-- Droite : avatar -->
+    <div class="te-navbar-right d-flex align-items-center gap-3">
+      <%= link_to (user_signed_in? ? edit_user_registration_path : new_user_session_path), class: "avatar-link" do %>
+        <% if current_user.present? && current_user.respond_to?(:avatar) && current_user.avatar.attached? %>
+          <%= image_tag current_user.avatar.variant(resize_to_fill: [36, 36]), class: "avatar rounded-circle", alt: "Mon profil" %>
+        <% else %>
+          <%= image_tag "default-avatar.svg", class: "avatar rounded-circle", alt: "Profil" %>
+        <% end %>
+      <% end %>
+    </div>
   </div>
 </nav>
