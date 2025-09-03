@@ -15,6 +15,7 @@
             <% @favorite_activities.each do |activity| %>
               <li class="swipe-carousel__item">
                 <div class="card h-100 position-relative">
+                  <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
                   <% if activity.photo.attached? %>
                     <%= cl_image_tag activity.photo.key, class: "card-img-top" %>
                   <% else %>
@@ -24,7 +25,6 @@
                   <div class="card-body">
                     <h5 class="card-title"><b><%= activity.name %></b></h5>
                     <h5 class="description"><%= activity.description %></h5>
-                    <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
                   </div>
 
                   <!-- Footer : Adresse + Étoiles -->
@@ -54,6 +54,7 @@
             <% @created_activities.each do |activity| %>
               <li class="swipe-carousel__item">
                 <div class="card h-100 position-relative">
+                  <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
                   <% if activity.photo.attached? %>
                     <%= cl_image_tag activity.photo.key, class: "card-img-top" %>
                   <% else %>
@@ -63,7 +64,6 @@
                   <div class="card-body">
                     <h5 class="card-title"><b><%= activity.name %></b></h5>
                     <h5 class="description"><%= activity.description %></h5>
-                    <%= link_to "", activity_path(activity), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
                   </div>
 
                   <!-- Footer : Adresse + Étoiles + Poubelle -->
