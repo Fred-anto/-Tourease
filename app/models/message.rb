@@ -3,3 +3,4 @@ class Message < ApplicationRecord
   has_one :user, through: :chat
   has_one :trip, through: :chat
 end
+
