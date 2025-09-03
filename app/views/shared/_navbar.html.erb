@@ -1,19 +1,19 @@
-<nav class="te-navbar px-3" role="navigation" aria-label="Menu principal">
+<nav class="te-navbar" role="navigation" aria-label="Menu principal">
   <div class="te-navbar-grid">
     <!-- Gauche : logo -->
     <div class="te-navbar-left">
-      <%= link_to root_path, class: "logo-link d-flex align-items-center", aria: { label: "Accueil TourEase" } do %>
-        <%= image_tag "logo.svg", alt: "TourEase logo", class: "logo me-2" %>
+      <%= link_to root_path, class: "logo-link", aria: { label: "Accueil TourEase" } do %>
+        <%= image_tag "logo.svg", alt: "TourEase logo", class: "logo" %>
       <% end %>
     </div>
 
-    <!-- Centre : nom de l’app (texte avec Pacifico) -->
+    <!-- Centre : nom de l’app -->
     <div class="te-navbar-center">
       <%= link_to "TourEase", root_path, class: "brand-title", aria: { label: "Accueil TourEase" } %>
     </div>
 
     <!-- Droite : avatar -->
-    <div class="te-navbar-right d-flex align-items-center gap-3">
+    <div class="te-navbar-right">
       <%= link_to (user_signed_in? ? edit_user_registration_path : new_user_session_path), class: "avatar-link" do %>
         <% if current_user.present? && current_user.respond_to?(:avatar) && current_user.avatar.attached? %>
           <%= image_tag current_user.avatar.variant(resize_to_fill: [36, 36]), class: "avatar rounded-circle", alt: "Mon profil" %>
