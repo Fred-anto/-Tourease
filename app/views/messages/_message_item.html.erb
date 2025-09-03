@@ -12,17 +12,19 @@
         <% plan = message.parsed_content %>
         <% if plan["Schedule"] == true %>
           <% plan.delete("Schedule") %>
-          <% plan.each do |day, activities| %>
-            <h6 class="fw-bold mb-2" style="color:#333;"><%= day %></h6>
+          <% sorted_plan = plan.sort_by { |day, _| Date.parse(day) } %>
+          <% sorted_plan.each do |day, activities| %>
+            <% correct_day = Date.parse(day).strftime("%A") %>
+            <h6 class="fw-bold mb-2" style="color:#333;"><%= "#{correct_day}, #{day}" %></h6>
             <% activities.each do |activity| %>
-              <div class="mb-3">
-                <div class="border rounded-4 p-3 mb-2" style="background-color:#e7e7e7; border-color:#bbb; color:#333;">
-                  <div class="fw-bold mb-1" style="font-size:1rem;"><%= activity["name"] %> (<%= activity["category"] %>)</div>
-                  <div class="text-muted mb-1" style="font-size:0.85rem;"><%= activity["start_date_time"] %> - <%= activity["end_date_time"] %></div>
-                  <div style="margin-bottom:0.3rem;"><%= activity["description"] %></div>
-                  <div class="text-muted" style="font-size:0.85rem;"><%= activity["address"] %></div>
-                </div>
+            <div class="mb-3">
+              <div class="border rounded-4 p-3 mb-2" style="background-color:#e7e7e7; border-color:#bbb; color:#333;">
+                <div class="fw-bold mb-1" style="font-size:1rem;"><%= activity["name"] %> (<%= activity["category"] %>)</div>
+                <div class="text-muted mb-1" style="font-size:0.85rem;"><%= activity["start_date_time"] %> - <%= activity["end_date_time"] %></div>
+                <div style="margin-bottom:0.3rem;"><%= activity["description"] %></div>
+                <div class="text-muted" style="font-size:0.85rem;"><%= activity["address"] %></div>
               </div>
+            </div>
             <% end %>
           <% end %>
         <% else %>
