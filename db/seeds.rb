@@ -169,14 +169,14 @@ end
   # --- Categories (avec emojis comme dans ton extrait) ---
   puts "Creating categories…"
   cats = {
-    culture:    Category.create!(name: "🏰 Culture"),
-    nature:     Category.create!(name: "🌿 Nature"),
-    sport:      Category.create!(name: "🏋️‍♀️ Sport"),
-    relaxation: Category.create!(name: "🧘 Relaxation"),
-    food:       Category.create!(name: "🍣 Food"),
-    leisure:    Category.create!(name: "🎭 Leisure"),
-    bar:        Category.create!(name: "🍻 Bar"),
-    nightclub:  Category.create!(name: "🪩 Nightclub")
+    culture:    Category.create!(name: "Culture 🎨"),
+    nature:     Category.create!(name: "Nature 🌳"),
+    sport:      Category.create!(name: "Sport 🏋️‍♀️"),
+    relaxation: Category.create!(name: "Relax 🧘"),
+    food:       Category.create!(name: "Food 🧑‍🍳"),
+    leisure:    Category.create!(name: "Leisure 🎡"),
+    bar:        Category.create!(name: "Bar 🍻"),
+    nightclub:  Category.create!(name: "Nightclub 🪩")
   }
 
   # --- Activities (pas d'attachement local ici; l'attache se fait après via Cloudinary+fallback) ---

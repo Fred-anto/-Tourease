@@ -18,7 +18,7 @@
           <p class="subtitle mt-2">
             <span class="chip">📍&nbsp;<strong><%= @trip.destination %></strong></span>
              <span class="mt-2 chip">Interests:&nbsp;
-              <span><%= @trip.categories.map { |c| c.name.split.first }.join(' ') %></span>
+              <span><%= @trip.categories.map { |c| c.name.split.last }.join(' ') %></span>
             </span>
           </p>
 
