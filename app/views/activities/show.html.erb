@@ -2,8 +2,9 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="trip-card shadow-lg">
-        <div class="trip-card__header d-flex justify-content-between align-items-center">
 
+        <!-- Header -->
+        <div class="trip-card__header d-flex justify-content-between align-items-start">
           <div>
             <h1 class="title"><%= @activity.name %></h1>
             <p class="subtitle"><%= @activity.address %></p>
@@ -12,14 +13,14 @@
             </div>
 
             <div class="creator d-flex align-items-center gap-2 mt-2">
-              <%= button_to find_or_create_conversations_path(user_id: @activity.user.id), method: :post,
-                  class: "p-0 border-0 bg-transparent",
-                  data: { turbo: false } do %>
-
+              <%= button_to find_or_create_conversations_path(user_id: @activity.user.id),
+                            method: :post,
+                            class: "p-0 border-0 bg-transparent",
+                            data: { turbo: false } do %>
                 <%= avatar_tag(@activity.user, size: 32, class_name: "border") %>
-                  <span class="small text-white">
-                 Created by <strong><%= @activity.user.username %></strong>
-                  </span>
+                <span class="small text-white">
+                  Created by <strong><%= @activity.user.username %></strong>
+                </span>
               <% end %>
             </div>
           </div>
@@ -27,40 +28,11 @@
           <% if user_signed_in? %>
             <div class="ms-3 d-flex flex-column align-items-center gap-2">
               <%= render partial: "activities/favorite_button", locals: { activity: @activity } %>
-
-              <% if params[:trip_id].present? %>
-                <% if @trip.activities.include?(@activity) %>
-                  <%= button_to trip_trip_activity_path(@trip, @trip_activity),
-                                method: :delete,
-                                class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
-                                style: "width: 50px; height: 50px; font-size: 45px; border-radius: 50%;" do %>
-                    <iconify-icon icon="icon-park:add-print"
-                                  style="color: black; width: 50px; height: 30px;"></iconify-icon>
-                  <% end %>
-                <% else %>
-                  <%= button_to trip_trip_activities_path(@trip, activity_id: @activity.id),
-                                method: :post,
-                                class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
-
-                                style: "width: 50px; height: 50px; font-size: 45px; border-radius: 50%;" do %>
-                                <iconify-icon icon="arcticons:kb-plus"
-                                style="color: blue; width: 50px; height: 30px;"></iconify-icon>
-                  <% end %>
-                <% end %>
-              <% else %>
-                <%= button_to choose_trip_activity_path(@activity),
-                              method: :get,
-                              class: "btn border-0 rounded-circle d-flex align-items-center justify-content-center",
-                              style: "width: 50px; height: 50px; font-size: 40px; border-radius: 50%;" do %>
-                  <iconify-icon icon="arcticons:kb-plus"
-                                style="color: blue; width: 50px; height: 30px; font-size: 50px"></iconify-icon>
-                <% end %>
-              <% end %>
             </div>
           <% end %>
-
         </div>
 
+        <!-- Card image -->
         <div class="card h-100">
           <% if @activity.photo.attached? %>
             <%= cl_image_tag @activity.photo.key, class: "card-img-top" %>
@@ -68,32 +40,60 @@
             <%= image_tag "placeholder.svg", class: "card-img-top" %>
           <% end %>
 
+          <!-- Description -->
           <div class="card-body">
             <h5 class="card-title"><%= @activity.description %></h5>
           </div>
 
+          <!-- Review & Buttons -->
           <div class="card-body review-card text-center">
+            <!-- Reviews -->
             <% if user_signed_in? %>
               <%= link_to activity_reviews_path(@activity),
                           class: "text-decoration-none d-inline-flex align-items-center gap-2 rating-link" do %>
-                <%= render "shared/rating",
-                           rating: @activity.rating_avg,
-                           reviews_count: @activity.reviews_count %>
+                <%= render "shared/rating", rating: @activity.rating_avg, reviews_count: @activity.reviews_count %>
               <% end %>
             <% else %>
               <%= link_to new_user_session_path,
                           class: "text-decoration-none d-inline-flex align-items-center gap-2 rating-link",
                           data: { turbo_frame: "_top" },
                           title: "Log in to leave a review" do %>
-                <%= render "shared/rating",
-                           rating: @activity.rating_avg,
-                           reviews_count: @activity.reviews_count %>
+                <%= render "shared/rating", rating: @activity.rating_avg, reviews_count: @activity.reviews_count %>
               <% end %>
             <% end %>
-          </div>
-        </div>
 
-      </div>
-    </div>
-  </div>
-</div>
+            <!-- Action Buttons -->
+              <div class="d-flex justify-content-center gap-2 mt-4">
+                <% if params[:trip_id].present? %>
+                  <% if @trip.activities.include?(@activity) %>
+                    <%= button_to trip_trip_activity_path(@trip, @trip_activity),
+                                  method: :delete,
+                                  class: "btn btn-success rounded-pill d-flex align-items-center justify-content-center gap-2 px-4 py-2" do %>
+                                  <iconify-icon icon="streamline-ultimate-color:check" width="24" height="24"></iconify-icon>
+                                  <span>Added to trip</span>
+                    <% end %>
+                  <% else %>
+                    <%= button_to trip_trip_activities_path(@trip, activity_id: @activity.id),
+                                  method: :post,
+                                  class: "btn btn-primary rounded-pill d-flex align-items-center justify-content-center gap-2 px-4 py-2" do %>
+                                  <iconify-icon icon="icon-park:add" width="24" height="24"></iconify-icon>
+                                  <span>Add to trip</span>
+                    <% end %>
+                  <% end %>
+                <% else %>
+                  <%= button_to choose_trip_activity_path(@activity),
+                                method: :get,
+                                class: "btn btn-primary rounded-pill d-flex align-items-center justify-content-center gap-2 px-4 py-2" do %>
+                                <iconify-icon icon="icon-park:add" width="24" height="24"></iconify-icon>
+                                <span>Add to trip</span>
+                  <% end %>
+                <% end %>
+              </div>
+
+          </div> <!-- end review-card -->
+        </div> <!-- end card -->
+
+      </div> <!-- end trip-card -->
+    </div> <!-- end col-md-8 -->
+  </div> <!-- end row -->
+</div> <!-- end container -->
