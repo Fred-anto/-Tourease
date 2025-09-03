@@ -1,7 +1,7 @@
 <%= render "shared/navbar" %>
 
-<!-- ======================= Map ======================= -->
-<div class="container">
+<!-- ======================= Map (full width) ======================= -->
+<div class="container-fluid p-0">
   <div
     style="width: 100%; height: 600px;"
     data-controller="map"
@@ -20,7 +20,7 @@
     <div class="swipe-carousel" data-controller="swipe">
       <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Top trendy activities">
         <% @activities.last(10).each do |activity| %>
-          <div class="card h-100 position-relative"><!-- 👈 rend possible le stretched-link global -->
+          <div class="card h-100 position-relative">
 
             <!-- Lien étiré qui couvre TOUTE la card -->
             <%= link_to "", activity_path(activity),
@@ -43,7 +43,7 @@
               </div>
             </div>
 
-            <!-- Footer : Adresse + Étoiles (non cliquables ici, la card entière mène à la show) -->
+            <!-- Footer : Adresse + Étoiles -->
             <div class="card-footer bg-transparent footer-stack">
               <p class="mb-1 address-line"><%= activity.address %></p>
               <div class="rating-row d-inline-flex align-items-center gap-2">
@@ -69,7 +69,7 @@
     <div class="swipe-carousel" data-controller="swipe">
       <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Must-see activities">
         <% @activities.first(10).each do |activity| %>
-          <div class="card h-100 position-relative"><!-- 👈 rend possible le stretched-link global -->
+          <div class="card h-100 position-relative">
 
             <!-- Lien étiré qui couvre TOUTE la card -->
             <%= link_to "", activity_path(activity),
@@ -92,7 +92,7 @@
               </div>
             </div>
 
-            <!-- Footer : Adresse + Étoiles (non cliquables ici) -->
+            <!-- Footer : Adresse + Étoiles -->
             <div class="card-footer bg-transparent footer-stack">
               <p class="mb-1 address-line"><%= activity.address %></p>
               <div class="rating-row d-inline-flex align-items-center gap-2">
