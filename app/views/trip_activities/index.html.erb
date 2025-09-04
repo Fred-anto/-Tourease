@@ -53,7 +53,7 @@
       <h2 class="mt-3 cat-title chip-title">Top Trendy Activities</h2>
       <div class="swipe-carousel mt-2" data-controller="swipe">
         <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Top trendy activities">
-          <% @activities.sample(20).each do |activity| %>
+          <% @activities.sort_by { |a| -a.rating_avg.to_f }.first(20).each do |activity| %>
             <% unless @trip.activities.include?(activity) %>
               <div class="card h-100">
                 <%= link_to "", activity_path(activity, trip_id: @trip.id), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
@@ -85,7 +85,7 @@
       <h2 class="cat-title mt-2 chip-title">Must-See Activities</h2>
       <div class="swipe-carousel mt-2" data-controller="swipe">
         <div class="swipe-carousel__track" data-swipe-target="track" role="region" aria-label="Must-see activities">
-          <% @activities.sample(20).each do |activity| %>
+          <% @activities.sort_by { |a| -a.reviews_count }.first(20).each do |activity| %>
             <% unless @trip.activities.include?(activity) %>
               <div class="card h-100">
                 <%= link_to "", activity_path(activity, trip_id: @trip.id), class: "stretched-link", aria: { label: "Voir #{activity.name}" } %>
