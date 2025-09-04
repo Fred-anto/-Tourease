@@ -334,27 +334,27 @@ ActiveRecord::Base.transaction do
     ]
 
     category_targets = {
-      culture: 18,
+      culture: 20,
       nature: 7,
-      sport: 15,
+      sport: 6,
       relaxation: 12,
       food: 10,
       leisure: 8,
-      bar: 6,
-      nightclub: 20
+      bar: 9,
+      nightclub: 13
     }
     category_targets.each { |k, v| puts " - #{k}: #{v} reviews per activity (default)" }
 
     CULTURE_PER_ACTIVITY_TARGETS = {
-      "Musée d'Orsay"          => 20,
-      "Panthéon"               => 14,
+      "Musée d'Orsay"          => 22,
+      "Panthéon"               => 15,
       "Opéra Garnier"          => 18,
       "Musée Rodin"            => 12,
       "Musée Picasso"          => 16,
-      "Sainte-Chapelle"        => 9,
-      "Palais de Tokyo"        => 11,
-      "Petit Palais"           => 7,
-      "Maison de Victor Hugo"  => 5,
+      "Sainte-Chapelle"        => 15,
+      "Palais de Tokyo"        => 19,
+      "Petit Palais"           => 21,
+      "Maison de Victor Hugo"  => 15,
       "Musée de l'Orangerie"   => 13
     }
 
