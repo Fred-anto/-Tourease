@@ -14,7 +14,7 @@
           <% sorted_plan = plan.sort_by { |day, _| Date.parse(day) } %>
           <% sorted_plan.each do |day, activities| %>
             <% correct_day = Date.parse(day).strftime("%A") %>
-            <h6 class="fw-bold mb-2" style="color:#333;"><%= "#{correct_day}, #{day}" %></h6>
+            <h6 class="fw-bold mb-3" style="color:#333;"><%= "#{correct_day}, #{day}" %></h6>
             <% activities.each do |activity| %>
               <div class="mb-3">
                 <div class="border rounded-4 p-3 mb-2" style="background-color:#e7e7e7; border-color:#bbb; color:#333;">
