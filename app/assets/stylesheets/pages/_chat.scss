@@ -137,7 +137,7 @@
 
     // Messages utilisateur
     &[style*="background-color:#00A5CF"] {
-      background: linear-gradient(135deg, var(--brand-600), var(--brand-700)) !important;
+      background: var(--brand-600)!important;
       box-shadow: 0 4px 15px rgba(0, 165, 207, 0.3);
       border: 1px solid rgba(255, 255, 255, 0.1);
 
@@ -174,8 +174,8 @@
 
       // Contenus spéciaux (plans, activités)
       .border {
-        background: linear-gradient(135deg, var(--brand-200), rgba(255, 255, 255, 0.8)) !important;
-        border: 2px solid var(--brand-400) !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+        border: 2px solid #004E64 !important;
         box-shadow: 0 2px 10px rgba(122, 229, 130, 0.2);
 
         .fw-bold {
@@ -256,9 +256,9 @@
 
 // Bouton Save amélioré
 .btn-light {
-  background: linear-gradient(135deg, var(--brand-400), var(--brand-200)) !important;
-  border: 2px solid var(--brand-400) !important;
-  color: var(--brand-900) !important;
+  background: #004E64 !important;
+  border: 2px solid #004E64 !important;
+  color: white !important;
   font-weight: 600;
   transition: all 0.3s ease;
 
