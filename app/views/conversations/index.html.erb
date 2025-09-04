@@ -23,5 +23,15 @@
                       class: "badge d-block text-truncate bg-light px-3 py-2 rounded-3 text-dark text-decoration-none conversation-badge"%>
         </div>
       <% end %>
+
+       <%# ———————————————— 3) ÉTAT VIDE ———————————————— %>
+      <% if @conversations.empty?%>
+        <div class="text-center my-5">
+          <i class="fa-regular fa-face-sad-tear fa-3x text-muted mb-3"></i>
+          <p class="mb-2">Nothing here yet...</p>
+          <%= link_to "Start a conversation", activities_path, class: "btn-new" %>
+        </div>
+      <% end %>
+
     </div>
   </div>
