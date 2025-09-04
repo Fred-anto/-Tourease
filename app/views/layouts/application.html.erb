@@ -30,7 +30,7 @@
   <body data-controller="swipe-back">
     <%= render "shared/flashes" %>
 
-    <main id="page-content" class="page">
+    <main id="page-content" class="<%= "page" unless controller_name == "chats" && action_name == "show" %>">
       <%= yield %>
     </main>
 
