@@ -33,15 +33,15 @@
                 <%= f.submit "Save", class: "btn btn-sm btn-light rounded-pill mb-3" %>
               <% end %>
             </div>
-          
+
         <% else %>
-          <div class="mb-2" style="color:#555;">
+          <div class="mb-2" style="color:#333;">
             <%= markdown(plan["notes"]) %>
           </div>
         <% end %>
       <% else %>
 
-        <div class="mb-2" style="color:#555; white-space:pre-wrap;">
+        <div class="mb-2" style="color:#333; white-space:pre-wrap;">
           <%= simple_format(h(streaming_preview(message.content))) %>
         </div>
       <% end %>
