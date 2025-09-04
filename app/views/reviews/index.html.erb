@@ -1,5 +1,5 @@
 <!-- Close (X) fixed in the top-right of the screen -->
-<%= link_to activity_path(@activity),
+<%= link_to (request.referer || root_path),
             class: "btn btn-link p-0",
             aria: { label: "Close and go back" },
             title: "Close",

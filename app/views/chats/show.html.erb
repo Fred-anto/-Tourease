@@ -1,12 +1,24 @@
+<!-- Close (X) fixed in the top-right of the screen -->
+<%= link_to (request.referer || root_path),
+            class: "btn btn-link p-0",
+            aria: { label: "Close and go back" },
+            title: "Close",
+            style: "position:fixed; top:12px; right:12px; z-index:1050;" do %>
+  <i class="fa-solid fa-xmark" style="font-size:1.8rem; color:#004E64;"></i>
+<% end %>
+
+
 <div class="sticky-top w-100" style="background-color: #f8f9fa; border-bottom: 1px solid #ddd;">
   <div class="d-flex align-items-center justify-content-between py-2 px-1" style="max-width: 100%; margin: 0 auto; overflow-x: hidden">
 
     <!-- Back arrow à gauche -->
     <div class="d-flex gap-2 justify-content-start">
-      <%= link_to trip_path(@trip), class: "text-decoration-none text-dark d-flex align-items-center justify-content-center me-2 rounded-4",
+
+    <!-- Je commente pour ne plus afficher la flèche back et mettre la croix à la place comme sur toutes les pages -->
+      <%# <%= link_to trip_path(@trip), class: "text-decoration-none text-dark d-flex align-items-center justify-content-center me-2 rounded-4",
                       style: "border: 1px solid #adb5bd; width: 60px; height: 60px; line-height: 60px" do %>
-        <i class="fa-solid fa-arrow-left fs-3"></i>
-      <% end %>
+        <%# <i class="fa-solid fa-arrow-left fs-3"></i> %>
+      <%# <% end %>
 
       <!-- GuAIde à gauche -->
       <h2 class="rounded-4 fs-2 text-white mb-0 d-flex align-items-center me-3 px-3"
